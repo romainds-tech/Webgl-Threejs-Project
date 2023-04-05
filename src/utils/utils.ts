@@ -1,7 +1,14 @@
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
-import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
-import { AnimationAction, AnimationMixer, Group, Scene, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import {
+  AnimationAction,
+  AnimationClip,
+  AnimationMixer,
+  Group,
+  Scene,
+  Vector3,
+} from "three";
 
 /**
  * Définition d'un objet FBX
@@ -9,26 +16,25 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 export interface Fbx {
   path: string; // Chemin d'accès au fichier FBX
   position: Vector3; // Position de l'objet chargé dans la scène
-  scene: Scene; // Scène Three.js dans laquelle l'objet sera ajouté
+  rotation: Vector3; // Rotation de l'objet chargé dans la scène
   animation: boolean; // Définit si l'objet doit être animé
-  mixer: null | AnimationMixer;
-  animationAction: null | AnimationAction;
+  mixer: undefined | AnimationMixer;
+  loadedFbx: undefined | Group;
+  animationAction: undefined | AnimationAction[];
 }
 
 export interface Gltf {
   path: string;
   position: Vector3;
-  scene: Scene;
-  animation: boolean;
-  mixer: null | AnimationMixer;
-  animationAction: null | AnimationAction;
+  rotation: Vector3;
 }
 
 /**
  * Charge un ou plusieurs fichiers FBX à partir de leur chemin d'accès
- * @param fbxs
+ * @param fbxs Tableau d'objets FBX
+ * @param scene Scène dans laquelle charger les objets FBX
  */
-export function loadFbx(fbxs: Fbx[]): Promise<Awaited<Fbx>[]> {
+export function loadFbx(fbxs: Fbx[], scene: Scene): Promise<Awaited<Fbx>[]> {
   const fbxLoader: FBXLoader = new FBXLoader();
 
   return Promise.all(
@@ -44,13 +50,23 @@ export function loadFbx(fbxs: Fbx[]): Promise<Awaited<Fbx>[]> {
             fbx.position.y,
             fbx.position.z
           );
-          // Ajoute l'objet chargé à la scène spécifiée
-          fbx.scene.add(loadedFbx);
 
           if (fbx.animation) {
             fbx.mixer = new AnimationMixer(loadedFbx);
-            fbx.animationAction = fbx.mixer.clipAction(loadedFbx.animations[1]);
+            fbx.animationAction = [];
+            loadedFbx.animations.forEach((animation: AnimationClip): void => {
+              if (fbx.mixer) {
+                fbx.animationAction?.push(fbx.mixer.clipAction(animation));
+              } else {
+                throw new Error("fbx.mixer is undefined");
+              }
+            });
           }
+
+          fbx.loadedFbx = loadedFbx;
+
+          scene.add(fbx.loadedFbx);
+
           return fbx;
         })
         .catch((e) => e);
@@ -58,7 +74,12 @@ export function loadFbx(fbxs: Fbx[]): Promise<Awaited<Fbx>[]> {
   );
 }
 
-export function loadGlb(glbs: Gltf[]): Promise<Awaited<Gltf>[]> {
+/**
+ * Charge un ou plusieurs fichiers GLB à partir de leur chemin d'accès
+ * @param glbs Tableau d'objets GLB
+ * @param scene Scène dans laquelle charger les objets GLB
+ */
+export function loadGlb(glbs: Gltf[], scene: Scene): Promise<Awaited<Gltf>[]> {
   const gltfLoader: GLTFLoader = new GLTFLoader();
   const dLoader: DRACOLoader = new DRACOLoader();
 
@@ -71,22 +92,17 @@ export function loadGlb(glbs: Gltf[]): Promise<Awaited<Gltf>[]> {
     glbs.map((gltf: Gltf) => {
       return gltfLoader
         .loadAsync(gltf.path)
-        .then((gltfLoaded: GLTF): Gltf => {
+        .then((gltfLoaded: GLTF): Group => {
           gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
           gltfLoaded.scene.position.set(
             gltf.position.x,
             gltf.position.y,
             gltf.position.z
           );
-          gltf.scene.add(gltfLoaded.scene);
 
-          if (gltf.animation) {
-            gltf.mixer = new AnimationMixer(gltfLoaded.scene);
-            gltf.animationAction = gltf.mixer.clipAction(
-              gltfLoaded.scene.animations[1]
-            );
-          }
-          return gltf;
+          scene.add(gltfLoaded.scene);
+
+          return gltfLoaded.scene;
         })
         .catch((e) => e);
     })

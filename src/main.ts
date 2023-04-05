@@ -36,53 +36,52 @@ let glbPromises: Gltf[] = [
   {
     path: "glb/robot.glb",
     position: new Vector3(0, 0, -2),
-    scene: scene,
-    animation: false,
-    mixer: null,
-    animationAction: null,
+    rotation: new Vector3(0, 0, 0),
   },
   {
     path: "glb/robot2.gltf",
     position: new Vector3(0, 0, -4),
-    scene: scene,
-    animation: false,
-    mixer: null,
-    animationAction: null,
+    rotation: new Vector3(0, 0, 0),
   },
   {
     path: "glb/robot2.glb",
     position: new Vector3(0, 0, 2),
-    scene: scene,
-    animation: false,
-    mixer: null,
-    animationAction: null,
+    rotation: new Vector3(0, 0, 0),
+  },
+  {
+    path: "glb/just-robot.gltf",
+    position: new Vector3(0, 0, 1),
+    rotation: new Vector3(0, 0, 0),
   },
 ];
 
 let fbxPromises: Fbx[] = [
   {
     path: "fbx/abeille/beev2.fbx",
-    position: new Vector3(0, 0, 0),
-    scene: scene,
+    position: new Vector3(0, 2, 0),
+    rotation: new Vector3(0, 0, 0),
     animation: true,
-    mixer: null,
-    animationAction: null,
+    mixer: undefined,
+    loadedFbx: undefined,
+    animationAction: undefined,
   },
   {
     path: "fbx/baleine/baleine-animation.fbx",
     position: new Vector3(0, 0, 2),
-    scene: scene,
+    rotation: new Vector3(0, 0, 0),
     animation: true,
-    mixer: null,
-    animationAction: null,
+    mixer: undefined,
+    loadedFbx: undefined,
+    animationAction: undefined,
   },
   {
     path: "fbx/cygne/cygne-fbx.fbx",
     position: new Vector3(0, 0, 10),
-    scene: scene,
+    rotation: new Vector3(0, 0, 0),
     animation: true,
-    mixer: null,
-    animationAction: null,
+    mixer: undefined,
+    loadedFbx: undefined,
+    animationAction: undefined,
   },
 ];
 
@@ -93,6 +92,7 @@ let swan: Fbx | undefined;
 let robot1: Gltf | undefined;
 let robot2: Gltf | undefined;
 let robot3: Gltf | undefined;
+let robot4: Gltf | undefined;
 
 /**
  *
@@ -108,25 +108,25 @@ function init(): void {
   /*
    * Load all fbxs
    */
-  loadFbx(fbxPromises).then((e: Fbx[]): void => {
+  loadFbx(fbxPromises, scene).then((e: Fbx[]): void => {
     console.log("chargement des fbxs terminé");
 
     bee = e[0];
-    bee.animationAction?.play();
+    if (bee.animationAction) {
+      bee.animationAction[1].play();
+    }
 
     whale = e[1];
     console.log(whale);
-    // whale.animationAction?.play();
 
     swan = e[2];
     console.log(swan);
-    // swan.animationAction?.play();
   });
 
   /*
    * Load all glbs
    */
-  loadGlb(glbPromises).then((e: Gltf[]): void => {
+  loadGlb(glbPromises, scene).then((e: Gltf[]): void => {
     robot1 = e[0];
     console.log(robot1);
 
@@ -135,6 +135,10 @@ function init(): void {
 
     robot3 = e[2];
     console.log(robot3);
+
+    robot4 = e[3];
+    console.log(robot4);
+
     // robot.animationAction?.play();
     console.log("chargement des glbs terminé");
   });
@@ -157,11 +161,32 @@ function render(): void {
 }
 
 function animate(): void {
-  bee?.mixer?.update(clock.getDelta());
   // whale?.mixer?.update(clock.getDelta());
   // swan?.mixer?.update(clock.getDelta());
-
   // robot?.mixer?.update(clock.getDelta());
+
+  if (bee && bee.loadedFbx) {
+    bee.mixer?.update(clock.getDelta());
+    bee.loadedFbx.rotation.y += 0.01;
+  }
+
+  if (robot1 && robot2 && robot3 && robot4) {
+    robot1.rotation.x += 0.1;
+    robot1.rotation.y += 0.1;
+    robot1.rotation.z += 0.1;
+
+    robot2.rotation.x -= 0.1;
+    robot2.rotation.y -= 0.1;
+    robot2.rotation.z -= 0.1;
+
+    robot3.rotation.x += 0.2;
+    robot3.rotation.y += 0.1;
+    robot3.rotation.z += 0.2;
+
+    robot4.rotation.x -= 0.1;
+    robot4.rotation.y -= 0.3;
+    robot4.rotation.z -= 0.1;
+  }
 
   controls.update();
   render();
