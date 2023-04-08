@@ -3,20 +3,19 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   AmbientLight,
   Clock,
+  Group,
   PerspectiveCamera,
   Scene,
   Vector3,
   WebGLRenderer,
 } from "three";
-import { Fbx, Gltf, loadFbx, loadGlb } from "./utils/utils";
+import { Fbx, Gltf, loadFbx, loadGlbAsync } from "./utils/utils";
 
 /**
  *
  * Define all constantes and variables
  *
  */
-
-const clock: Clock = new Clock();
 
 const scene: Scene = new Scene();
 const camera: PerspectiveCamera = new PerspectiveCamera(
@@ -61,6 +60,7 @@ let fbxPromises: Fbx[] = [
     position: new Vector3(0, 2, 0),
     rotation: new Vector3(0, 0, 0),
     animation: true,
+    clock: new Clock(),
     mixer: undefined,
     loadedFbx: undefined,
     animationAction: undefined,
@@ -70,6 +70,7 @@ let fbxPromises: Fbx[] = [
     position: new Vector3(0, 0, 2),
     rotation: new Vector3(0, 0, 0),
     animation: true,
+    clock: new Clock(),
     mixer: undefined,
     loadedFbx: undefined,
     animationAction: undefined,
@@ -79,6 +80,7 @@ let fbxPromises: Fbx[] = [
     position: new Vector3(0, 0, 10),
     rotation: new Vector3(0, 0, 0),
     animation: true,
+    clock: new Clock(),
     mixer: undefined,
     loadedFbx: undefined,
     animationAction: undefined,
@@ -89,10 +91,10 @@ let bee: Fbx | undefined;
 let whale: Fbx | undefined;
 let swan: Fbx | undefined;
 
-let robot1: Gltf | undefined;
-let robot2: Gltf | undefined;
-let robot3: Gltf | undefined;
-let robot4: Gltf | undefined;
+let robot1: Group | undefined;
+let robot2: Group | undefined;
+let robot3: Group | undefined;
+let robot4: Group | undefined;
 
 /**
  *
@@ -100,7 +102,7 @@ let robot4: Gltf | undefined;
  *
  */
 
-function init(): void {
+async function init(): Promise<void> {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   window.addEventListener("resize", onWindowResize, false);
@@ -108,25 +110,34 @@ function init(): void {
   /*
    * Load all fbxs
    */
-  loadFbx(fbxPromises, scene).then((e: Fbx[]): void => {
-    console.log("chargement des fbxs terminé");
+  let all: Fbx[] = await loadFbx(fbxPromises, scene);
 
-    bee = e[0];
-    if (bee.animationAction) {
-      bee.animationAction[1].play();
-    }
+  bee = all[0];
+  whale = all[1];
+  swan = all[2];
 
-    whale = e[1];
-    console.log(whale);
+  if (bee.animationAction) {
+    bee.animationAction[1].play();
+  } else {
+    console.log("no animation : ", bee);
+  }
 
-    swan = e[2];
-    console.log(swan);
-  });
+  if (whale.animationAction) {
+    whale.animationAction[0].play();
+  } else {
+    console.log("no animation : ", whale);
+  }
+
+  if (swan.animationAction) {
+    swan.animationAction[1].play();
+  } else {
+    console.log("no animation : ", swan);
+  }
 
   /*
    * Load all glbs
    */
-  loadGlb(glbPromises, scene).then((e: Gltf[]): void => {
+  loadGlbAsync(glbPromises, scene).then((e: Group[]): void => {
     robot1 = e[0];
     console.log(robot1);
 
@@ -142,6 +153,8 @@ function init(): void {
     // robot.animationAction?.play();
     console.log("chargement des glbs terminé");
   });
+
+  // await loadGlbSecond(glbPromises, scene);
 
   scene.add(light);
   light.position.set(0, 12, 1);
@@ -161,13 +174,22 @@ function render(): void {
 }
 
 function animate(): void {
-  // whale?.mixer?.update(clock.getDelta());
-  // swan?.mixer?.update(clock.getDelta());
-  // robot?.mixer?.update(clock.getDelta());
+  if (whale && whale.loadedFbx) {
+    whale.mixer?.update(whale.clock.getDelta());
+    // whale.loadedFbx.rotation.y += 0.01;
+  }
 
   if (bee && bee.loadedFbx) {
-    bee.mixer?.update(clock.getDelta());
+    bee.mixer?.update(bee.clock.getDelta());
     bee.loadedFbx.rotation.y += 0.01;
+  } else {
+    console.log("no bee");
+  }
+
+  if (swan && swan.loadedFbx) {
+    swan.mixer?.update(swan.clock.getDelta());
+  } else {
+    console.log("no swan");
   }
 
   if (robot1 && robot2 && robot3 && robot4) {
@@ -193,5 +215,6 @@ function animate(): void {
   requestAnimationFrame(animate);
 }
 
-init();
-animate();
+init().then((): void => {
+  animate();
+});
