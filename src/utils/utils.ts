@@ -5,6 +5,7 @@ import {
   AnimationAction,
   AnimationClip,
   AnimationMixer,
+  Clock,
   Group,
   Scene,
   Vector3,
@@ -18,6 +19,7 @@ export interface Fbx {
   position: Vector3; // Position de l'objet chargé dans la scène
   rotation: Vector3; // Rotation de l'objet chargé dans la scène
   animation: boolean; // Définit si l'objet doit être animé
+  clock: Clock;
   mixer: undefined | AnimationMixer;
   loadedFbx: undefined | Group;
   animationAction: undefined | AnimationAction[];
@@ -34,42 +36,79 @@ export interface Gltf {
  * @param fbxs Tableau d'objets FBX
  * @param scene Scène dans laquelle charger les objets FBX
  */
-export function loadFbx(fbxs: Fbx[], scene: Scene): Promise<Awaited<Fbx>[]> {
+export async function loadFbx(fbxs: Fbx[], scene: Scene): Promise<Fbx[]> {
+  const fbxLoader: FBXLoader = new FBXLoader();
+
+  // Utilisation de async/await au lieu de .then pour une meilleure lisibilité
+  const loadFbxAsync = async (fbx: Fbx): Promise<Fbx> => {
+    const loadedFbx: Group = await fbxLoader.loadAsync(fbx.path);
+
+    loadedFbx.scale.set(0.001, 0.001, 0.001);
+    loadedFbx.position.set(fbx.position.x, fbx.position.y, fbx.position.z);
+
+    if (fbx.animation) {
+      fbx.mixer = new AnimationMixer(loadedFbx);
+      fbx.animationAction = [];
+
+      for (let animation of loadedFbx.animations) {
+        if (fbx.mixer) {
+          fbx.animationAction.push(fbx.mixer.clipAction(animation));
+        } else {
+          throw new Error("fbx.mixer is undefined");
+        }
+      }
+    } else {
+      throw new Error("fbx.animation is undefined");
+    }
+
+    fbx.loadedFbx = loadedFbx;
+
+    scene.add(loadedFbx);
+
+    return fbx;
+  };
+
+  // Utilisation de Promise.all avec map et la nouvelle fonction loadFbxAsync
+  return Promise.all(fbxs.map(loadFbxAsync));
+}
+
+/**
+ * Charge un ou plusieurs fichiers FBX à partir de leur chemin d'accès
+ * @param fbxs Tableau d'objets FBX
+ * @param scene Scène dans laquelle charger les objets FBX
+ */
+export function loadFbxAsync(
+  fbxs: Fbx[],
+  scene: Scene
+): Promise<Awaited<Fbx>[]> {
   const fbxLoader: FBXLoader = new FBXLoader();
 
   return Promise.all(
     fbxs.map((fbx: Fbx) => {
       // Charge l'objet FBX à partir du chemin d'accès spécifié
-      return fbxLoader
-        .loadAsync(fbx.path)
-        .then((loadedFbx: Group): Fbx => {
-          // Applique une échelle et une position à l'objet chargé
-          loadedFbx.scale.set(0.001, 0.001, 0.001);
-          loadedFbx.position.set(
-            fbx.position.x,
-            fbx.position.y,
-            fbx.position.z
-          );
+      return fbxLoader.loadAsync(fbx.path).then((loadedFbx: Group): Fbx => {
+        // Applique une échelle et une position à l'objet chargé
+        loadedFbx.scale.set(0.001, 0.001, 0.001);
+        loadedFbx.position.set(fbx.position.x, fbx.position.y, fbx.position.z);
 
-          if (fbx.animation) {
-            fbx.mixer = new AnimationMixer(loadedFbx);
-            fbx.animationAction = [];
-            loadedFbx.animations.forEach((animation: AnimationClip): void => {
-              if (fbx.mixer) {
-                fbx.animationAction?.push(fbx.mixer.clipAction(animation));
-              } else {
-                throw new Error("fbx.mixer is undefined");
-              }
-            });
-          }
+        if (fbx.animation) {
+          fbx.mixer = new AnimationMixer(loadedFbx);
+          fbx.animationAction = [];
+          loadedFbx.animations.forEach((animation: AnimationClip): void => {
+            if (fbx.mixer) {
+              fbx.animationAction?.push(fbx.mixer.clipAction(animation));
+            } else {
+              throw new Error("fbx.mixer is undefined");
+            }
+          });
+        }
 
-          fbx.loadedFbx = loadedFbx;
+        fbx.loadedFbx = loadedFbx;
 
-          scene.add(fbx.loadedFbx);
+        scene.add(fbx.loadedFbx);
 
-          return fbx;
-        })
-        .catch((e) => e);
+        return fbx;
+      });
     })
   );
 }
@@ -79,7 +118,10 @@ export function loadFbx(fbxs: Fbx[], scene: Scene): Promise<Awaited<Fbx>[]> {
  * @param glbs Tableau d'objets GLB
  * @param scene Scène dans laquelle charger les objets GLB
  */
-export function loadGlb(glbs: Gltf[], scene: Scene): Promise<Awaited<Gltf>[]> {
+export function loadGlbAsync(
+  glbs: Gltf[],
+  scene: Scene
+): Promise<Awaited<Group>[]> {
   const gltfLoader: GLTFLoader = new GLTFLoader();
   const dLoader: DRACOLoader = new DRACOLoader();
 
@@ -90,21 +132,50 @@ export function loadGlb(glbs: Gltf[], scene: Scene): Promise<Awaited<Gltf>[]> {
 
   return Promise.all(
     glbs.map((gltf: Gltf) => {
-      return gltfLoader
-        .loadAsync(gltf.path)
-        .then((gltfLoaded: GLTF): Group => {
-          gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
-          gltfLoaded.scene.position.set(
-            gltf.position.x,
-            gltf.position.y,
-            gltf.position.z
-          );
+      return gltfLoader.loadAsync(gltf.path).then((gltfLoaded: GLTF): Group => {
+        gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
+        gltfLoaded.scene.position.set(
+          gltf.position.x,
+          gltf.position.y,
+          gltf.position.z
+        );
 
-          scene.add(gltfLoaded.scene);
+        scene.add(gltfLoaded.scene);
 
-          return gltfLoaded.scene;
-        })
-        .catch((e) => e);
+        return gltfLoaded.scene;
+      });
     })
   );
+}
+
+/**
+ * Charge un ou plusieurs fichiers GLB à partir de leur chemin d'accès
+ * @param glbs Tableau d'objets GLB
+ * @param scene Scène dans laquelle charger les objets GLB
+ */
+export async function loadGlb(glbs: Gltf[], scene: Scene): Promise<Group[]> {
+  const gltfLoader: GLTFLoader = new GLTFLoader();
+  const dLoader: DRACOLoader = new DRACOLoader();
+
+  dLoader.setDecoderPath("/draco/gltf/");
+  dLoader.preload();
+
+  gltfLoader.setDRACOLoader(dLoader);
+
+  const loadGlbAsync = async (gltf: Gltf): Promise<Group> => {
+    const gltfLoaded: GLTF = await gltfLoader.loadAsync(gltf.path);
+
+    gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
+    gltfLoaded.scene.position.set(
+      gltf.position.x,
+      gltf.position.y,
+      gltf.position.z
+    );
+
+    scene.add(gltfLoaded.scene);
+
+    return gltfLoaded.scene;
+  };
+
+  return Promise.all(glbs.map(loadGlbAsync));
 }
