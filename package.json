@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "dat.gui": "^0.7.9",
     "typescript": "^5.0.2",
     "vite": "^4.2.1",
     "vite-plugin-mkcert": "^1.14.0"
   },
   "dependencies": {
     "@types/three": "^0.150.0",
+    "gsap": "^3.11.5",
     "three": "^0.151.2"
   }
 }
