@@ -1,15 +1,26 @@
 import "./style.css";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
-  AmbientLight,
+  BoxGeometry,
   Clock,
-  Group,
+  Color,
+  DoubleSide,
+  Mesh,
+  MeshBasicMaterial,
   PerspectiveCamera,
+  PointLight,
   Scene,
-  Vector3,
   WebGLRenderer,
 } from "three";
-import { Fbx, Gltf, loadFbx, loadGlbAsync } from "./utils/utils";
+import {
+  createMaterialFromArrayImages,
+  Fbx,
+  Gltf,
+  loadFbx,
+  loadGlbAsync,
+} from "./utils/utils";
+import { fbxPromises } from "./fbx/fbx";
+import { glbPromises } from "./glb/glb";
 
 /**
  *
@@ -18,6 +29,7 @@ import { Fbx, Gltf, loadFbx, loadGlbAsync } from "./utils/utils";
  */
 
 const scene: Scene = new Scene();
+scene.background = new Color("grey");
 const camera: PerspectiveCamera = new PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
@@ -26,75 +38,59 @@ const camera: PerspectiveCamera = new PerspectiveCamera(
 );
 const renderer: WebGLRenderer = new WebGLRenderer({
   antialias: true, //  todo invert for performance
-  // powerPreference: "high-performance", todo reactivate for performance
+  // powerPreference: "high-performance", // todo reactivate for performance
 });
 const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
-const light: AmbientLight = new AmbientLight(0xfff); // soft white light
-
-let glbPromises: Gltf[] = [
-  {
-    path: "glb/robot.glb",
-    position: new Vector3(0, 0, -2),
-    rotation: new Vector3(0, 0, 0),
-  },
-  {
-    path: "glb/robot2.gltf",
-    position: new Vector3(0, 0, -4),
-    rotation: new Vector3(0, 0, 0),
-  },
-  {
-    path: "glb/robot2.glb",
-    position: new Vector3(0, 0, 2),
-    rotation: new Vector3(0, 0, 0),
-  },
-  {
-    path: "glb/just-robot.gltf",
-    position: new Vector3(0, 0, 1),
-    rotation: new Vector3(0, 0, 0),
-  },
-];
-
-let fbxPromises: Fbx[] = [
-  {
-    path: "fbx/abeille/beev2.fbx",
-    position: new Vector3(0, 2, 0),
-    rotation: new Vector3(0, 0, 0),
-    animation: true,
-    clock: new Clock(),
-    mixer: undefined,
-    loadedFbx: undefined,
-    animationAction: undefined,
-  },
-  {
-    path: "fbx/baleine/baleine-animation.fbx",
-    position: new Vector3(0, 0, 2),
-    rotation: new Vector3(0, 0, 0),
-    animation: true,
-    clock: new Clock(),
-    mixer: undefined,
-    loadedFbx: undefined,
-    animationAction: undefined,
-  },
-  {
-    path: "fbx/cygne/cygne-fbx.fbx",
-    position: new Vector3(0, 0, 10),
-    rotation: new Vector3(0, 0, 0),
-    animation: true,
-    clock: new Clock(),
-    mixer: undefined,
-    loadedFbx: undefined,
-    animationAction: undefined,
-  },
-];
+const light: PointLight = new PointLight("white", 20, 100); // soft white light
 
 let bee: Fbx | undefined;
 let whale: Fbx | undefined;
 let swan: Fbx | undefined;
 
-let robot1: Group | undefined;
-let robot2: Group | undefined;
-let robot3: Group | undefined;
-let robot4: Group | undefined;
+let robot1: Gltf | undefined;
+let robot2: Gltf | undefined;
+let robot3: Gltf | undefined;
+let robot4: Gltf | undefined;
+let lattive: Gltf | undefined;
+
+const clock = new Clock();
+const PERIOD = 0.75;
+
+const images = [
+  "animations/tornado/Calque_0000.png",
+  "animations/tornado/Calque_0001.png",
+  "animations/tornado/Calque_0002.png",
+  "animations/tornado/Calque_0003.png",
+  "animations/tornado/Calque_0004.png",
+  "animations/tornado/Calque_0005.png",
+  "animations/tornado/Calque_0006.png",
+  "animations/tornado/Calque_0007.png",
+  "animations/tornado/Calque_0008.png",
+  "animations/tornado/Calque_0009.png",
+  "animations/tornado/Calque_0010.png",
+  "animations/tornado/Calque_0011.png",
+  "animations/tornado/Calque_0012.png",
+  "animations/tornado/Calque_0013.png",
+  "animations/tornado/Calque_0014.png",
+  "animations/tornado/Calque_0015.png",
+  "animations/tornado/Calque_0016.png",
+  "animations/tornado/Calque_0017.png",
+  "animations/tornado/Calque_0018.png",
+  "animations/tornado/Calque_0019.png",
+];
+
+const textures = createMaterialFromArrayImages(images);
+const texturesLength = textures.length;
+
+const geometry = new BoxGeometry(5, 5, 5);
+const plane = new Mesh(
+  geometry,
+  new MeshBasicMaterial({
+    map: textures[4],
+    side: DoubleSide,
+    transparent: true,
+  })
+);
 
 /**
  *
@@ -117,7 +113,7 @@ async function init(): Promise<void> {
   swan = all[2];
 
   if (bee.animationAction) {
-    bee.animationAction[1].play();
+    bee.animationAction[0].play();
   } else {
     console.log("no animation : ", bee);
   }
@@ -129,7 +125,7 @@ async function init(): Promise<void> {
   }
 
   if (swan.animationAction) {
-    swan.animationAction[1].play();
+    swan.animationAction[0].play();
   } else {
     console.log("no animation : ", swan);
   }
@@ -137,7 +133,7 @@ async function init(): Promise<void> {
   /*
    * Load all glbs
    */
-  loadGlbAsync(glbPromises, scene).then((e: Group[]): void => {
+  loadGlbAsync(glbPromises, scene).then((e: Gltf[]): void => {
     robot1 = e[0];
     console.log(robot1);
 
@@ -150,14 +146,21 @@ async function init(): Promise<void> {
     robot4 = e[3];
     console.log(robot4);
 
-    // robot.animationAction?.play();
+    lattive = e[4];
+    if (lattive.animationAction) {
+      lattive.animationAction[0].play();
+    }
+
     console.log("chargement des glbs terminé");
   });
 
   // await loadGlbSecond(glbPromises, scene);
 
+  scene.add(plane);
+  plane.rotation.y = Math.PI;
+
   scene.add(light);
-  light.position.set(0, 12, 1);
+  light.position.set(0, 20, 0);
   camera.position.z = 5;
 }
 
@@ -174,41 +177,62 @@ function render(): void {
 }
 
 function animate(): void {
+  const elapsedTime = clock.getElapsedTime();
+
   if (whale && whale.loadedFbx) {
-    whale.mixer?.update(whale.clock.getDelta());
+    whale.mixer?.update(whale.clock.getDelta() * 4);
     // whale.loadedFbx.rotation.y += 0.01;
   }
 
   if (bee && bee.loadedFbx) {
-    bee.mixer?.update(bee.clock.getDelta());
-    bee.loadedFbx.rotation.y += 0.01;
+    bee.mixer?.update(bee.clock.getDelta() * 2);
+
+    let now = Date.now();
+
+    //add sinus movement
+    bee.loadedFbx.position.y = camera.position.y + Math.cos(now / 200);
+    bee.loadedFbx.position.z = camera.position.z + Math.sin(now / 200);
   } else {
     console.log("no bee");
   }
 
   if (swan && swan.loadedFbx) {
-    swan.mixer?.update(swan.clock.getDelta());
+    swan.mixer?.update(swan.clock.getDelta() * 4);
+    // swan.loadedFbx.lookAt(camera.position);
   } else {
     console.log("no swan");
   }
 
-  if (robot1 && robot2 && robot3 && robot4) {
-    robot1.rotation.x += 0.1;
-    robot1.rotation.y += 0.1;
-    robot1.rotation.z += 0.1;
+  if (
+    robot1?.loadedGltf &&
+    robot2?.loadedGltf &&
+    robot3?.loadedGltf &&
+    robot4?.loadedGltf && // robot
+    lattive?.loadedGltf
+  ) {
+    // make robot1 position varying with sinus
+    robot1.loadedGltf.position.y = Math.cos(Date.now() / 100);
+    robot1.loadedGltf.lookAt(camera.position);
 
-    robot2.rotation.x -= 0.1;
-    robot2.rotation.y -= 0.1;
-    robot2.rotation.z -= 0.1;
+    robot2.loadedGltf.rotation.x += 0.1;
+    robot2.loadedGltf.rotation.y += 0.1;
 
-    robot3.rotation.x += 0.2;
-    robot3.rotation.y += 0.1;
-    robot3.rotation.z += 0.2;
+    robot3.loadedGltf.rotation.x += 0.1;
+    robot3.loadedGltf.rotation.y += 0.1;
 
-    robot4.rotation.x -= 0.1;
-    robot4.rotation.y -= 0.3;
-    robot4.rotation.z -= 0.1;
+    robot4.loadedGltf.rotation.x -= 0.1;
+    robot4.loadedGltf.rotation.y -= 0.3;
+
+    lattive.mixer?.update(lattive.clock.getDelta());
   }
+
+  // plane.rotation.y -= 0.02;
+  // value between 0 and textures.length with elapsed time and Period
+  const index =
+    Math.floor((elapsedTime / PERIOD) * texturesLength) % texturesLength;
+  plane.material.map = textures[index];
+
+  plane.lookAt(camera.position);
 
   controls.update();
   render();

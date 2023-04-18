@@ -7,7 +7,9 @@ import {
   AnimationMixer,
   Clock,
   Group,
+  ImageLoader,
   Scene,
+  Texture,
   Vector3,
 } from "three";
 
@@ -25,10 +27,18 @@ export interface Fbx {
   animationAction: undefined | AnimationAction[];
 }
 
+/**
+ * Définition d'un objet GLTF
+ */
 export interface Gltf {
   path: string;
   position: Vector3;
   rotation: Vector3;
+  animation: boolean;
+  clock: Clock;
+  mixer: undefined | AnimationMixer;
+  loadedGltf: undefined | Group;
+  animationAction: undefined | AnimationAction[];
 }
 
 /**
@@ -121,18 +131,19 @@ export function loadFbxAsync(
 export function loadGlbAsync(
   glbs: Gltf[],
   scene: Scene
-): Promise<Awaited<Group>[]> {
+): Promise<Awaited<Gltf>[]> {
   const gltfLoader: GLTFLoader = new GLTFLoader();
   const dLoader: DRACOLoader = new DRACOLoader();
 
+  dLoader.setDecoderConfig({ type: "wasm" });
   dLoader.setDecoderPath("/draco/gltf/");
   dLoader.preload();
 
   gltfLoader.setDRACOLoader(dLoader);
 
   return Promise.all(
-    glbs.map((gltf: Gltf) => {
-      return gltfLoader.loadAsync(gltf.path).then((gltfLoaded: GLTF): Group => {
+    glbs.map(async (gltf: Gltf) => {
+      await gltfLoader.loadAsync(gltf.path).then((gltfLoaded: GLTF): Group => {
         gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
         gltfLoaded.scene.position.set(
           gltf.position.x,
@@ -140,10 +151,26 @@ export function loadGlbAsync(
           gltf.position.z
         );
 
+        // add animation
+        if (gltf.animation) {
+          gltf.mixer = new AnimationMixer(gltfLoaded.scene);
+          gltf.animationAction = [];
+          gltfLoaded.animations.forEach((animation: AnimationClip): void => {
+            if (gltf.mixer) {
+              gltf.animationAction?.push(gltf.mixer.clipAction(animation));
+            } else {
+              throw new Error("gltf.mixer is undefined");
+            }
+          });
+        }
+
+        gltf.loadedGltf = gltfLoaded.scene;
+
         scene.add(gltfLoaded.scene);
 
         return gltfLoaded.scene;
       });
+      return gltf;
     })
   );
 }
@@ -153,7 +180,7 @@ export function loadGlbAsync(
  * @param glbs Tableau d'objets GLB
  * @param scene Scène dans laquelle charger les objets GLB
  */
-export async function loadGlb(glbs: Gltf[], scene: Scene): Promise<Group[]> {
+export async function loadGlb(glbs: Gltf[], scene: Scene): Promise<Gltf[]> {
   const gltfLoader: GLTFLoader = new GLTFLoader();
   const dLoader: DRACOLoader = new DRACOLoader();
 
@@ -162,7 +189,7 @@ export async function loadGlb(glbs: Gltf[], scene: Scene): Promise<Group[]> {
 
   gltfLoader.setDRACOLoader(dLoader);
 
-  const loadGlbAsync = async (gltf: Gltf): Promise<Group> => {
+  const loadGlbAsync = async (gltf: Gltf): Promise<Gltf> => {
     const gltfLoaded: GLTF = await gltfLoader.loadAsync(gltf.path);
 
     gltfLoaded.scene.scale.set(0.1, 0.1, 0.1);
@@ -172,10 +199,38 @@ export async function loadGlb(glbs: Gltf[], scene: Scene): Promise<Group[]> {
       gltf.position.z
     );
 
+    // add animation
+    if (gltf.animation) {
+      gltf.mixer = new AnimationMixer(gltfLoaded.scene);
+      gltf.animationAction = [];
+      gltfLoaded.animations.forEach((animation: AnimationClip): void => {
+        if (gltf.mixer) {
+          gltf.animationAction?.push(gltf.mixer.clipAction(animation));
+        } else {
+          throw new Error("gltf.mixer is undefined");
+        }
+      });
+    }
+
     scene.add(gltfLoaded.scene);
 
-    return gltfLoaded.scene;
+    gltf.loadedGltf = gltfLoaded.scene;
+
+    return gltf;
   };
 
   return Promise.all(glbs.map(loadGlbAsync));
+}
+
+export function createMaterialFromArrayImages(images: string[]): Texture[] {
+  const loader = new ImageLoader();
+
+  return images.map((image: string) => {
+    const texture = new Texture();
+    loader.load(image, (image: HTMLImageElement) => {
+      texture.image = image;
+      texture.needsUpdate = true;
+    });
+    return texture;
+  });
 }
