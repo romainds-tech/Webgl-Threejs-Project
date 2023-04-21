@@ -1,7 +1,6 @@
 import "./style.css";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
-  BoxGeometry,
   Clock,
   Color,
   DoubleSide,
@@ -10,6 +9,7 @@ import {
   PerspectiveCamera,
   PointLight,
   Scene,
+  SphereGeometry,
   WebGLRenderer,
 } from "three";
 import {
@@ -21,6 +21,7 @@ import {
 } from "./utils/utils";
 import { fbxPromises } from "./fbx/fbx";
 import { glbPromises } from "./glb/glb";
+import { griffes } from "./animations/animations";
 
 /**
  *
@@ -36,10 +37,12 @@ const camera: PerspectiveCamera = new PerspectiveCamera(
   0.1,
   1000
 );
+
 const renderer: WebGLRenderer = new WebGLRenderer({
   antialias: true, //  todo invert for performance
   // powerPreference: "high-performance", // todo reactivate for performance
 });
+
 const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
 const light: PointLight = new PointLight("white", 20, 100); // soft white light
 
@@ -54,35 +57,12 @@ let robot4: Gltf | undefined;
 let lattive: Gltf | undefined;
 
 const clock = new Clock();
-const PERIOD = 0.75;
-
-const images = [
-  "animations/tornado/Calque_0000.png",
-  "animations/tornado/Calque_0001.png",
-  "animations/tornado/Calque_0002.png",
-  "animations/tornado/Calque_0003.png",
-  "animations/tornado/Calque_0004.png",
-  "animations/tornado/Calque_0005.png",
-  "animations/tornado/Calque_0006.png",
-  "animations/tornado/Calque_0007.png",
-  "animations/tornado/Calque_0008.png",
-  "animations/tornado/Calque_0009.png",
-  "animations/tornado/Calque_0010.png",
-  "animations/tornado/Calque_0011.png",
-  "animations/tornado/Calque_0012.png",
-  "animations/tornado/Calque_0013.png",
-  "animations/tornado/Calque_0014.png",
-  "animations/tornado/Calque_0015.png",
-  "animations/tornado/Calque_0016.png",
-  "animations/tornado/Calque_0017.png",
-  "animations/tornado/Calque_0018.png",
-  "animations/tornado/Calque_0019.png",
-];
-
-const textures = createMaterialFromArrayImages(images);
+const PERIOD = 1;
+const textures = createMaterialFromArrayImages(griffes);
 const texturesLength = textures.length;
 
-const geometry = new BoxGeometry(5, 5, 5);
+const geometry = new SphereGeometry(5, 32, 32);
+
 const plane = new Mesh(
   geometry,
   new MeshBasicMaterial({
@@ -157,6 +137,7 @@ async function init(): Promise<void> {
   // await loadGlbSecond(glbPromises, scene);
 
   scene.add(plane);
+
   plane.rotation.y = Math.PI;
 
   scene.add(light);
@@ -232,7 +213,7 @@ function animate(): void {
     Math.floor((elapsedTime / PERIOD) * texturesLength) % texturesLength;
   plane.material.map = textures[index];
 
-  plane.lookAt(camera.position);
+  // plane.lookAt(camera.position);
 
   controls.update();
   render();
