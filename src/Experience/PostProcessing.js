@@ -3,6 +3,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import Experience from "./Experience.js";
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 import * as THREE from 'three'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { TintShader, DisplacementShader } from "./Shaders/PostProcessingShader.js";
 
 
 export default class PostProcessing
@@ -57,11 +59,30 @@ export default class PostProcessing
         glitchPass.enabled = false
         this.instance.addPass(glitchPass)
 
+        const displacementPass = new ShaderPass(DisplacementShader)
+        displacementPass.material.uniforms.uTime.value = 0
+        displacementPass.material.uniforms.uNormalMap.value = this.resources.loaders.textureLoader.load('/textures/interfaceNormalMap.png')
+        this.instance.addPass(displacementPass)
+
+        const tintPass = new ShaderPass(TintShader)
+        tintPass.material.uniforms.uTint.value = new THREE.Vector3()
+        this.instance.addPass(tintPass)
+
         if(this.debug.active)
         {
             this.glitchFolder = this.debugFolder.addFolder('Glitch')
             this.glitchFolder.add(glitchPass, 'enabled').name("Enabled")
             this.glitchFolder.add(glitchPass, 'goWild').name("Go wild")
+
+            this.tintFolder = this.debugFolder.addFolder('Interface')
+            this.tintFolder.add(tintPass.material.uniforms.uTint.value, 'x').min(- 1).max(1).step(0.001).name('red')
+            this.tintFolder.add(tintPass.material.uniforms.uTint.value, 'y').min(- 1).max(1).step(0.001).name('green')
+            this.tintFolder.add(tintPass.material.uniforms.uTint.value, 'y').min(- 1).max(1).step(0.001).name('blue')
+
+            this.interfaceFolder = this.debugFolder.addFolder('Interface')
+            this.interfaceFolder.add(displacementPass, 'enabled').name("Enabled")
+            this.interfaceFolder.add(displacementPass.material.uniforms.uXColor, 'value').min(- 1).max(1).step(0.01).name('Interior')
+
         }
     }
 
