@@ -9,6 +9,7 @@ import World from './World/World.js'
 import Resources from './Utils/Resources.js'
 import Monitoring from "./Utils/Monitoring.js";
 import sources from './sources.js'
+import PostProcessing from "./PostProcessing.js";
 
 let instance = null
 
@@ -39,6 +40,7 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
+        this.postProcessing = new PostProcessing()
 
         // Resize event
         this.sizes.on('resize', () =>
@@ -66,6 +68,7 @@ export default class Experience
         this.camera.update()
         this.world.update()
         this.renderer.update()
+        this.postProcessing.update()
 
         this.monitoring.endMonitoring()
     }

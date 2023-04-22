@@ -31,5 +31,10 @@ export default [
         name: 'robot1',
         type: 'dracoModel',
         path: 'glb/just-robot.gltf'
+    },
+    {
+        name: 'whale',
+        type: 'fbxModel',
+        path: 'fbx/baleine/baleine-animation.fbx'
     }
 ]

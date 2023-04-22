@@ -1,9 +1,9 @@
-import * as THREE from 'three'
-import Experience from '../Experience.js'
+import * as THREE from "three"
+import Experience from "../Experience.js";
 
-export default class Robot
+export default class Whale
 {
-    constructor(name)
+    constructor()
     {
         this.experience = new Experience()
         this.scene = this.experience.scene
@@ -14,20 +14,21 @@ export default class Robot
         // Debug
         if(this.debug.active)
         {
-            this.debugFolder = this.debug.ui.addFolder('robot')
+            this.debugFolder = this.debug.ui.addFolder('whale')
         }
 
         // Resource
-        this.resource = this.resources.items[name]
+        this.resource = this.resources.items.whale
 
         this.setModel()
     }
+
     setModel()
     {
         console.log(this.resource)
-        this.model = this.resource.scene
-        this.model.scale.set(0.1, 0.1, 0.1)
-        this.model.position.set(1, 0, 0)
+        this.model = this.resource
+        this.model.scale.set(1, 1, 1)
+        this.model.position.set(-1, 0, 0)
         this.scene.add(this.model)
 
         this.model.traverse((child) =>
@@ -41,6 +42,6 @@ export default class Robot
 
     update()
     {
-        // this.animation.mixer.update(this.time.delta * 0.001)
+        //this.animation.mixer.update(this.time.delta * 0.001)
     }
 }

@@ -3,6 +3,7 @@ import Environment from './Environment.js'
 import Floor from './Floor.js'
 import Fox from './Fox.js'
 import Robot from './Robot.js'
+import Whale from "./Whale.js";
 
 export default class World
 {
@@ -19,6 +20,7 @@ export default class World
             this.floor = new Floor()
             this.fox = new Fox()
             this.robot = new Robot("robot1")
+            this.whale = new Whale()
             this.environment = new Environment()
         })
     }
@@ -29,5 +31,7 @@ export default class World
             this.fox.update()
         if(this.robot)
             this.robot.update()
+        if(this.whale)
+            this.whale.update()
     }
 }

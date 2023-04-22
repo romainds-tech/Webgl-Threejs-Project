@@ -5,6 +5,7 @@ import {DRACOLoader} from "three/addons/loaders/DRACOLoader.js";
 import { overlayMaterial } from "../Shaders/OverlayShaders.js";
 import { gsap } from "gsap";
 import Experience from "../Experience.js";
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
 
 export default class Resources extends EventEmitter
 {
@@ -56,6 +57,7 @@ export default class Resources extends EventEmitter
         this.loaders = {}
         this.loaders.gltfLoader = new GLTFLoader(loadingManager)
         this.loaders.dracoLoader = new DRACOLoader()
+        this.loaders.fbxLoader = new FBXLoader()
         this.loaders.textureLoader = new THREE.TextureLoader()
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader()
     }
@@ -68,6 +70,16 @@ export default class Resources extends EventEmitter
             if(source.type === 'gltfModel')
             {
                 this.loaders.gltfLoader.load(
+                    source.path,
+                    (file) =>
+                    {
+                        this.sourceLoaded(source, file)
+                    }
+                )
+            }
+            else if(source.type === 'fbxModel')
+            {
+                this.loaders.fbxLoader.load(
                     source.path,
                     (file) =>
                     {
