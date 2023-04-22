@@ -59,14 +59,15 @@ export default class PostProcessing
         glitchPass.enabled = false
         this.instance.addPass(glitchPass)
 
-        const displacementPass = new ShaderPass(DisplacementShader)
-        displacementPass.material.uniforms.uTime.value = 0
-        displacementPass.material.uniforms.uNormalMap.value = this.resources.loaders.textureLoader.load('/textures/interfaceNormalMap.png')
-        this.instance.addPass(displacementPass)
-
         const tintPass = new ShaderPass(TintShader)
         tintPass.material.uniforms.uTint.value = new THREE.Vector3()
         this.instance.addPass(tintPass)
+
+        const displacementPass = new ShaderPass(DisplacementShader)
+        displacementPass.material.uniforms.uTime.value = 0
+        displacementPass.material.uniforms.uNormalMap.value = this.resources.loaders.textureLoader.load('/textures/interfaceNormalMap.png')
+        displacementPass.enabled = false
+        this.instance.addPass(displacementPass)
 
         if(this.debug.active)
         {

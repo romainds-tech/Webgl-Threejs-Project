@@ -10,6 +10,7 @@ import Resources from './Utils/Resources.js'
 import Monitoring from "./Utils/Monitoring.js";
 import sources from './sources.js'
 import PostProcessing from "./PostProcessing.js";
+import HTMLPoint from "./HTMLInterface/HTMLPoint.js";
 
 let instance = null
 
@@ -40,6 +41,7 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
+        this.htmlPoint = new HTMLPoint()
         this.postProcessing = new PostProcessing()
 
         // Resize event
@@ -68,6 +70,7 @@ export default class Experience
         this.camera.update()
         this.world.update()
         this.renderer.update()
+        this.htmlPoint.update()
         this.postProcessing.update()
 
         this.monitoring.endMonitoring()
