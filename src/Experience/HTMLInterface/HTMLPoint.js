@@ -19,7 +19,7 @@ export default class HTMLPoint {
                 element: document.querySelector('.point-1')
             },
             {
-                position: new THREE.Vector3(-1.6, 1.3, - 0.7),
+                position: new THREE.Vector3(-1, 0.5, - 0.7),
                 element: document.querySelector('.point-2')
             },
             {

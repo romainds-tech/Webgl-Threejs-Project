@@ -8,6 +8,7 @@ export default class Robot
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.resources = this.experience.resources
+        this.camera = this.experience.camera
         this.time = this.experience.time
         this.debug = this.experience.debug
 
@@ -24,8 +25,8 @@ export default class Robot
     }
     setModel()
     {
-        console.log(this.resource)
         this.model = this.resource.scene
+        this.model.lookAt(this.camera.instance.position)
         this.model.scale.set(0.1, 0.1, 0.1)
         this.model.position.set(1, 0, 0)
         this.scene.add(this.model)
@@ -39,8 +40,7 @@ export default class Robot
         })
     }
 
-    update()
-    {
-        // this.animation.mixer.update(this.time.delta * 0.001)
+    update() {
+        this.model.lookAt(this.camera.instance.position)
     }
 }

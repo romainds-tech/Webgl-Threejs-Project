@@ -21,14 +21,14 @@ export default class Whale
         this.resource = this.resources.items.whale
 
         this.setModel()
+        this.setAnimation()
     }
 
     setModel()
     {
-        console.log(this.resource)
         this.model = this.resource
-        this.model.scale.set(1, 1, 1)
-        this.model.position.set(-1, 0, 0)
+        this.model.scale.set(0.001, 0.001, 0.001)
+        this.model.position.set(1, 2, 0)
         this.scene.add(this.model)
 
         this.model.traverse((child) =>
@@ -40,8 +40,45 @@ export default class Whale
         })
     }
 
+    setAnimation()
+    {
+        this.animation = {}
+
+        // Mixer
+        this.animation.mixer = new THREE.AnimationMixer(this.model)
+
+        // Actions
+        this.animation.actions = {}
+
+        this.animation.actions.swim = this.animation.mixer.clipAction(this.resource.animations[0])
+
+        this.animation.actions.current = this.animation.actions.swim
+        this.animation.actions.current.play()
+
+        // Play the action
+        this.animation.play = (name) =>
+        {
+            const newAction = this.animation.actions[name]
+            const oldAction = this.animation.actions.current
+
+            newAction.reset()
+            newAction.play()
+            newAction.crossFadeFrom(oldAction, 1)
+
+            this.animation.actions.current = newAction
+        }
+
+        // Debug
+        if(this.debug.active)
+        {
+            const debugObject = {
+                playSwim: () => { this.animation.play('swim') },
+            }
+            this.debugFolder.add(debugObject, 'playSwim')
+        }
+    }
     update()
     {
-        //this.animation.mixer.update(this.time.delta * 0.001)
+        this.animation.mixer.update(this.time.delta * 0.001)
     }
 }

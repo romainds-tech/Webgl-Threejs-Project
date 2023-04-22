@@ -6,6 +6,7 @@ import { overlayMaterial } from "../Shaders/OverlayShaders.js";
 import { gsap } from "gsap";
 import Experience from "../Experience.js";
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
+import {Texture} from "three";
 
 export default class Resources extends EventEmitter
 {
@@ -59,6 +60,7 @@ export default class Resources extends EventEmitter
         this.loaders.dracoLoader = new DRACOLoader()
         this.loaders.fbxLoader = new FBXLoader()
         this.loaders.textureLoader = new THREE.TextureLoader()
+        this.loaders.imageLoader = new THREE.ImageLoader()
         this.loaders.cubeTextureLoader = new THREE.CubeTextureLoader()
     }
 
@@ -86,6 +88,18 @@ export default class Resources extends EventEmitter
                         this.sourceLoaded(source, file)
                     }
                 )
+            }
+            else if(source.type === 'imageModel')
+            {
+                const images = source.path.map((image) => {
+                    const texture = new Texture();
+                    this.loaders.imageLoader.load(image, (image) => {
+                        texture.image = image;
+                        texture.needsUpdate = true;
+                    });
+                    return texture;
+                });
+                this.sourceLoaded(source, images)
             }
             else if(source.type === 'dracoModel')
             {
