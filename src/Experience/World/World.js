@@ -36,7 +36,7 @@ export default class World
             this.whale.update()
         if(this.robot)
             this.robot.update()
-        // if(this.griffe)
-        //     this.griffe.update()
+        if(this.griffe)
+            this.griffe.update()
     }
 }

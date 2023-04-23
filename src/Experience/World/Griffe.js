@@ -9,9 +9,9 @@ export default class Griffe
         this.experience = new Experience()
         this.scene = this.experience.scene
         this.resources = this.experience.resources
+        this.camera = this.experience.camera
         this.time = this.experience.time
         this.debug = this.experience.debug
-        this.clock = new THREE.Clock()
 
         // Debug
         if(this.debug.active)
@@ -28,15 +28,20 @@ export default class Griffe
         this.textures = this.resource
         this.texturesLength = this.resource.length;
 
-        const geometry = new SphereGeometry(5, 32, 32);
-        const material = new THREE.MeshBasicMaterial({
-            map: this.textures[12], transparent: true,  side: THREE.DoubleSide
+        const geometry = new THREE.PlaneGeometry( 2, 2 );
+        // const geometry = new THREE.SphereGeometry(2, 32, 32);
+
+        this.material = new THREE.MeshBasicMaterial({
+            map: this.textures[4], transparent: true,  side: THREE.DoubleSide
         })
         this.plane = new THREE.Mesh(
             geometry,
-            material
+            this.material
         );
-        this.plane.position.set(2, 1, 0)
+        this.plane.position.set(4, 1, 0)
+        this.plane.rotation.set(90, 0, 0)
+
+
 
         this.scene.add(this.plane);
         this.plane.rotation.y = Math.PI;
@@ -44,13 +49,10 @@ export default class Griffe
 
     update()
     {
-
+        this.plane.lookAt(this.camera.instance.position)
         const index =
-            Math.floor((this.clock.getElapsedTime() / 1) * this.texturesLength) % this.texturesLength;
+            Math.floor((this.time.elapsed * 0.001 ) * this.texturesLength) % this.texturesLength;
         this.plane.material.map = this.resource[index];
-
-
-        //this.plane.
 
     }
 }
