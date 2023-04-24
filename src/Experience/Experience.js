@@ -41,7 +41,6 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
-        this.htmlPoint = new HTMLPoint()
         this.postProcessing = new PostProcessing()
 
         // Resize event
@@ -70,7 +69,7 @@ export default class Experience
         this.camera.update()
         this.world.update()
         this.renderer.update()
-        this.htmlPoint.update()
+
         this.postProcessing.update()
 
         this.monitoring.endMonitoring()

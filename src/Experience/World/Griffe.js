@@ -25,23 +25,19 @@ export default class Griffe
     }
     setModel()
     {
-        this.textures = this.resource
         this.texturesLength = this.resource.length;
 
-        const geometry = new THREE.PlaneGeometry( 2, 2 );
-        // const geometry = new THREE.SphereGeometry(2, 32, 32);
+        // const geometry = new THREE.PlaneGeometry( 2, 2 );
+        const geometry = new THREE.SphereGeometry(2);
 
         this.material = new THREE.MeshBasicMaterial({
-            map: this.textures[4], transparent: true,  side: THREE.DoubleSide
+            map: this.resource[4], transparent: true,  side: THREE.DoubleSide
         })
         this.plane = new THREE.Mesh(
             geometry,
             this.material
         );
         this.plane.position.set(4, 1, 0)
-        this.plane.rotation.set(90, 0, 0)
-
-
 
         this.scene.add(this.plane);
         this.plane.rotation.y = Math.PI;
@@ -49,7 +45,6 @@ export default class Griffe
 
     update()
     {
-        this.plane.lookAt(this.camera.instance.position)
         const index =
             Math.floor((this.time.elapsed * 0.001 ) * this.texturesLength) % this.texturesLength;
         this.plane.material.map = this.resource[index];

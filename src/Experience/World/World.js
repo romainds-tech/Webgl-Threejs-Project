@@ -5,6 +5,7 @@ import Fox from './Fox.js'
 import Robot from './Robot.js'
 import Whale from "./Whale.js";
 import Griffe from "./Griffe.js";
+import HTMLPoint from "../HTMLInterface/HTMLPoint.js";
 
 export default class World
 {
@@ -22,8 +23,9 @@ export default class World
             this.fox = new Fox()
             this.robot = new Robot("robot1")
             this.whale = new Whale()
-
             this.griffe = new Griffe()
+            this.htmlPoint = new HTMLPoint()
+
             this.environment = new Environment()
         })
     }
@@ -38,5 +40,7 @@ export default class World
             this.robot.update()
         if(this.griffe)
             this.griffe.update()
+        if(this.htmlPoint)
+            this.htmlPoint.update()
     }
 }
