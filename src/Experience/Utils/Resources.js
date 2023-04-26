@@ -45,19 +45,23 @@ export default class Resources extends EventEmitter
                 {
                     gsap.to(overlayMaterial.uniforms.uAlpha, { duration: 3, value: 0, delay: 1 })
 
+
                     loadingBarElement.classList.add('ended')
                     loadingBarElement.style.transform = ''
                 }, 500)
+
             },
             (itemUrl, itemsLoaded, itemsTotal) =>
             {
                 const progressRatio = itemsLoaded / itemsTotal
                 loadingBarElement.style.transform = `scaleX(${progressRatio})`
             }
+
         )
 
         this.loaders = {}
         this.loaders.gltfLoader = new GLTFLoader(loadingManager)
+        // this.loaders.gltfLoader = new GLTFLoader()
         this.loaders.dracoLoader = new DRACOLoader()
         this.loaders.fbxLoader = new FBXLoader()
         this.loaders.textureLoader = new THREE.TextureLoader()

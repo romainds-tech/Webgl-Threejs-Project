@@ -2,6 +2,7 @@ import * as THREE from 'three'
 
 export const overlayMaterial = new THREE.ShaderMaterial({
     transparent: true,
+    depthWrite: false,
     uniforms:
         {
             uAlpha: { value: 1 }

@@ -10,6 +10,12 @@ export default class Camera
         this.sizes = this.experience.sizes
         this.scene = this.experience.scene
         this.canvas = this.experience.canvas
+        this.debug = this.experience.debug
+        // Debug
+        if(this.debug.active)
+        {
+            this.debugFolder = this.debug.ui.addFolder('Controls')
+        }
 
         this.setInstance()
         this.setControls()
@@ -26,6 +32,13 @@ export default class Camera
     {
         this.controls = new OrbitControls(this.instance, this.canvas)
         this.controls.enableDamping = true
+
+        // Debug
+        if(this.debug.active)
+        {
+            this.orbitControls = this.debugFolder.addFolder('Orbit Controls')
+            this.orbitControls.add(this.controls, 'enabled').name("Enabled")
+        }
     }
 
     resize()
