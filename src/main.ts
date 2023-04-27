@@ -1,41 +1,18 @@
 import "./style.css";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import {
-  Clock,
-  Color,
-  DoubleSide,
-  Mesh,
-  MeshBasicMaterial,
-  PerspectiveCamera,
-  PointLight,
-  Scene,
-  SphereGeometry,
-  WebGLRenderer,
-} from "three";
-import {
-  createMaterialFromArrayImages,
-  Fbx,
-  Gltf,
-  loadFbx,
-  loadGlbAsync,
-} from "./utils/utils";
-import { fbxPromises } from "./fbx/fbx";
-import { glbPromises } from "./glb/glb";
-import { griffes } from "./animations/animations";
+import { Experience } from "./Experience/Experience";
 
-/**
- *
- * Define all constantes and variables
- *
- */
+// const experience =
+Experience.getInstance();
+
+/*
 
 const scene: Scene = new Scene();
 scene.background = new Color("grey");
 const camera: PerspectiveCamera = new PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
 );
 
 const renderer: WebGLRenderer = new WebGLRenderer({
@@ -46,15 +23,15 @@ const renderer: WebGLRenderer = new WebGLRenderer({
 const controls: OrbitControls = new OrbitControls(camera, renderer.domElement);
 const light: PointLight = new PointLight("white", 20, 100); // soft white light
 
-let bee: Fbx | undefined;
-let whale: Fbx | undefined;
-let swan: Fbx | undefined;
+let bee: IModel3D | undefined;
+let whale: IModel3D | undefined;
+let swan: IModel3D | undefined;
 
-let robot1: Gltf | undefined;
-let robot2: Gltf | undefined;
-let robot3: Gltf | undefined;
-let robot4: Gltf | undefined;
-let lattive: Gltf | undefined;
+let robot1: IModel3D | undefined;
+let robot2: IModel3D | undefined;
+let robot3: IModel3D | undefined;
+let robot4: IModel3D | undefined;
+let lattive: IModel3D | undefined;
 
 const clock = new Clock();
 const PERIOD = 1;
@@ -64,29 +41,21 @@ const texturesLength = textures.length;
 const geometry = new SphereGeometry(5, 32, 32);
 
 const plane = new Mesh(
-  geometry,
-  new MeshBasicMaterial({
-    map: textures[4],
-    side: DoubleSide,
-    transparent: true,
-  })
+    geometry,
+    new MeshBasicMaterial({
+      map: textures[4],
+      side: DoubleSide,
+      transparent: true,
+    })
 );
-
-/**
- *
- * End of constantes and variables definition
- *
- */
 
 async function init(): Promise<void> {
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
   window.addEventListener("resize", onWindowResize, false);
 
-  /*
-   * Load all fbxs
-   */
-  let all: Fbx[] = await loadFbx(fbxPromises, scene);
+
+  let all: IModel3D[] = await loadFbx(fbxPromises, scene);
 
   bee = all[0];
   whale = all[1];
@@ -110,10 +79,7 @@ async function init(): Promise<void> {
     console.log("no animation : ", swan);
   }
 
-  /*
-   * Load all glbs
-   */
-  loadGlbAsync(glbPromises, scene).then((e: Gltf[]): void => {
+  loadGlbAsync(glbPromises, scene).then((e: IModel3D[]): void => {
     robot1 = e[0];
     console.log(robot1);
 
@@ -160,24 +126,24 @@ function render(): void {
 function animate(): void {
   const elapsedTime = clock.getElapsedTime();
 
-  if (whale && whale.loadedFbx) {
+  if (whale && whale.loadedModel3D) {
     whale.mixer?.update(whale.clock.getDelta() * 4);
     // whale.loadedFbx.rotation.y += 0.01;
   }
 
-  if (bee && bee.loadedFbx) {
+  if (bee && bee.loadedModel3D) {
     bee.mixer?.update(bee.clock.getDelta() * 2);
 
     let now = Date.now();
 
     //add sinus movement
-    bee.loadedFbx.position.y = camera.position.y + Math.cos(now / 200);
-    bee.loadedFbx.position.z = camera.position.z + Math.sin(now / 200);
+    bee.loadedModel3D.position.y = camera.position.y + Math.cos(now / 200);
+    bee.loadedModel3D.position.z = camera.position.z + Math.sin(now / 200);
   } else {
     console.log("no bee");
   }
 
-  if (swan && swan.loadedFbx) {
+  if (swan && swan.loadedModel3D) {
     swan.mixer?.update(swan.clock.getDelta() * 4);
     // swan.loadedFbx.lookAt(camera.position);
   } else {
@@ -185,24 +151,24 @@ function animate(): void {
   }
 
   if (
-    robot1?.loadedGltf &&
-    robot2?.loadedGltf &&
-    robot3?.loadedGltf &&
-    robot4?.loadedGltf && // robot
-    lattive?.loadedGltf
+      robot1?.loadedModel3D &&
+      robot2?.loadedModel3D &&
+      robot3?.loadedModel3D &&
+      robot4?.loadedModel3D && // robot
+      lattive?.loadedModel3D
   ) {
     // make robot1 position varying with sinus
-    robot1.loadedGltf.position.y = Math.cos(Date.now() / 100);
-    robot1.loadedGltf.lookAt(camera.position);
+    robot1.loadedModel3D.position.y = Math.cos(Date.now() / 100);
+    robot1.loadedModel3D.lookAt(camera.position);
 
-    robot2.loadedGltf.rotation.x += 0.1;
-    robot2.loadedGltf.rotation.y += 0.1;
+    robot2.loadedModel3D.rotation.x += 0.1;
+    robot2.loadedModel3D.rotation.y += 0.1;
 
-    robot3.loadedGltf.rotation.x += 0.1;
-    robot3.loadedGltf.rotation.y += 0.1;
+    robot3.loadedModel3D.rotation.x += 0.1;
+    robot3.loadedModel3D.rotation.y += 0.1;
 
-    robot4.loadedGltf.rotation.x -= 0.1;
-    robot4.loadedGltf.rotation.y -= 0.3;
+    robot4.loadedModel3D.rotation.x -= 0.1;
+    robot4.loadedModel3D.rotation.y -= 0.3;
 
     lattive.mixer?.update(lattive.clock.getDelta());
   }
@@ -210,7 +176,7 @@ function animate(): void {
   // plane.rotation.y -= 0.02;
   // value between 0 and textures.length with elapsed time and Period
   const index =
-    Math.floor((elapsedTime / PERIOD) * texturesLength) % texturesLength;
+      Math.floor((elapsedTime / PERIOD) * texturesLength) % texturesLength;
   plane.material.map = textures[index];
 
   // plane.lookAt(camera.position);
@@ -223,3 +189,5 @@ function animate(): void {
 init().then((): void => {
   animate();
 });
+
+ */
