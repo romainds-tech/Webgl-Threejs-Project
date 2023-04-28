@@ -2,6 +2,15 @@ import { Clock, Vector3 } from "three";
 import Model3D, { Model3DType } from "../../Experience/utils/Model3d";
 
 export const allGlbs = {
+  CubeVertexGroup: new Model3D({
+    path: "glb/cube_vertex.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.1,
+    animation: true,
+    clock: new Clock(),
+  }),
   Robot: new Model3D({
     path: "glb/robot.glb",
     type: Model3DType.GLB,

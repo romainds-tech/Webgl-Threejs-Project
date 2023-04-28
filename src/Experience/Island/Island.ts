@@ -6,28 +6,21 @@ import Model3D from "../utils/Model3d";
 
 export default class Island {
   public experience: Experience;
-  public customGlbLoader: CustomGlbLoader;
   public scene: Scene;
   public glbRobot?: Promise<Model3D>;
+  public glbCubeVertex?: Promise<Model3D>;
   public sunLight?: Light;
 
   constructor() {
     this.experience = Experience.getInstance();
-    this.customGlbLoader = CustomGlbLoader.getInstance();
     this.scene = this.experience.scene;
 
-    this.glbRobot = this.loadModelIsland();
+    this.glbRobot = CustomGlbLoader.getInstance().loadOne(allGlbs.JustRobot);
+    this.glbCubeVertex = CustomGlbLoader.getInstance().loadOne(
+      allGlbs.CubeVertexGroup
+    );
     this.sunLight = new DirectionalLight("#ffffff", 4);
     this.loadLightIsland();
-  }
-
-  loadModelIsland() {
-    return Promise.resolve(
-      this.customGlbLoader.loadOne(allGlbs.JustRobot).then((robot) => {
-        this.scene.add(robot.loadedModel3D!);
-        return robot;
-      })
-    );
   }
 
   loadLightIsland() {
