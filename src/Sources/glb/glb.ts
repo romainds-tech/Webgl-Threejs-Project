@@ -1,8 +1,8 @@
 import { Clock, Vector3 } from "three";
 import Model3D, { Model3DType } from "../../Experience/utils/Model3d";
 
-export const glbPromises: Model3D[] = [
-  new Model3D({
+export const allGlbs = {
+  Robot: new Model3D({
     path: "glb/robot.glb",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, -2),
@@ -11,7 +11,8 @@ export const glbPromises: Model3D[] = [
     animation: true,
     clock: new Clock(),
   }),
-  new Model3D({
+
+  Robot2Gltf: new Model3D({
     path: "glb/robot2.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, -4),
@@ -20,7 +21,8 @@ export const glbPromises: Model3D[] = [
     animation: true,
     clock: new Clock(),
   }),
-  new Model3D({
+
+  Robot2Glb: new Model3D({
     path: "glb/robot2.glb",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 2),
@@ -29,7 +31,8 @@ export const glbPromises: Model3D[] = [
     animation: true,
     clock: new Clock(),
   }),
-  new Model3D({
+
+  JustRobot: new Model3D({
     path: "glb/just-robot.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 1),
@@ -37,19 +40,9 @@ export const glbPromises: Model3D[] = [
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }) /*,
-  {
-    path: "glb/robot_rig_export.gltf",
-    position: new Vector3(0, 0, 3),
-    rotation: new Vector3(0, 0, 0),
-    animation: true,
-    clock: new Clock(),
-    mixer: undefined,
-    loadedGltf: undefined,
-    animationAction: undefined,
-  },
-  */,
-  new Model3D({
+  }),
+
+  Lattive: new Model3D({
     path: "glb/lattive_test.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 3, 1),
@@ -58,4 +51,4 @@ export const glbPromises: Model3D[] = [
     animation: true,
     clock: new Clock(),
   }),
-];
+};
