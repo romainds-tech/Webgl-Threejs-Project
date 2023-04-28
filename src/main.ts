@@ -5,7 +5,6 @@ import { Experience } from "./Experience/Experience";
 Experience.getInstance();
 
 /*
-
 const scene: Scene = new Scene();
 scene.background = new Color("grey");
 const camera: PerspectiveCamera = new PerspectiveCamera(
