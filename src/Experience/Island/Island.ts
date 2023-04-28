@@ -8,7 +8,6 @@ export default class Island {
   public experience: Experience;
   public scene: Scene;
   public glbRobot?: Promise<Model3D>;
-  public glbCubeVertex?: Promise<Model3D>;
   public sunLight?: Light;
 
   constructor() {
@@ -16,9 +15,7 @@ export default class Island {
     this.scene = this.experience.scene;
 
     this.glbRobot = CustomGlbLoader.getInstance().loadOne(allGlbs.JustRobot);
-    this.glbCubeVertex = CustomGlbLoader.getInstance().loadOne(
-      allGlbs.CubeVertexGroup
-    );
+
     this.sunLight = new DirectionalLight("#ffffff", 4);
     this.loadLightIsland();
   }
