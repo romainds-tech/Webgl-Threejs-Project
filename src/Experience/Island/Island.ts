@@ -8,36 +8,34 @@ export default class Island {
   public experience: Experience;
   public customGlbLoader: CustomGlbLoader;
   public scene: Scene;
-  public glbRobot: Model3D | null;
-  public sunLight: Light | null;
+  public glbRobot?: Promise<Model3D>;
+  public sunLight?: Light;
 
   constructor() {
     this.experience = Experience.getInstance();
     this.customGlbLoader = CustomGlbLoader.getInstance();
     this.scene = this.experience.scene;
-    this.glbRobot = null;
-    this.sunLight = null;
 
-    this.loadModelIsland();
+    this.glbRobot = this.loadModelIsland();
+    this.sunLight = new DirectionalLight("#ffffff", 4);
     this.loadLightIsland();
   }
 
   loadModelIsland() {
-    console.log(CustomGlbLoader.getInstance().loadOne(allGlbs.JustRobot));
-    console.log(allGlbs);
-    this.customGlbLoader.loadOne(allGlbs.JustRobot).then((robot) => {
-      this.scene.add(robot.loadedModel3D!);
-      this.glbRobot = robot;
-    });
+    return Promise.resolve(
+      this.customGlbLoader.loadOne(allGlbs.JustRobot).then((robot) => {
+        this.scene.add(robot.loadedModel3D!);
+        return robot;
+      })
+    );
   }
 
   loadLightIsland() {
-    this.sunLight = new DirectionalLight("#ffffff", 4);
-    this.sunLight.castShadow = true;
-    this.sunLight.shadow.mapSize.set(1024, 1024);
-    this.sunLight.shadow.normalBias = 0.05;
-    this.sunLight.position.set(3.5, 2, -1.25);
-    this.scene.add(this.sunLight);
+    this.sunLight!.castShadow = true;
+    this.sunLight!.shadow.mapSize.set(1024, 1024);
+    this.sunLight!.shadow.normalBias = 0.05;
+    this.sunLight!.position.set(3.5, 2, -1.25);
+    this.scene.add(this.sunLight!);
 
     // Debug
     // if (this.debug.active) {
@@ -72,4 +70,9 @@ export default class Island {
   }
 
   update() {}
+
+  destroy() {
+    delete this.glbRobot;
+    delete this.sunLight;
+  }
 }
