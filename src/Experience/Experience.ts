@@ -3,6 +3,7 @@ import Time from "./utils/Time";
 import { Scene } from "three";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
+import Island from "./Island/Island";
 
 export class Experience {
   private static instance: Experience;
@@ -13,6 +14,7 @@ export class Experience {
   public scene: Scene;
   public camera: Camera;
   public renderer: Renderer;
+  public island: Island;
 
   private constructor() {
     Experience.instance = this;
@@ -22,6 +24,7 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
+    this.island = new Island();
     this.renderer = new Renderer();
 
     this.sizes.on("resize", (): void => {
