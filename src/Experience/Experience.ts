@@ -4,6 +4,7 @@ import { Scene } from "three";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
 import Island from "./Island/Island";
+import Debug from "./utils/Debug";
 
 export class Experience {
   private static instance: Experience;
@@ -15,10 +16,12 @@ export class Experience {
   public camera: Camera;
   public renderer: Renderer;
   public island: Island;
+  public debug: Debug;
 
   private constructor() {
     Experience.instance = this;
 
+    this.debug = new Debug();
     this.sizes = new Sizes();
     this.canvas = this.setCanvas();
     this.time = new Time();
