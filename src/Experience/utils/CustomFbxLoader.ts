@@ -22,9 +22,9 @@ export default class CustomFbxLoader {
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene
     // Charge l'objet FBX à partir du chemin d'accès spécifié
-    return CustomFbxLoader.fbxLoader
-      .loadAsync(model.path)
-      .then((loadedModel: Group): Model3D => {
+
+    return new Promise((resolve) => {
+      CustomFbxLoader.fbxLoader.load(model.path, (loadedModel: Group) => {
         // Applique une échelle et une position à l'objet chargé
         loadedModel.scale.set(model.scale, model.scale, model.scale);
         loadedModel.position.copy(model.position);
@@ -42,9 +42,9 @@ export default class CustomFbxLoader {
         }
 
         model.loadedModel3D = loadedModel;
-
-        return model;
+        resolve(model);
       });
+    });
   }
 
   loadMany(models: Model3D[]): Promise<Model3D[]> {

@@ -15,7 +15,7 @@ export interface IModel3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
-  clock: Clock;
+  clock?: Clock;
 }
 
 export default class Model3D {
@@ -25,10 +25,10 @@ export default class Model3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
-  clock: Clock;
-  mixer: undefined | AnimationMixer;
-  loadedModel3D: undefined | Group;
-  animationAction: undefined | AnimationAction[];
+  clock?: Clock;
+  mixer?: AnimationMixer;
+  loadedModel3D?: Group;
+  animationAction?: AnimationAction[];
 
   constructor(props: IModel3D) {
     this.path = props.path;
@@ -38,5 +38,13 @@ export default class Model3D {
     this.scale = props.scale;
     this.animation = props.animation;
     this.clock = props.clock;
+  }
+
+  destroy() {
+    this.clock?.stop();
+    this.mixer?.stopAllAction();
+    this.mixer = undefined;
+    this.loadedModel3D = undefined;
+    this.animationAction = undefined;
   }
 }

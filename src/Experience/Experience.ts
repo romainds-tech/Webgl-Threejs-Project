@@ -53,6 +53,7 @@ export class Experience {
   private update() {
     this.camera.update();
     this.renderer.update();
+    this.island.update();
   }
 
   static getInstance() {

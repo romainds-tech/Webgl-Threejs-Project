@@ -1,4 +1,4 @@
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import Model3D from "./Model3d";
 import { AnimationClip, AnimationMixer } from "three";
@@ -32,9 +32,8 @@ export default class CustomGlbLoader {
 
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene
-    return CustomGlbLoader.gltfLoader
-      .loadAsync(model.path)
-      .then((loadedModel: GLTF): Model3D => {
+    return new Promise((resolve) => {
+      CustomGlbLoader.gltfLoader.load(model.path, (loadedModel) => {
         loadedModel.scene.scale.set(model.scale, model.scale, model.scale);
         loadedModel.scene.position.copy(model.position);
 
@@ -52,9 +51,9 @@ export default class CustomGlbLoader {
         }
 
         model.loadedModel3D = loadedModel.scene;
-
-        return model;
+        resolve(model);
       });
+    });
   }
 
   loadMany(models: Model3D[]): Promise<Model3D[]> {

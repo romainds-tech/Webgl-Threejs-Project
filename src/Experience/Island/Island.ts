@@ -3,66 +3,60 @@ import { Scene, DirectionalLight, Light } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
+import { allFbx } from "../../Sources/fbx/fbx";
+import CustomFbxLoader from "../utils/CustomFbxLoader";
 
 export default class Island {
   public experience: Experience;
   public scene: Scene;
-  public glbRobot?: Promise<Model3D>;
+  private baleine?: Model3D;
+  private cubeVertex?: Model3D;
   public sunLight?: Light;
 
   constructor() {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
 
-    this.glbRobot = CustomGlbLoader.getInstance().loadOne(allGlbs.JustRobot);
-
-    this.sunLight = new DirectionalLight("#ffffff", 4);
     this.loadLightIsland();
+    this.loadAllModels();
+  }
+
+  private async loadAllModels() {
+    this.cubeVertex = await CustomGlbLoader.getInstance().loadOne(
+      allGlbs.CubeVertexGroup
+    );
+
+    this.baleine = await CustomFbxLoader.getInstance().loadOne(allFbx.Whale);
+
+    this.scene.add(this.cubeVertex.loadedModel3D!);
+    this.scene.add(this.baleine.loadedModel3D!);
+
+    this.playAnimations();
+  }
+
+  private playAnimations() {
+    if (this.baleine?.animationAction) {
+      this.baleine.animationAction[1].play();
+    }
   }
 
   loadLightIsland() {
+    this.sunLight = new DirectionalLight("#ffffff", 4);
     this.sunLight!.castShadow = true;
     this.sunLight!.shadow.mapSize.set(1024, 1024);
     this.sunLight!.shadow.normalBias = 0.05;
     this.sunLight!.position.set(3.5, 2, -1.25);
     this.scene.add(this.sunLight!);
-
-    // Debug
-    // if (this.debug.active) {
-    //   this.debugFolder
-    //       .add(this.sunLight, "intensity")
-    //       .name("sunLightIntensity")
-    //       .min(0)
-    //       .max(10)
-    //       .step(0.001);
-    //
-    //   this.debugFolder
-    //       .add(this.sunLight.position, "x")
-    //       .name("sunLightX")
-    //       .min(-5)
-    //       .max(5)
-    //       .step(0.001);
-    //
-    //   this.debugFolder
-    //       .add(this.sunLight.position, "y")
-    //       .name("sunLightY")
-    //       .min(-5)
-    //       .max(5)
-    //       .step(0.001);
-    //
-    //   this.debugFolder
-    //       .add(this.sunLight.position, "z")
-    //       .name("sunLightZ")
-    //       .min(-5)
-    //       .max(5)
-    //       .step(0.001);
-    // }
   }
 
-  update() {}
+  update() {
+    this.baleine?.mixer?.update(this.experience.time.delta * 0.001);
+    // this.cubeVertex?.mixer?.update(this.experience.time.delta);
+  }
 
   destroy() {
-    delete this.glbRobot;
-    delete this.sunLight;
+    this.baleine?.destroy();
+    this.cubeVertex?.destroy();
+    this.sunLight?.dispose();
   }
 }
