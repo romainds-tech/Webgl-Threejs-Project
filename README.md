@@ -26,4 +26,4 @@ npm install
 ```bash
 npm run dev
 ```
-This will start a local server located at http://localhost:5173
+This will start a local server located at https://localhost:5173
