@@ -1,8 +1,9 @@
 import { Clock, Vector3 } from "three";
-import Model3D, { Model3DType } from "../../Experience/utils/Model3d";
+import { Model3DType } from "../../Experience/utils/Model3d";
 
 export const allFbx = {
-  Bee: new Model3D({
+  Bee: {
+    name: "Bee",
     path: "fbx/abeille/beev2.fbx",
     type: Model3DType.FBX,
     position: new Vector3(0, 2, 0),
@@ -10,8 +11,9 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     clock: new Clock(),
-  }),
-  Whale: new Model3D({
+  },
+  Whale: {
+    name: "Whale",
     path: "fbx/baleine/baleine-animation.fbx",
     type: Model3DType.FBX,
     position: new Vector3(0, 0, 2),
@@ -19,8 +21,9 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     clock: new Clock(),
-  }),
-  Cygne: new Model3D({
+  },
+  Cygne: {
+    name: "Cygne",
     path: "fbx/cygne/cygne-fbx.fbx",
     type: Model3DType.FBX,
     position: new Vector3(0, 0, 10),
@@ -28,5 +31,5 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 };

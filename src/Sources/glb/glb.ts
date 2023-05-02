@@ -1,8 +1,9 @@
 import { Clock, Vector3 } from "three";
-import Model3D, { Model3DType } from "../../Experience/utils/Model3d";
+import { Model3DType } from "../../Experience/utils/Model3d";
 
 export const allGlbs = {
-  CubeVertexGroup: new Model3D({
+  CubeVertexGroup: {
+    name: "Cube Vertex Group",
     path: "glb/cube_vertex.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
@@ -10,8 +11,9 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
-  Robot: new Model3D({
+  },
+  Robot: {
+    name: "Robot",
     path: "glb/robot.glb",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, -2),
@@ -19,9 +21,10 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 
-  Robot2Gltf: new Model3D({
+  Robot2Gltf: {
+    name: "Robot 2 GLTF",
     path: "glb/robot2.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, -4),
@@ -29,9 +32,10 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 
-  Robot2Glb: new Model3D({
+  Robot2Glb: {
+    name: "Robot 2 Glb",
     path: "glb/robot2.glb",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 2),
@@ -39,9 +43,10 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 
-  JustRobot: new Model3D({
+  JustRobot: {
+    name: "Just Robot",
     path: "glb/just-robot.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 1),
@@ -49,9 +54,10 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 
-  Lattive: new Model3D({
+  Lattive: {
+    name: "Lattive",
     path: "glb/lattive_test.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 3, 1),
@@ -59,5 +65,5 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     clock: new Clock(),
-  }),
+  },
 };

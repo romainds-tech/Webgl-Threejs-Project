@@ -51,6 +51,7 @@ export default class CustomGlbLoader {
         }
 
         model.loadedModel3D = loadedModel.scene;
+        model.object.add(model.loadedModel3D);
         resolve(model);
       });
     });
