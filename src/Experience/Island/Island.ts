@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import { Scene, DirectionalLight, Light } from "three";
+import { Scene } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -13,7 +13,6 @@ export default class Island {
   public scene: Scene;
   private baleine?: Model3D;
   private cubeVertex?: Model3D;
-  public sunLight?: Light;
 
   public debug: Debug;
   public debugFolder: GUI | null;
@@ -25,7 +24,6 @@ export default class Island {
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
 
-    this.loadLightIsland();
     this.loadAllModels();
   }
 
@@ -56,48 +54,6 @@ export default class Island {
     }
   }
 
-  loadLightIsland(): void {
-    this.sunLight = new DirectionalLight("#ffffff", 4);
-    this.sunLight!.castShadow = true;
-    this.sunLight!.shadow.mapSize.set(1024, 1024);
-    this.sunLight!.shadow.normalBias = 0.05;
-    this.sunLight!.position.set(3.5, 2, -1.25);
-    this.scene.add(this.sunLight!);
-    // Debug
-    if (this.debug.active) {
-      const lightFolder: GUI = this.debugFolder!.addFolder("Light");
-      lightFolder!
-        .add(this.sunLight!, "intensity")
-        .name("sunLightIntensity")
-        .min(0)
-        .max(10)
-        .step(0.001);
-
-      lightFolder
-        .add(this.sunLight!.position, "x")
-        .name("sunLightX")
-        .min(-5)
-        .max(5)
-        .step(0.001);
-
-      lightFolder
-        .add(this.sunLight!.position, "y")
-        .name("sunLightY")
-        .min(-5)
-        .max(5)
-        .step(0.001);
-
-      lightFolder
-        .add(this.sunLight!.position, "z")
-        .name("sunLightZ")
-        .min(-5)
-        .max(5)
-        .step(0.001);
-
-      lightFolder.addColor(this.sunLight!, "color");
-    }
-  }
-
   update() {
     this.baleine?.mixer?.update(this.experience.time.delta * 0.001);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
@@ -106,6 +62,5 @@ export default class Island {
   destroy() {
     this.baleine?.destroy();
     this.cubeVertex?.destroy();
-    this.sunLight?.dispose();
   }
 }
