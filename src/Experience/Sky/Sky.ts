@@ -81,7 +81,7 @@ export default class Sky {
       1.8,
       new Color("red"),
       new Color("yellow"),
-      "Work Ring"
+      "Health Ring"
     );
     this.scene.add(this.loveRing);
     this.scene.add(this.workRing);

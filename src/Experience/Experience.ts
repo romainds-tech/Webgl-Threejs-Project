@@ -5,8 +5,9 @@ import Camera from "./Camera";
 import Renderer from "./Renderer";
 // import Island from "./Island/Island";
 import Debug from "./utils/Debug";
-import Sky from "./Sky/Sky";
+// import Sky from "./Sky/Sky";
 import Light from "./Light/Light";
+import Cartomancie from "./Cartomancie/Cartomancie";
 
 export class Experience {
   private static instance: Experience;
@@ -17,9 +18,10 @@ export class Experience {
   public scene: Scene;
   public camera: Camera;
   public renderer: Renderer;
-  // public island: Island;
   public light: Light;
-  public sky: Sky;
+  // public island: Island;
+  // public sky: Sky;
+  public cartomancie: Cartomancie;
   public debug: Debug;
 
   private constructor() {
@@ -31,9 +33,10 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
-    // this.island = new Island();
     this.light = new Light();
-    this.sky = new Sky();
+    // this.island = new Island();
+    // this.sky = new Sky();
+    this.cartomancie = new Cartomancie();
     this.renderer = new Renderer();
 
     this.sizes.on("resize", (): void => {
@@ -62,8 +65,9 @@ export class Experience {
   private update() {
     this.camera.update();
     this.renderer.update();
-    this.sky.update();
+    // this.sky.update();
     // this.island.update();
+    this.cartomancie.update();
   }
 
   static getInstance() {

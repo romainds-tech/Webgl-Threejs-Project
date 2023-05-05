@@ -75,21 +75,66 @@ export default class Model3D {
 
   addDebug() {
     if (this.debug.active) {
-      this.object.add(new AxesHelper(10));
+      // this.object.add(new AxesHelper(10));
       const modelNameFolder: GUI = this.debug.debugModelFolder!.addFolder(
         this.name
       );
-      modelNameFolder.add(this.object.position, "x").name("Position X");
-      modelNameFolder.add(this.object.position, "y").name("Position Y");
-      modelNameFolder.add(this.object.position, "z").name("Position Z");
+      modelNameFolder
+        .add(this.object.position, "x")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Position X");
+      modelNameFolder
+        .add(this.object.position, "y")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Position Y");
+      modelNameFolder
+        .add(this.object.position, "z")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Position Z");
 
-      modelNameFolder.add(this.object.rotation, "x").name("Rotation X");
-      modelNameFolder.add(this.object.rotation, "y").name("Rotation Y");
-      modelNameFolder.add(this.object.rotation, "z").name("Rotation Z");
+      modelNameFolder
+        .add(this.object.rotation, "x")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Rotation X");
+      modelNameFolder
+        .add(this.object.rotation, "y")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Rotation Y");
+      modelNameFolder
+        .add(this.object.rotation, "z")
+        .min(-3)
+        .max(3)
+        .step(0.01)
+        .name("Rotation Z");
 
-      modelNameFolder.add(this.object.scale, "x").name("Scale X");
-      modelNameFolder.add(this.object.scale, "y").name("Scale Y");
-      modelNameFolder.add(this.object.scale, "z").name("Scale Z");
+      modelNameFolder
+        .add(this.object.scale, "x")
+        .min(0)
+        .max(20)
+        .step(1)
+        .name("Scale X");
+      modelNameFolder
+        .add(this.object.scale, "y")
+        .min(0)
+        .max(20)
+        .step(1)
+        .name("Scale Y");
+      modelNameFolder
+        .add(this.object.scale, "z")
+        .min(0)
+        .max(20)
+        .step(1)
+        .name("Scale Z");
     }
   }
 }
