@@ -5,7 +5,7 @@ export default class Debug {
   public ui: GUI | null;
   public debugModelFolder: GUI | null;
   constructor() {
-    this.active = window.location.hash === "#debug";
+    this.active = window.location.pathname.includes("debug");
     this.ui = null;
 
     this.addDebug();
