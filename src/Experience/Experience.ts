@@ -36,7 +36,6 @@ export class Experience {
     // this.sky = new Sky();
     this.renderer = new Renderer();
 
-    console.log(this.camera)
     this.sizes.on("resize", (): void => {
       this.resize();
     });
