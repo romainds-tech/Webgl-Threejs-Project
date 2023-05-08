@@ -25,14 +25,25 @@ export default class Camera {
   private setInstance(): PerspectiveCamera | OrthographicCamera {
     let cameraInstance: PerspectiveCamera | OrthographicCamera;
     if (this.ortho) {
+      const aspect = this.sizes.width / this.sizes.height;
+      const frustumSize = 10;
       cameraInstance = new OrthographicCamera(
-        this.sizes.width / -1000,
-        this.sizes.width / 1000,
-        this.sizes.height / 1000,
-        this.sizes.height / -1000,
-        0.1,
-        100
+          frustumSize * aspect / - 2,
+          frustumSize * aspect / 2,
+          frustumSize / 2,
+          frustumSize / - 2,
+          1,
+          1000
       );
+
+      // cameraInstance = new OrthographicCamera(
+      //   this.sizes.width / -1000,
+      //   this.sizes.width / 1000,
+      //   this.sizes.height / 1000,
+      //   this.sizes.height / -1000,
+      //   0.1,
+      //   100
+      // );
     } else {
       cameraInstance = new PerspectiveCamera(
         75,
@@ -42,7 +53,8 @@ export default class Camera {
       );
     }
 
-    cameraInstance.position.set(1, 2, 30);
+    // cameraInstance.position.set(1, 2, 30);
+    cameraInstance.position.set(-5, 5, -5);
     this.scene.add(cameraInstance);
     return cameraInstance;
   }
