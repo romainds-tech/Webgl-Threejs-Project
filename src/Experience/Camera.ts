@@ -28,12 +28,12 @@ export default class Camera {
       const aspect = this.sizes.width / this.sizes.height;
       const frustumSize = 10;
       cameraInstance = new OrthographicCamera(
-          frustumSize * aspect / - 2,
-          frustumSize * aspect / 2,
-          frustumSize / 2,
-          frustumSize / - 2,
-          1,
-          1000
+        (frustumSize * aspect) / -2,
+        (frustumSize * aspect) / 2,
+        frustumSize / 2,
+        frustumSize / -2,
+        1,
+        1000
       );
 
       // cameraInstance = new OrthographicCamera(
