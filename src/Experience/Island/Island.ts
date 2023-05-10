@@ -51,7 +51,7 @@ export default class Island {
   public mapGroup: Group;
   private raycaster: Raycaster;
   private canRaycast: boolean;
-  private cursorValid: boolean;
+  private isSelected: boolean;
   private mouse: Vector2;
   private allObjectsCreateInMap: Array<Object3D>;
 
@@ -78,6 +78,7 @@ export default class Island {
 
     this.loadAllModels();
 
+    this.isSelected = false;
     // Load the map
     this.mapGroup = loadMap(
       mapMainIslandData,
@@ -91,12 +92,8 @@ export default class Island {
 
     this.cursorMap();
     this.onMouseDown = this.onClickDown;
-    this.onMouseUp = this.onClickUp;
 
     this.canRaycast = true;
-    this.cursorValid = false;
-
-    console.log(this.sizes);
 
     this.overlay = document.querySelector(".popup_island_div");
 
@@ -121,16 +118,15 @@ export default class Island {
     );
   }
 
+  // display the edit mode
   opacityWireframe(isEdit: boolean) {
-    var opacity = 1;
+    var opacity = 0.4;
     if (!isEdit) {
       opacity = 0;
     }
     this.mapGroup.children.forEach((group) => {
       if (group.name == "wireframe") {
         group.children.forEach((mesh) => {
-          console.log(mesh.material.opacity);
-          console.log(-mesh.material.opacity);
           mesh.material.opacity = opacity;
         });
       }
@@ -181,50 +177,59 @@ export default class Island {
         0xff0000
       );
       this.scene.add(arrow);
+
       this.opacityWireframe(true);
 
       // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
-      if (this.cursor) {
-        this.cursor.position.set(
+      console.log(this.isSelected);
+      if (this.isSelected) {
+        if (
+          !this.itemIslandManager.getItemAtPosition(
+            selectedBloc.position.x,
+            selectedBloc.position.z
+          )
+        ) {
+          console.log("is selected true");
+          this.itemIslandManager.selectedItem!.position.set(
+            selectedBloc.position.x,
+            1,
+            selectedBloc.position.z
+          );
+        } else {
+          this.itemIslandManager.selectedItem!.position.y = 1;
+        }
+        this.isSelected = false;
+      } else {
+        // TODO A remplacer par le model et mettre les wireframe de base quand on a un objet en cache
+
+        let checkItem = this.itemIslandManager.getItemAtPosition(
           selectedBloc.position.x,
-          selectedBloc.position.y,
           selectedBloc.position.z
         );
-        this.scene.add(this.cursor);
-        this.cursor.material.opacity = 0.5;
-        this.cursor.material.emissive.g = 0.5;
-
-        this.cursorValid = true;
-      }
-    } else {
-      if (this.cursor && this.canRaycast) {
-        this.cursor.material.opacity = 0.0;
-        this.opacityWireframe(false);
-        // disablePopupIterfaceCreateItem();
-        this.cursorValid = false;
-      }
-    }
-  };
-
-  // change color of the cursor when we stop to click on a cube
-  onClickUp = () => {
-    if (this.cursor) {
-      this.cursor.material.emissive.g = 0;
-      this.itemIslandManager.newItemMeshToCreate = null;
-      this.itemIslandManager.selectedItem = null;
-
-      if (this.cursorValid) {
-        let checkItem = this.itemIslandManager.getItemAtPosition(
-          this.cursor.position.x,
-          this.cursor.position.z
-        );
-        console.log(checkItem);
 
         if (checkItem == null) {
+          let newItem = this.robot!.object.clone();
+          newItem.position.set(
+            selectedBloc.position.x,
+            1,
+            selectedBloc.position.z
+          );
+          this.itemIslandManager.newItemMeshToCreate = newItem;
+        } else {
+          this.itemIslandManager.selectedItem = checkItem.object;
+          this.itemIslandManager.selectedItem!.position.y = 2;
+          this.isSelected = true;
         }
+
+        let templateItem = this.itemIslandManager.newItemMeshToCreate;
+        this.scene.add(templateItem!);
+        this.itemIslandManager.addItem(templateItem!);
+        this.itemIslandManager.newItemMeshToCreate = null;
       }
+    } else {
+      this.opacityWireframe(false);
     }
   };
 

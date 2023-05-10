@@ -1,8 +1,8 @@
-import { Mesh } from "three";
+import { Object3D } from "three";
 
 export default class ItemIsland {
-  public mesh: Mesh | null;
+  public object: Object3D | null;
   constructor() {
-    this.mesh = null;
+    this.object = null;
   }
 }
