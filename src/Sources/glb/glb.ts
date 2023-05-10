@@ -1,7 +1,53 @@
-import { Clock, Vector3 } from "three";
+import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
 
 export const allGlbs = {
+  ThreeVertex: {
+    name: "ThreeVertex",
+    path: "glb/tree_with_vertex.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.01,
+    animation: false,
+  },
+
+  LowTree: {
+    name: "LowTree",
+    path: "glb/low_tree.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.01,
+    animation: false,
+  },
+  Temple: {
+    name: "Temple",
+    path: "glb/temple.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.01,
+    animation: false,
+  },
+  Herbe: {
+    name: "Herbe",
+    path: "glb/herbe.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 3, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.1,
+    animation: true,
+  },
+  Island: {
+    name: "Island",
+    path: "glb/island.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.1,
+    animation: true,
+  },
   CubeVertexGroup: {
     name: "Cube Vertex Group",
     path: "glb/cube_vertex.gltf",
@@ -10,7 +56,6 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
   Robot: {
     name: "Robot",
@@ -20,7 +65,6 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
 
   Robot2Gltf: {
@@ -31,7 +75,6 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
 
   Robot2Glb: {
@@ -42,7 +85,6 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
 
   JustRobot: {
@@ -53,7 +95,6 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
 
   Lattive: {
@@ -64,6 +105,5 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
-    clock: new Clock(),
   },
 };
