@@ -1,7 +1,7 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import Model3D from "./Model3d";
-import { AnimationClip, AnimationMixer } from "three";
+import { AnimationClip, AnimationMixer, Clock } from "three";
 
 export default class CustomGlbLoader {
   private static instance: CustomGlbLoader;
@@ -39,6 +39,7 @@ export default class CustomGlbLoader {
 
         // add animation
         if (model.animation) {
+          model.clock = new Clock();
           model.mixer = new AnimationMixer(loadedModel.scene);
           model.animationAction = [];
           loadedModel.animations.forEach((animation: AnimationClip): void => {

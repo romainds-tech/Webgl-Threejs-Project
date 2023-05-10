@@ -1,6 +1,6 @@
 // this is a Singleton class because we only need one instance of the loader
 import Model3D from "./Model3d";
-import { AnimationClip, AnimationMixer, Group, Mesh } from "three";
+import { AnimationClip, AnimationMixer, Clock, Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
 export default class CustomFbxLoader {
@@ -30,6 +30,7 @@ export default class CustomFbxLoader {
         loadedModel.position.copy(model.position);
 
         if (model.animation) {
+          model.clock = new Clock();
           model.mixer = new AnimationMixer(loadedModel);
           model.animationAction = [];
           loadedModel.animations.forEach((animation: AnimationClip): void => {

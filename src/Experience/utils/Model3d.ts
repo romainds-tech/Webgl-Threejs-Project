@@ -27,7 +27,6 @@ export interface IModel3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
-  clock?: Clock;
 }
 
 export default class Model3D {
@@ -58,7 +57,6 @@ export default class Model3D {
     this.rotation = props.rotation;
     this.scale = props.scale;
     this.animation = props.animation;
-    this.clock = props.clock;
 
     this.object = new Object3D();
 
