@@ -17,14 +17,16 @@ import { allFbx } from "../../Sources/fbx/fbx";
 import CustomFbxLoader from "../utils/CustomFbxLoader";
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
-import { mapMainIslandData, mapPayIslandData, loadMap } from "./map";
+import { mapMainIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
 import TextItemIsland from "./TextItemIsland";
 import {
-  displayIterfaceCreateItem,
-  enabledIterfaceCreateItem,
+  displayPopupIterfaceCreateItem,
+  disablePopupIterfaceCreateItem,
+  displayPopupIterfaceModificateItem,
+  disablePopupIterfaceModificateItem,
 } from "./displayInterfaceIsland";
 
 export default class Island {
@@ -41,14 +43,18 @@ export default class Island {
   public debugFolder: GUI | null;
 
   // Map
+  // var for trigger event
   public onMouseDown: (event: MouseEvent) => void;
   public onMouseUp: () => void;
 
+  // Map object
   public mapGroup: Group;
   private raycaster: Raycaster;
   private canRaycast: boolean;
+  private cursorValid: boolean;
   private mouse: Vector2;
-  private clickableObject: Array<Object3D>;
+  private allObjectsCreateInMap: Array<Object3D>;
+
   public itemIslandManager: ItemIslandManager;
   public textItemIsland: TextItemIsland;
 
@@ -67,22 +73,28 @@ export default class Island {
     // Map
     this.itemIslandManager = new ItemIslandManager();
     this.mouse = new Vector2();
-    this.clickableObject = new Array<Object3D>();
+    this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new Raycaster();
 
     this.loadAllModels();
+
+    // Load the map
     this.mapGroup = loadMap(
       mapMainIslandData,
       this.scene,
-      this.clickableObject
+      this.allObjectsCreateInMap
     );
+
+    // Ui of item create an modificate
     this.textItemIsland = new TextItemIsland();
     this.mapGroupInfo();
+
     this.cursorMap();
     this.onMouseDown = this.onClickDown;
     this.onMouseUp = this.onClickUp;
 
     this.canRaycast = true;
+    this.cursorValid = false;
 
     console.log(this.sizes);
 
@@ -91,22 +103,46 @@ export default class Island {
     document.addEventListener("pointerdown", this.onMouseDown, false);
     document.addEventListener("pointerup", this.onMouseUp, false);
 
-    this.textItemIsland.divIsland.addEventListener("mouseenter", () => {
-      console.log("enter");
-      this.canRaycast = false;
-    });
+    this.opacityWireframe(false);
+    this.textItemIsland.divCreateItemIsland.addEventListener(
+      "mouseenter",
+      () => {
+        console.log("enter");
+        this.canRaycast = false;
+      }
+    );
 
-    this.textItemIsland.divIsland.addEventListener("mouseleave", () => {
-      console.log("leave");
-      this.canRaycast = true;
-    });
+    this.textItemIsland.divCreateItemIsland.addEventListener(
+      "mouseleave",
+      () => {
+        console.log("leave");
+        this.canRaycast = true;
+      }
+    );
   }
 
+  opacityWireframe(isEdit: boolean) {
+    var opacity = 1;
+    if (!isEdit) {
+      opacity = 0;
+    }
+    this.mapGroup.children.forEach((group) => {
+      if (group.name == "wireframe") {
+        group.children.forEach((mesh) => {
+          console.log(mesh.material.opacity);
+          console.log(-mesh.material.opacity);
+          mesh.material.opacity = opacity;
+        });
+      }
+    });
+  }
+  // Get map and apply modification on all the map
   mapGroupInfo() {
     this.mapGroup.position.set(0, 0, 0);
     // this.mapGroup.scale.set(2,2,2)
   }
 
+  // Create cursor for select item on map
   cursorMap() {
     const cursorGeometry = new BoxGeometry(0.5, 4, 0.5);
     const cursorMaterial = new MeshLambertMaterial({
@@ -116,6 +152,9 @@ export default class Island {
     });
     this.cursor = new Mesh(cursorGeometry, cursorMaterial);
   }
+
+  // get the mouse positipn, if we click on a gray cube : display popup and cursor
+  // for create item on island on this cube
   onClickDown = (event: MouseEvent) => {
     console.log(this.sizes);
     event.preventDefault();
@@ -125,7 +164,9 @@ export default class Island {
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
     this.raycaster.setFromCamera(this.mouse, this.camera.instance);
-    let intersects = this.raycaster.intersectObjects(this.clickableObject); // get the list of targetable objects currently intersecting with raycaster
+    let intersects = this.raycaster.intersectObjects(
+      this.allObjectsCreateInMap
+    ); // get the list of targetable objects currently intersecting with raycaster
 
     if (
       intersects.length > 0 &&
@@ -140,7 +181,9 @@ export default class Island {
         0xff0000
       );
       this.scene.add(arrow);
-      displayIterfaceCreateItem();
+      this.opacityWireframe(true);
+
+      // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
       if (this.cursor) {
@@ -152,18 +195,36 @@ export default class Island {
         this.scene.add(this.cursor);
         this.cursor.material.opacity = 0.5;
         this.cursor.material.emissive.g = 0.5;
+
+        this.cursorValid = true;
       }
     } else {
-      if (this.cursor) {
+      if (this.cursor && this.canRaycast) {
         this.cursor.material.opacity = 0.0;
-        enabledIterfaceCreateItem();
+        this.opacityWireframe(false);
+        // disablePopupIterfaceCreateItem();
+        this.cursorValid = false;
       }
     }
   };
 
+  // change color of the cursor when we stop to click on a cube
   onClickUp = () => {
     if (this.cursor) {
       this.cursor.material.emissive.g = 0;
+      this.itemIslandManager.newItemMeshToCreate = null;
+      this.itemIslandManager.selectedItem = null;
+
+      if (this.cursorValid) {
+        let checkItem = this.itemIslandManager.getItemAtPosition(
+          this.cursor.position.x,
+          this.cursor.position.z
+        );
+        console.log(checkItem);
+
+        if (checkItem == null) {
+        }
+      }
     }
   };
 

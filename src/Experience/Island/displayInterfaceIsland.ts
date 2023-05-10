@@ -1,11 +1,18 @@
-export function displayIterfaceCreateItem() {
+export function displayPopupIterfaceCreateItem() {
   document.getElementById("popup_creation")!.style.display = "block";
 }
 
-export function enabledIterfaceCreateItem() {
+export function disablePopupIterfaceCreateItem() {
   document.getElementById("popup_creation")!.style.display = "none";
 }
 
+export function displayPopupIterfaceModificateItem() {
+  document.getElementById("popup_modification")!.style.display = "block";
+}
+
+export function disablePopupIterfaceModificateItem() {
+  document.getElementById("popup_modification")!.style.display = "block";
+}
 // export function createTowerGui_close()
 // {
 //     document.getElementById("createTowerDiv").style.display = "none";

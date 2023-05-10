@@ -11,6 +11,10 @@ html {
   display: none;
 }
 
+#popup_modification {
+  display: none;
+}
+
 .island_div_popup {
 
   opacity : 0.7;
@@ -25,6 +29,7 @@ html {
   background-color : #e7e7e7;
   border-radius : 6px;
   z-index: 42;
+
 }
 
 .island_title {

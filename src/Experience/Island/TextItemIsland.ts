@@ -2,13 +2,17 @@ import { Experience } from "../Experience.js";
 
 export default class TextItemIsland {
   public experience: Experience;
-  public divIsland: HTMLDivElement | null;
+  public divCreateItemIsland: HTMLDivElement | null;
+  public divModificateItemIsland: HTMLDivElement | null;
 
   constructor() {
     this.experience = Experience.getInstance();
 
     this.setText();
-    this.divIsland = document.querySelector(".island_div_popup");
+    this.divCreateItemIsland = document.querySelector("#popup_creation");
+    this.divModificateItemIsland = document.querySelector(
+      "#popup_modification"
+    );
   }
 
   setText() {
@@ -17,6 +21,18 @@ export default class TextItemIsland {
       "island_div_popup",
       "island_title",
       "Positionner l'item ici ?",
+      "island_div_button",
+      "island_button_yes_no island_button_yes",
+      "Oui",
+      "island_button_yes_no island_button_no",
+      "Non"
+    );
+
+    this.createPopup(
+      "popup_modification",
+      "island_div_popup",
+      "island_title",
+      "Modifier la position de l'item ?",
       "island_div_button",
       "island_button_yes_no island_button_yes",
       "Oui",
