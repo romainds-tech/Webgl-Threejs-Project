@@ -15,7 +15,7 @@ import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
-import { mapMainIslandData, loadMap } from "./map";
+import { mapMainIslandData, mapPayIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
@@ -34,6 +34,7 @@ export default class Island {
   public camera: Camera;
 
   private robot?: Model3D;
+  private island?: Model3D;
 
   public debug: Debug;
   public debugFolder: GUI | null;
@@ -55,6 +56,7 @@ export default class Island {
   public itemIslandManager: ItemIslandManager;
   public textItemIsland: TextItemIsland;
 
+  private allScene: Group;
   public overlay: HTMLDivElement | null;
   public cursor?: Mesh;
 
@@ -84,7 +86,7 @@ export default class Island {
     this.isSelected = false;
     // Load the map
     this.mapGroup = loadMap(
-      mapMainIslandData,
+      mapPayIslandData,
       this.scene,
       this.allObjectsCreateInMap
     );
@@ -120,6 +122,9 @@ export default class Island {
     //     this.canRaycast = true;
     //   }
     // );
+    this.loadIsland();
+
+    this.allScene = new Group();
   }
 
   checkIfAddItemToCreate() {
@@ -133,7 +138,7 @@ export default class Island {
   displayEditMode(isEdit: boolean) {
     var opacity = 0.4;
     if (!isEdit) {
-      opacity = 0;
+      opacity = 0.2;
     }
     this.mapGroup.children.forEach((group) => {
       if (group.name == "editMode") {
@@ -146,19 +151,18 @@ export default class Island {
 
   // Get map and apply modification on all the map
   mapGroupInfo() {
-    this.mapGroup.position.set(0, 0, 0);
-    // this.mapGroup.scale.set(2,2,2)
+    this.mapGroup.position.set(3, 0, 3);
   }
 
-  // Create cursor for select item on map
-  cursorMap() {
-    const cursorGeometry = new BoxGeometry(0.5, 4, 0.5);
-    const cursorMaterial = new MeshLambertMaterial({
-      color: 0xc0392b,
-      transparent: true,
-      opacity: 0,
-    });
-    this.cursor = new Mesh(cursorGeometry, cursorMaterial);
+  //change the value of all the scene
+  allSceneInfo() {
+    this.allScene.add(this.island!.loadedModel3D!);
+    this.allScene.add(this.mapGroup);
+
+    let size = 0.7;
+
+    this.allScene.scale.set(size, size, size);
+    this.scene.add(this.allScene);
   }
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
@@ -215,12 +219,15 @@ export default class Island {
 
           // If we dont have item on this case, we create one
           if (checkItem == null && this.numberOfElementToAdd > 0) {
-            let newItem = this.robot!.object.clone();
+            let newItem = this.robot!.loadedModel3D!.clone();
+            console.log(selectedBloc.position);
+            console.log(newItem.position);
             newItem.position.set(
               selectedBloc.position.x,
               0,
               selectedBloc.position.z
             );
+            console.log(newItem.position);
             this.itemIslandManager.newItemToCreate = newItem;
             this.numberOfElementToAdd -= 1;
             this.checkIfAddItemToCreate();
@@ -237,7 +244,7 @@ export default class Island {
 
           let templateItem = this.itemIslandManager.newItemToCreate;
           if (templateItem) {
-            this.scene.add(templateItem);
+            this.mapGroup.add(templateItem);
             this.itemIslandManager.addItem(templateItem);
             this.itemIslandManager.newItemToCreate = null;
           }
@@ -276,6 +283,20 @@ export default class Island {
     this.robot = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.JustRobot)
     );
+  }
+
+  private async loadIsland() {
+    this.island = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Island)
+    );
+
+    this.island.loadedModel3D!.position.y = -3.2;
+    this.island.loadedModel3D!.rotation.y = 20;
+
+    this.scene.add(this.island.loadedModel3D!);
+
+    // this.allScene.add(this.island.loadedModel3D!);
+    this.allSceneInfo();
   }
 
   destroy() {}

@@ -1,7 +1,6 @@
 // ATTENTION - For this game, map width and length will be the same !
 
 import {
-  BoxGeometry,
   DoubleSide,
   Group,
   Mesh,
@@ -15,7 +14,7 @@ import { Scene } from "three";
 export var mapMainIslandData = {
   data: [
     [0, 0, 0],
-    [0, 1, 0],
+    [0, 0, 0],
     [0, 0, 0],
   ],
 };
@@ -25,7 +24,7 @@ export var mapPayIslandData = {
   data: [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
   ],
@@ -44,7 +43,7 @@ export function loadMap(
   let sizeY: number = mapdata.data.length;
   let sizeX: number = mapdata.data[0].length;
 
-  const planeGeometry = new PlaneGeometry(1.5, 1.5);
+  const planeGeometry = new PlaneGeometry(0.8, 0.8);
   const planeMaterial = new MeshLambertMaterial({
     color: 0xff00ff,
     side: DoubleSide,
@@ -68,8 +67,9 @@ export function loadMap(
   // the map is created with a matrix containing numbers corresponding to different objects
   for (let x = 0; x < sizeX; x++) {
     for (let y = 0; y < sizeY; y++) {
-      let posx = x * 2 - (sizeX / 2) * 2; // position x
-      let posy = y * 2 - (sizeY / 2) * 2; // position y (it's the Z axis)
+      const distance = 1;
+      let posx = x * distance - (sizeX / distance) * distance; // position x
+      let posy = y * distance - (sizeY / distance) * distance; // position y (it's the Z axis)
 
       // display a different object in function of the number in the matrix
       switch (mapdata.data[y][x]) {
@@ -87,7 +87,7 @@ export function loadMap(
           break;
         case 1:
           let templateOtherPlane = otherPlane.clone();
-          templateOtherPlane.position.set(posx, 0.2, posy);
+          templateOtherPlane.position.set(posx, 0, posy);
           templateOtherPlane.rotation.x = Math.PI / 2;
           // scene.add(templateOtherPlane);
           templateOtherPlane.name = "blue";
