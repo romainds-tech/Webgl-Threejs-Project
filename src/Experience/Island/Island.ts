@@ -38,17 +38,19 @@ export default class Island {
   public debug: Debug;
   public debugFolder: GUI | null;
 
+  private numberOfElementToAdd: number;
+
   // Map
   // var for trigger event
-  public onMouseDown: (event: MouseEvent) => void;
+  private readonly onMouseDown: (event: MouseEvent) => void;
 
   // Map object
   public mapGroup: Group;
   private raycaster: Raycaster;
-  private canRaycast: boolean;
+  private readonly canRaycast: boolean;
   private isSelected: boolean;
-  private mouse: Vector2;
-  private allObjectsCreateInMap: Array<Object3D>;
+  private readonly mouse: Vector2;
+  private readonly allObjectsCreateInMap: Array<Object3D>;
 
   public itemIslandManager: ItemIslandManager;
   public textItemIsland: TextItemIsland;
@@ -71,6 +73,8 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
+    this.numberOfElementToAdd = 2;
+
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new Raycaster();
@@ -96,6 +100,7 @@ export default class Island {
     document.addEventListener("pointerdown", this.onMouseDown, false);
 
     this.displayEditMode(false);
+    this.checkIfAddItemToCreate();
 
     // this.overlay = document.querySelector(".popup_island_div");
     //
@@ -115,6 +120,14 @@ export default class Island {
     //     this.canRaycast = true;
     //   }
     // );
+  }
+
+  checkIfAddItemToCreate() {
+    if (this.numberOfElementToAdd > 0 || this.isSelected) {
+      this.displayEditMode(true);
+    } else {
+      this.displayEditMode(false);
+    }
   }
 
   displayEditMode(isEdit: boolean) {
@@ -172,12 +185,12 @@ export default class Island {
       );
       this.scene.add(arrow);
 
-      this.displayEditMode(true);
       // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
       // modification item position
       if (this.isSelected) {
+        this.displayEditMode(true);
         if (
           !this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
@@ -194,6 +207,7 @@ export default class Island {
           this.itemIslandManager.selectedItem!.position.y = 1;
         }
         this.isSelected = false;
+        this.displayEditMode(false);
       }
       // if we create object
       else {
@@ -204,7 +218,8 @@ export default class Island {
             selectedBloc.position.z
           );
 
-          if (checkItem == null) {
+          // If we dont have item on this case, we create one
+          if (checkItem == null && this.numberOfElementToAdd > 0) {
             let newItem = this.robot!.object.clone();
             newItem.position.set(
               selectedBloc.position.x,
@@ -212,16 +227,25 @@ export default class Island {
               selectedBloc.position.z
             );
             this.itemIslandManager.newItemToCreate = newItem;
-          } else {
-            this.itemIslandManager.selectedItem = checkItem.object;
-            this.itemIslandManager.selectedItem!.position.y = 2;
-            this.isSelected = true;
+            this.numberOfElementToAdd -= 1;
+            this.checkIfAddItemToCreate();
+          }
+          // Else we gonna to change position of this item
+          else {
+            if (checkItem) {
+              this.itemIslandManager.selectedItem = checkItem.object;
+              this.itemIslandManager.selectedItem!.position.y = 2;
+              this.isSelected = true;
+              this.displayEditMode(true);
+            }
           }
 
           let templateItem = this.itemIslandManager.newItemToCreate;
-          this.scene.add(templateItem!);
-          this.itemIslandManager.addItem(templateItem!);
-          this.itemIslandManager.newItemToCreate = null;
+          if (templateItem) {
+            this.scene.add(templateItem);
+            this.itemIslandManager.addItem(templateItem);
+            this.itemIslandManager.newItemToCreate = null;
+          }
         }
       }
     } else {
