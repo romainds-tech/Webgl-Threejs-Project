@@ -176,14 +176,7 @@ export default class Island {
     ); // get the list of targetable objects currently intersecting with raycaster
 
     if (intersects.length > 0 && this.canRaycast) {
-      // TODO A METTRE DANS LE DEBUGGER
-      var arrow = new ArrowHelper(
-        this.raycaster.ray.direction,
-        this.raycaster.ray.origin,
-        8,
-        0xff0000
-      );
-      this.scene.add(arrow);
+      this.addDebug();
 
       // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
@@ -191,6 +184,7 @@ export default class Island {
       // modification item position
       if (this.isSelected) {
         this.displayEditMode(true);
+        // places item on a new selected block
         if (
           !this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
@@ -203,7 +197,9 @@ export default class Island {
             0,
             selectedBloc.position.z
           );
-        } else {
+        }
+        // put back the item if it is already on the block or if the place is already taken
+        else {
           this.itemIslandManager.selectedItem!.position.y = 0;
         }
         this.isSelected = false;
@@ -211,7 +207,6 @@ export default class Island {
       }
       // if we create object
       else {
-        // TODO A remplacer par le model et mettre les wireframe de base quand on a un objet en cache
         if (selectedBloc.name == "gray") {
           let checkItem = this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
@@ -249,7 +244,11 @@ export default class Island {
         }
       }
     } else {
-      this.displayEditMode(false);
+      if (this.itemIslandManager.selectedItem) {
+        this.itemIslandManager.selectedItem.position.y = 0;
+        this.isSelected = false;
+      }
+      this.checkIfAddItemToCreate();
     }
   };
 
@@ -261,6 +260,17 @@ export default class Island {
     return null;
   }
 
+  addDebug() {
+    if (this.debug.active) {
+      var arrow = new ArrowHelper(
+        this.raycaster.ray.direction,
+        this.raycaster.ray.origin,
+        8,
+        0xff0000
+      );
+      this.scene.add(arrow);
+    }
+  }
   // Models
   private async loadModelsItemIsland() {
     this.robot = await CustomGlbLoader.getInstance().loadOne(
