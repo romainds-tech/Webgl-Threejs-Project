@@ -11,6 +11,7 @@ import {
 } from "three";
 import { Scene } from "three";
 
+// main map of island
 export var mapMainIslandData = {
   data: [
     [0, 0, 0],
@@ -19,6 +20,7 @@ export var mapMainIslandData = {
   ],
 };
 
+// new island add if user paid for more space
 export var mapPayIslandData = {
   data: [
     [0, 0, 0, 0, 0],
@@ -29,7 +31,8 @@ export var mapPayIslandData = {
   ],
 };
 
-// create a map in function of the number in a matrix
+// return a group three js containing the map (object and edit mode)
+// add the map in the scene and get all the objects in the scene
 // mapdata : get the matrix for create map
 // scene : enabled to add the intirer map in the scene
 // clickableObject : Get all the object in the scene
@@ -38,9 +41,8 @@ export function loadMap(
   scene: Scene,
   allObjectsCreateInMap: Array<Object3D>
 ) {
-  console.log(mapdata);
-  let size_Y: number = mapdata.data.length;
-  let size_X: number = mapdata.data[0].length;
+  let sizeY: number = mapdata.data.length;
+  let sizeX: number = mapdata.data[0].length;
 
   const geometry = new BoxGeometry(2, 2, 2);
   const material = new MeshLambertMaterial({});
@@ -60,13 +62,14 @@ export function loadMap(
   let otherCube = new Mesh(geometry, otherMaterial);
 
   let map: Group = new Group();
-  let wireframe: Group = new Group();
-  let all: Group = new Group();
+  let editMode: Group = new Group();
+  let allObjectInMal: Group = new Group();
 
-  for (let x = 0; x < size_X; x++) {
-    for (let y = 0; y < size_Y; y++) {
-      let posx = x * 2 - (size_X / 2) * 2; // position x
-      let posy = y * 2 - (size_Y / 2) * 2; // position y (it's the Z axis)
+  // the map is created with a matrix containing numbers corresponding to different objects
+  for (let x = 0; x < sizeX; x++) {
+    for (let y = 0; y < sizeY; y++) {
+      let posx = x * 2 - (sizeX / 2) * 2; // position x
+      let posy = y * 2 - (sizeY / 2) * 2; // position y (it's the Z axis)
 
       // display a different object in function of the number in the matrix
       switch (mapdata.data[y][x]) {
@@ -83,10 +86,10 @@ export function loadMap(
           );
           templatePlane.rotation.x = Math.PI / 2;
 
-          templateBasicBloc.name = "gris";
+          templateBasicBloc.name = "gray";
           allObjectsCreateInMap.push(templateBasicBloc);
           map.add(templateBasicBloc);
-          wireframe.add(templatePlane);
+          editMode.add(templatePlane);
 
           break;
         case 1:
@@ -100,9 +103,9 @@ export function loadMap(
       }
     }
   }
-  wireframe.name = "wireframe";
-  all.add(map);
-  all.add(wireframe);
-  scene.add(all);
-  return all;
+  editMode.name = "editMode";
+  allObjectInMal.add(map);
+  allObjectInMal.add(editMode);
+  scene.add(allObjectInMal);
+  return allObjectInMal;
 }

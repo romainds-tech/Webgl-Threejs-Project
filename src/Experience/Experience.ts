@@ -63,7 +63,6 @@ export class Experience {
     this.camera.update();
     this.renderer.update();
     // this.sky.update();
-    this.island.update();
   }
 
   static getInstance() {

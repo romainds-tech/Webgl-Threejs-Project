@@ -13,8 +13,6 @@ import {
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-import { allFbx } from "../../Sources/fbx/fbx";
-import CustomFbxLoader from "../utils/CustomFbxLoader";
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 import { mapMainIslandData, loadMap } from "./map";
@@ -35,8 +33,6 @@ export default class Island {
   public sizes: Sizes;
   public camera: Camera;
 
-  private baleine?: Model3D;
-  private cubeVertex?: Model3D;
   private robot?: Model3D;
 
   public debug: Debug;
@@ -45,7 +41,6 @@ export default class Island {
   // Map
   // var for trigger event
   public onMouseDown: (event: MouseEvent) => void;
-  public onMouseUp: () => void;
 
   // Map object
   public mapGroup: Group;
@@ -62,21 +57,25 @@ export default class Island {
   public cursor?: Mesh;
 
   constructor() {
+    // Experience
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
 
+    // Debug
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
 
+    // Mouse position
+    this.mouse = new Vector2();
+
     // Map
     this.itemIslandManager = new ItemIslandManager();
-    this.mouse = new Vector2();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new Raycaster();
 
-    this.loadAllModels();
+    this.loadModelsItemIsland();
 
     this.isSelected = false;
     // Load the map
@@ -88,50 +87,50 @@ export default class Island {
 
     // Ui of item create an modificate
     this.textItemIsland = new TextItemIsland();
+    // Get all map and apply methods
     this.mapGroupInfo();
-
-    this.cursorMap();
     this.onMouseDown = this.onClickDown;
 
     this.canRaycast = true;
 
-    this.overlay = document.querySelector(".popup_island_div");
-
     document.addEventListener("pointerdown", this.onMouseDown, false);
-    document.addEventListener("pointerup", this.onMouseUp, false);
 
-    this.opacityWireframe(false);
-    this.textItemIsland.divCreateItemIsland.addEventListener(
-      "mouseenter",
-      () => {
-        console.log("enter");
-        this.canRaycast = false;
-      }
-    );
+    this.displayEditMode(false);
 
-    this.textItemIsland.divCreateItemIsland.addEventListener(
-      "mouseleave",
-      () => {
-        console.log("leave");
-        this.canRaycast = true;
-      }
-    );
+    // this.overlay = document.querySelector(".popup_island_div");
+    //
+    //
+    // this.textItemIsland.divCreateItemIsland.addEventListener(
+    //   "mouseenter",
+    //   () => {
+    //     console.log("enter");
+    //     this.canRaycast = false;
+    //   }
+    // );
+    //
+    // this.textItemIsland.divCreateItemIsland.addEventListener(
+    //   "mouseleave",
+    //   () => {
+    //     console.log("leave");
+    //     this.canRaycast = true;
+    //   }
+    // );
   }
 
-  // display the edit mode
-  opacityWireframe(isEdit: boolean) {
+  displayEditMode(isEdit: boolean) {
     var opacity = 0.4;
     if (!isEdit) {
       opacity = 0;
     }
     this.mapGroup.children.forEach((group) => {
-      if (group.name == "wireframe") {
+      if (group.name == "editMode") {
         group.children.forEach((mesh) => {
           mesh.material.opacity = opacity;
         });
       }
     });
   }
+
   // Get map and apply modification on all the map
   mapGroupInfo() {
     this.mapGroup.position.set(0, 0, 0);
@@ -149,10 +148,9 @@ export default class Island {
     this.cursor = new Mesh(cursorGeometry, cursorMaterial);
   }
 
-  // get the mouse positipn, if we click on a gray cube : display popup and cursor
-  // for create item on island on this cube
+  // get the mouse positipn, if we click on a gray cube : add Item on this cube
+  // modify the position of the item if we click on
   onClickDown = (event: MouseEvent) => {
-    console.log(this.sizes);
     event.preventDefault();
 
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -164,11 +162,7 @@ export default class Island {
       this.allObjectsCreateInMap
     ); // get the list of targetable objects currently intersecting with raycaster
 
-    if (
-      intersects.length > 0 &&
-      intersects[0].object.name != "blue" &&
-      this.canRaycast
-    ) {
+    if (intersects.length > 0 && this.canRaycast) {
       // TODO A METTRE DANS LE DEBUGGER
       var arrow = new ArrowHelper(
         this.raycaster.ray.direction,
@@ -178,20 +172,19 @@ export default class Island {
       );
       this.scene.add(arrow);
 
-      this.opacityWireframe(true);
-
+      this.displayEditMode(true);
       // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
-      console.log(this.isSelected);
+      // modification item position
       if (this.isSelected) {
         if (
           !this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
             selectedBloc.position.z
-          )
+          ) &&
+          selectedBloc.name == "gray"
         ) {
-          console.log("is selected true");
           this.itemIslandManager.selectedItem!.position.set(
             selectedBloc.position.x,
             1,
@@ -201,35 +194,38 @@ export default class Island {
           this.itemIslandManager.selectedItem!.position.y = 1;
         }
         this.isSelected = false;
-      } else {
+      }
+      // if we create object
+      else {
         // TODO A remplacer par le model et mettre les wireframe de base quand on a un objet en cache
-
-        let checkItem = this.itemIslandManager.getItemAtPosition(
-          selectedBloc.position.x,
-          selectedBloc.position.z
-        );
-
-        if (checkItem == null) {
-          let newItem = this.robot!.object.clone();
-          newItem.position.set(
+        if (selectedBloc.name == "gray") {
+          let checkItem = this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
-            1,
             selectedBloc.position.z
           );
-          this.itemIslandManager.newItemMeshToCreate = newItem;
-        } else {
-          this.itemIslandManager.selectedItem = checkItem.object;
-          this.itemIslandManager.selectedItem!.position.y = 2;
-          this.isSelected = true;
-        }
 
-        let templateItem = this.itemIslandManager.newItemMeshToCreate;
-        this.scene.add(templateItem!);
-        this.itemIslandManager.addItem(templateItem!);
-        this.itemIslandManager.newItemMeshToCreate = null;
+          if (checkItem == null) {
+            let newItem = this.robot!.object.clone();
+            newItem.position.set(
+              selectedBloc.position.x,
+              1,
+              selectedBloc.position.z
+            );
+            this.itemIslandManager.newItemToCreate = newItem;
+          } else {
+            this.itemIslandManager.selectedItem = checkItem.object;
+            this.itemIslandManager.selectedItem!.position.y = 2;
+            this.isSelected = true;
+          }
+
+          let templateItem = this.itemIslandManager.newItemToCreate;
+          this.scene.add(templateItem!);
+          this.itemIslandManager.addItem(templateItem!);
+          this.itemIslandManager.newItemToCreate = null;
+        }
       }
     } else {
-      this.opacityWireframe(false);
+      this.displayEditMode(false);
     }
   };
 
@@ -242,38 +238,11 @@ export default class Island {
   }
 
   // Models
-  private async loadAllModels() {
-    this.cubeVertex = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.CubeVertexGroup)
-    );
-    this.baleine = await CustomFbxLoader.getInstance().loadOne(
-      new Model3D(allFbx.Whale)
-    );
-
+  private async loadModelsItemIsland() {
     this.robot = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.JustRobot)
     );
-
-    // this.scene.add(this.cubeVertex.object!);
-    // this.scene.add(this.baleine.object);
-    this.scene.add(this.robot.object);
-
-    this.playAnimations();
   }
 
-  private playAnimations(): void {
-    if (this.baleine?.animationAction) {
-      this.baleine.animationAction[1].play();
-    }
-  }
-
-  update() {
-    this.baleine?.mixer?.update(this.experience.time.delta * 0.001);
-    // this.cubeVertex?.mixer?.update(this.experience.time.delta);
-  }
-
-  destroy() {
-    this.baleine?.destroy();
-    this.cubeVertex?.destroy();
-  }
+  destroy() {}
 }
