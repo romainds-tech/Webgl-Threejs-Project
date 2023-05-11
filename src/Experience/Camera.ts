@@ -44,7 +44,7 @@ export default class Camera {
         0.1,
         100
       );
-      cameraInstance.zoom = 0.5;
+      cameraInstance.zoom = 0.35;
       cameraInstance.updateProjectionMatrix();
     } else {
       cameraInstance = new PerspectiveCamera(
