@@ -1,8 +1,15 @@
 import Sizes from "./utils/Sizes";
-import { OrthographicCamera, PerspectiveCamera, Scene } from "three";
+import {
+  AxesHelper,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Scene,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
+import Debug from "./utils/Debug";
+import { GUI } from "lil-gui";
 
 export default class Camera {
   public experience: Experience;
@@ -12,6 +19,9 @@ export default class Camera {
   public canvas: HTMLCanvasElement | undefined;
   public constrols: OrbitControls;
   public instance: PerspectiveCamera | OrthographicCamera;
+  public debug: Debug;
+  public debugFolder?: GUI;
+
   constructor() {
     this.experience = Experience.getInstance();
     this.ortho = window.location.pathname.includes("ortho");
@@ -20,6 +30,7 @@ export default class Camera {
     this.canvas = this.experience.canvas;
     this.instance = this.setInstance();
     this.constrols = this.setOrbitControls();
+    this.debug = this.experience.debug;
     this.onZTyped();
   }
   private setInstance(): PerspectiveCamera | OrthographicCamera {
@@ -33,6 +44,8 @@ export default class Camera {
         0.1,
         100
       );
+      cameraInstance.zoom = 0.5;
+      cameraInstance.updateProjectionMatrix();
     } else {
       cameraInstance = new PerspectiveCamera(
         75,
@@ -51,6 +64,39 @@ export default class Camera {
     let controls: OrbitControls = new OrbitControls(this.instance, this.canvas);
     controls.enableDamping = true;
     return controls;
+  }
+
+  addDebug() {
+    if (this.debug.active) {
+      this.instance.add(new AxesHelper(10));
+      const cameraName: GUI = this.debug.debugModelFolder!.addFolder("Camera");
+
+      console.log(this.instance);
+
+      if (this.instance instanceof OrthographicCamera) {
+        cameraName
+          .add(this.instance, "zoom", 0, 5)
+          .name("Zoom")
+          .onChange(() => {
+            this.instance.updateProjectionMatrix();
+          });
+      }
+
+      cameraName.add(this.instance.position, "x").name("Position X");
+      cameraName.add(this.instance.position, "y").name("Position Y");
+      cameraName.add(this.instance.position, "z").name("Position Z");
+
+      cameraName.add(this.instance.rotation, "x").name("Rotation X");
+      cameraName.add(this.instance.rotation, "y").name("Rotation Y");
+      cameraName.add(this.instance.rotation, "z").name("Rotation Z");
+
+      cameraName.add(this.instance.scale, "x").name("Scale X");
+      cameraName.add(this.instance.scale, "y").name("Scale Y");
+      cameraName.add(this.instance.scale, "z").name("Scale Z");
+
+      return cameraName;
+    }
+    return undefined;
   }
 
   resize(): void {
@@ -82,7 +128,7 @@ export default class Camera {
     });
     gsap.to(this.instance.position, {
       delay: 1,
-      duration: 3,
+      duration: 1,
       y: Math.cos(angle * 0.75),
     });
   }

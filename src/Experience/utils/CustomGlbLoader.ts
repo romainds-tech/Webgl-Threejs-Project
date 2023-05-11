@@ -1,7 +1,7 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import Model3D from "./Model3d";
-import { AnimationClip, AnimationMixer, Clock } from "three";
+import { AnimationClip, AnimationMixer, Clock, Euler } from "three";
 
 export default class CustomGlbLoader {
   private static instance: CustomGlbLoader;
@@ -36,6 +36,9 @@ export default class CustomGlbLoader {
       CustomGlbLoader.gltfLoader.load(model.path, (loadedModel) => {
         loadedModel.scene.scale.set(model.scale, model.scale, model.scale);
         loadedModel.scene.position.copy(model.position);
+        loadedModel.scene.rotation.copy(
+          new Euler(model.rotation.x, model.rotation.y, model.rotation.z, "XYZ")
+        );
 
         // add animation
         if (model.animation) {
@@ -52,7 +55,8 @@ export default class CustomGlbLoader {
         }
 
         model.loadedModel3D = loadedModel.scene;
-        model.object.add(model.loadedModel3D);
+        model.addDebug();
+
         resolve(model);
       });
     });
