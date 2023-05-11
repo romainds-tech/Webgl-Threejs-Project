@@ -44,9 +44,6 @@ export function loadMap(
   let sizeY: number = mapdata.data.length;
   let sizeX: number = mapdata.data[0].length;
 
-  const geometry = new BoxGeometry(2, 2, 2);
-  const material = new MeshLambertMaterial({});
-
   const planeGeometry = new PlaneGeometry(1.5, 1.5);
   const planeMaterial = new MeshLambertMaterial({
     color: 0xff00ff,
@@ -54,12 +51,15 @@ export function loadMap(
     transparent: true,
     opacity: 1,
   });
+  const planeOtherMaterial = new MeshLambertMaterial({
+    color: 0xffffff,
+    side: DoubleSide,
+    transparent: true,
+    opacity: 1,
+  });
 
   const plane = new Mesh(planeGeometry, planeMaterial);
-  let basicCube = new Mesh(geometry, material);
-
-  const otherMaterial = new MeshLambertMaterial({ color: 0x2c3e50 });
-  let otherCube = new Mesh(geometry, otherMaterial);
+  const otherPlane = new Mesh(planeGeometry, planeOtherMaterial);
 
   let map: Group = new Group();
   let editMode: Group = new Group();
@@ -74,31 +74,25 @@ export function loadMap(
       // display a different object in function of the number in the matrix
       switch (mapdata.data[y][x]) {
         case 0:
-          let templateBasicBloc = basicCube.clone();
           let templatePlane = plane.clone();
 
-          templateBasicBloc.position.set(posx, 0, posy);
-
-          templatePlane.position.set(
-            posx,
-            templateBasicBloc.geometry.parameters.height / 2 + 0.01,
-            posy
-          );
+          templatePlane.position.set(posx, 0, posy);
           templatePlane.rotation.x = Math.PI / 2;
 
-          templateBasicBloc.name = "gray";
-          allObjectsCreateInMap.push(templateBasicBloc);
-          map.add(templateBasicBloc);
+          templatePlane.name = "gray";
+          allObjectsCreateInMap.push(templatePlane);
+          map.add(templatePlane);
           editMode.add(templatePlane);
 
           break;
         case 1:
-          let templateOtherBloc = otherCube.clone();
-          templateOtherBloc.position.set(posx, 0.2, posy);
-          // scene.add(templateOtherBloc);
-          templateOtherBloc.name = "blue";
-          allObjectsCreateInMap.push(templateOtherBloc);
-          map.add(templateOtherBloc);
+          let templateOtherPlane = otherPlane.clone();
+          templateOtherPlane.position.set(posx, 0.2, posy);
+          templateOtherPlane.rotation.x = Math.PI / 2;
+          // scene.add(templateOtherPlane);
+          templateOtherPlane.name = "blue";
+          allObjectsCreateInMap.push(templateOtherPlane);
+          map.add(templateOtherPlane);
           break;
       }
     }

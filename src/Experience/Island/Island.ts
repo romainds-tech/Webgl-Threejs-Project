@@ -200,14 +200,14 @@ export default class Island {
         ) {
           this.itemIslandManager.selectedItem!.position.set(
             selectedBloc.position.x,
-            1,
+            0,
             selectedBloc.position.z
           );
         } else {
-          this.itemIslandManager.selectedItem!.position.y = 1;
+          this.itemIslandManager.selectedItem!.position.y = 0;
         }
         this.isSelected = false;
-        this.displayEditMode(false);
+        this.checkIfAddItemToCreate();
       }
       // if we create object
       else {
@@ -223,7 +223,7 @@ export default class Island {
             let newItem = this.robot!.object.clone();
             newItem.position.set(
               selectedBloc.position.x,
-              1,
+              0,
               selectedBloc.position.z
             );
             this.itemIslandManager.newItemToCreate = newItem;
@@ -234,7 +234,7 @@ export default class Island {
           else {
             if (checkItem) {
               this.itemIslandManager.selectedItem = checkItem.object;
-              this.itemIslandManager.selectedItem!.position.y = 2;
+              this.itemIslandManager.selectedItem!.position.y = 1;
               this.isSelected = true;
               this.displayEditMode(true);
             }
