@@ -42,8 +42,8 @@ export default class Island {
       new Model3D(allFbx.Whale)
     );
 
-    this.scene.add(this.cubeVertex.object!);
-    this.scene.add(this.baleine.object);
+    this.scene.add(this.cubeVertex.loadedModel3D!);
+    this.scene.add(this.baleine.loadedModel3D!);
 
     this.playAnimations();
   }

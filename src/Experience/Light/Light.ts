@@ -23,7 +23,7 @@ export default class Light {
 
   addDebugFolder(): GUI | null {
     if (this.debug.active) {
-      return this.debug.ui!.addFolder("Light");
+      return this.debug.ui!.addFolder("Light").close();
     }
     return null;
   }
