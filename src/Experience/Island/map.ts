@@ -91,7 +91,7 @@ export function loadMap(
           templateOtherPlane.rotation.x = Math.PI / 2;
           // scene.add(templateOtherPlane);
           templateOtherPlane.name = "blue";
-          allObjectsCreateInMap.push(templateOtherPlane);
+          // allObjectsCreateInMap.push(templateOtherPlane);
           map.add(templateOtherPlane);
           break;
       }
