@@ -290,6 +290,7 @@ export default class Island {
       new Model3D(allGlbs.Island)
     );
 
+
     this.island.loadedModel3D!.position.y = -3.2;
     this.island.loadedModel3D!.rotation.y = 20;
 

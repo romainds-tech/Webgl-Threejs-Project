@@ -5,7 +5,6 @@ import {
   Clock,
   Group,
   Vector3,
-  Object3D,
 } from "three";
 import { Experience } from "../Experience";
 import Debug from "./Debug";
@@ -27,12 +26,10 @@ export interface IModel3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
-  clock?: Clock;
 }
 
 export default class Model3D {
   experience: Experience;
-  object: Object3D;
   debug: Debug;
 
   name: string;
@@ -58,11 +55,6 @@ export default class Model3D {
     this.rotation = props.rotation;
     this.scale = props.scale;
     this.animation = props.animation;
-    this.clock = props.clock;
-
-    this.object = new Object3D();
-
-    this.addDebug();
   }
 
   destroy() {
@@ -75,21 +67,21 @@ export default class Model3D {
 
   addDebug() {
     if (this.debug.active) {
-      this.object.add(new AxesHelper(10));
+      this.loadedModel3D?.add(new AxesHelper(10));
       const modelNameFolder: GUI = this.debug.debugModelFolder!.addFolder(
         this.name
       );
-      modelNameFolder.add(this.object.position, "x").name("Position X");
-      modelNameFolder.add(this.object.position, "y").name("Position Y");
-      modelNameFolder.add(this.object.position, "z").name("Position Z");
+      modelNameFolder.add(this.loadedModel3D!.position, "x").name("Position X");
+      modelNameFolder.add(this.loadedModel3D!.position, "y").name("Position Y");
+      modelNameFolder.add(this.loadedModel3D!.position, "z").name("Position Z");
 
-      modelNameFolder.add(this.object.rotation, "x").name("Rotation X");
-      modelNameFolder.add(this.object.rotation, "y").name("Rotation Y");
-      modelNameFolder.add(this.object.rotation, "z").name("Rotation Z");
+      modelNameFolder.add(this.loadedModel3D!.rotation, "x").name("Rotation X");
+      modelNameFolder.add(this.loadedModel3D!.rotation, "y").name("Rotation Y");
+      modelNameFolder.add(this.loadedModel3D!.rotation, "z").name("Rotation Z");
 
-      modelNameFolder.add(this.object.scale, "x").name("Scale X");
-      modelNameFolder.add(this.object.scale, "y").name("Scale Y");
-      modelNameFolder.add(this.object.scale, "z").name("Scale Z");
+      modelNameFolder.add(this.loadedModel3D!.scale, "x").name("Scale X");
+      modelNameFolder.add(this.loadedModel3D!.scale, "y").name("Scale Y");
+      modelNameFolder.add(this.loadedModel3D!.scale, "z").name("Scale Z");
     }
   }
 }
