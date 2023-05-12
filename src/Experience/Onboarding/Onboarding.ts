@@ -3,6 +3,7 @@ import { Scene } from "three";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
+import CustomImageLoader from "../utils/CustomImageLoader";
 
 export default class Onboarding {
   public experience: Experience;
@@ -17,6 +18,7 @@ export default class Onboarding {
 
     this.loadAllModels();
     this.setupCamera();
+    this.setupBackgroundImage();
   }
 
   private async loadAllModels() {
@@ -38,8 +40,18 @@ export default class Onboarding {
 
   private setupCamera() {
     this.experience.camera.instance.position.set(-5, 20, 20);
+    // remove orbit controls
+    this.experience.camera.controls.enabled = false;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
+  }
+
+  private setupBackgroundImage() {
+    let textureback = CustomImageLoader.getInstance().loadImage(
+      "material/background/temple_bg.jpg"
+    );
+
+    this.scene.background = textureback;
   }
 
   update() {}
