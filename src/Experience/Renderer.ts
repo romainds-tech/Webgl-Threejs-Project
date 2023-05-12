@@ -34,8 +34,6 @@ export default class Renderer {
       // powerPreference: "high-performance", // todo reactivate for performance
     });
     instance.useLegacyLights = true;
-    instance.outputEncoding = sRGBEncoding;
-    instance.toneMapping = CineonToneMapping;
     instance.toneMappingExposure = 1.75;
     instance.shadowMap.enabled = true;
     instance.shadowMap.type = PCFSoftShadowMap;

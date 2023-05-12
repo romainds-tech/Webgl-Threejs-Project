@@ -17,7 +17,7 @@ export default class Camera {
   public sizes: Sizes;
   public scene: Scene;
   public canvas: HTMLCanvasElement | undefined;
-  public constrols: OrbitControls;
+  public controls: OrbitControls;
   public instance: PerspectiveCamera | OrthographicCamera;
   public debug: Debug;
   public debugFolder?: GUI;
@@ -29,7 +29,7 @@ export default class Camera {
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
     this.instance = this.setInstance();
-    this.constrols = this.setOrbitControls();
+    this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
     this.onZTyped();
   }
@@ -138,6 +138,6 @@ export default class Camera {
   }
 
   update(): void {
-    this.constrols.update();
+    this.controls.update();
   }
 }
