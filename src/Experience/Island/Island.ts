@@ -6,7 +6,6 @@ import {
   Mesh,
   MeshLambertMaterial,
   Object3D,
-  Raycaster,
   Scene,
   Vector2,
 } from "three";
@@ -26,6 +25,7 @@ import {
   displayPopupIterfaceModificateItem,
   disablePopupIterfaceModificateItem,
 } from "./displayInterfaceIsland";
+import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 
 export default class Island {
   public experience: Experience;
@@ -47,7 +47,7 @@ export default class Island {
 
   // Map object
   public mapGroup: Group;
-  private raycaster: Raycaster;
+  private raycaster: RaycasterExperience;
   private readonly canRaycast: boolean;
   private isSelected: boolean;
   private readonly mouse: Vector2;
@@ -79,7 +79,7 @@ export default class Island {
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
-    this.raycaster = new Raycaster();
+    this.raycaster = new RaycasterExperience();
 
     this.loadModelsItemIsland();
 
@@ -151,7 +151,7 @@ export default class Island {
 
   // Get map and apply modification on all the map
   mapGroupInfo() {
-    this.mapGroup.position.set(3, 0, 3);
+    this.mapGroup.position.set(3, -0.15, 3);
   }
 
   //change the value of all the scene
@@ -159,7 +159,7 @@ export default class Island {
     this.allScene.add(this.island!.loadedModel3D!);
     this.allScene.add(this.mapGroup);
 
-    let size = 0.7;
+    let size = 1.4;
 
     this.allScene.scale.set(size, size, size);
     this.scene.add(this.allScene);
@@ -174,17 +174,20 @@ export default class Island {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
-    this.raycaster.setFromCamera(this.mouse, this.camera.instance);
-    let intersects = this.raycaster.intersectObjects(
+    let intersects = this.raycaster.getRaycastObject(
+      this.mouse,
+      this.camera.instance,
       this.allObjectsCreateInMap
-    ); // get the list of targetable objects currently intersecting with raycaster
+    );
 
     if (intersects.length > 0 && this.canRaycast) {
+      console.log("dffghghgfgfbhjjhhgff");
       this.addDebug();
 
       // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
+      console.log(selectedBloc);
       // modification item position
       if (this.isSelected) {
         this.displayEditMode(true);
@@ -193,8 +196,7 @@ export default class Island {
           !this.itemIslandManager.getItemAtPosition(
             selectedBloc.position.x,
             selectedBloc.position.z
-          ) &&
-          selectedBloc.name == "gray"
+          )
         ) {
           this.itemIslandManager.selectedItem!.position.set(
             selectedBloc.position.x,
@@ -211,43 +213,41 @@ export default class Island {
       }
       // if we create object
       else {
-        if (selectedBloc.name == "gray") {
-          let checkItem = this.itemIslandManager.getItemAtPosition(
+        let checkItem = this.itemIslandManager.getItemAtPosition(
+          selectedBloc.position.x,
+          selectedBloc.position.z
+        );
+
+        // If we dont have item on this case, we create one
+        if (checkItem == null && this.numberOfElementToAdd > 0) {
+          let newItem = this.robot!.loadedModel3D!.clone();
+          console.log(selectedBloc.position);
+          console.log(newItem.position);
+          newItem.position.set(
             selectedBloc.position.x,
+            0,
             selectedBloc.position.z
           );
+          console.log(newItem.position);
+          this.itemIslandManager.newItemToCreate = newItem;
+          this.numberOfElementToAdd -= 1;
+          this.checkIfAddItemToCreate();
+        }
+        // Else we gonna to change position of this item
+        else {
+          if (checkItem) {
+            this.itemIslandManager.selectedItem = checkItem.object;
+            this.itemIslandManager.selectedItem!.position.y = 1;
+            this.isSelected = true;
+            this.displayEditMode(true);
+          }
+        }
 
-          // If we dont have item on this case, we create one
-          if (checkItem == null && this.numberOfElementToAdd > 0) {
-            let newItem = this.robot!.loadedModel3D!.clone();
-            console.log(selectedBloc.position);
-            console.log(newItem.position);
-            newItem.position.set(
-              selectedBloc.position.x,
-              0,
-              selectedBloc.position.z
-            );
-            console.log(newItem.position);
-            this.itemIslandManager.newItemToCreate = newItem;
-            this.numberOfElementToAdd -= 1;
-            this.checkIfAddItemToCreate();
-          }
-          // Else we gonna to change position of this item
-          else {
-            if (checkItem) {
-              this.itemIslandManager.selectedItem = checkItem.object;
-              this.itemIslandManager.selectedItem!.position.y = 1;
-              this.isSelected = true;
-              this.displayEditMode(true);
-            }
-          }
-
-          let templateItem = this.itemIslandManager.newItemToCreate;
-          if (templateItem) {
-            this.mapGroup.add(templateItem);
-            this.itemIslandManager.addItem(templateItem);
-            this.itemIslandManager.newItemToCreate = null;
-          }
+        let templateItem = this.itemIslandManager.newItemToCreate;
+        if (templateItem) {
+          this.mapGroup.add(templateItem);
+          this.itemIslandManager.addItem(templateItem);
+          this.itemIslandManager.newItemToCreate = null;
         }
       }
     } else {
@@ -270,8 +270,8 @@ export default class Island {
   addDebug() {
     if (this.debug.active) {
       var arrow = new ArrowHelper(
-        this.raycaster.ray.direction,
-        this.raycaster.ray.origin,
+        this.raycaster.raycaster.ray.direction,
+        this.raycaster.raycaster.ray.origin,
         8,
         0xff0000
       );
@@ -289,10 +289,6 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
-
-
-    this.island.loadedModel3D!.position.y = -3.2;
-    this.island.loadedModel3D!.rotation.y = 20;
 
     this.scene.add(this.island.loadedModel3D!);
 
