@@ -1,0 +1,73 @@
+#popup_creation {
+    display: none;
+}
+
+#popup_modification_item_island {
+    display: block;
+}
+
+.top_position {
+    top : 5%;
+    left : 5%;
+}
+
+.middle_position {
+    top : 50%;
+    left : 5%;
+    transform: translate(0, -50%);
+
+}
+
+.bottom_position {
+    left : 5%;
+    bottom : 5%;
+}
+.island_div_popup {
+    position: absolute;
+    box-sizing: border-box;
+    padding : 25px;
+    width: 90%;
+    color : white;
+    font-family: roboto-font, sans-serif;
+    z-index: 42;
+    background: linear-gradient(#F9F9FA, #F9F9FA) padding-box,
+    linear-gradient(to right, #BA9023, #FFFFFF) border-box;
+    border-radius: 16px;
+    border: 4px solid transparent;
+    /*border-image-source: linear-gradient(to left, #743ad5, #d53a9d);*/
+
+}
+
+.island_title {
+    text-align : center;
+    color: black;
+}
+
+.island_div_button {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.island_button_yes_no
+{
+    width : 40%;
+    height : 48px;
+
+    font-size : 1.5em;
+    border-radius : 6px;
+    border : none;
+    margin: 4%;
+}
+
+.island_button_yes
+{
+    background-color : #16a085;
+    color : white;
+}
+
+.island_button_no
+{
+    background-color : #c0392b;
+    color : white;
+}

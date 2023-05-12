@@ -1,14 +1,5 @@
 import { Experience } from "../Experience";
-import {
-  ArrowHelper,
-  BoxGeometry,
-  Group,
-  Mesh,
-  MeshLambertMaterial,
-  Object3D,
-  Scene,
-  Vector2,
-} from "three";
+import { ArrowHelper, Group, Mesh, Object3D, Scene, Vector2 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -18,7 +9,7 @@ import { mapMainIslandData, mapPayIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
-import TextItemIsland from "./TextItemIsland";
+
 import {
   displayPopupIterfaceCreateItem,
   disablePopupIterfaceCreateItem,
@@ -26,6 +17,8 @@ import {
   disablePopupIterfaceModificateItem,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
+import Popup from "../UI/Popups/Popup";
+import Button from "../UI/Buttons/Button";
 
 export default class Island {
   public experience: Experience;
@@ -54,7 +47,9 @@ export default class Island {
   private readonly allObjectsCreateInMap: Array<Object3D>;
 
   public itemIslandManager: ItemIslandManager;
-  public textItemIsland: TextItemIsland;
+  // public textItemIsland: TextItemIsland;
+  public popupIsland: Popup;
+  public buttonIsland: Button;
 
   private allScene: Group;
   public overlay: HTMLDivElement | null;
@@ -92,7 +87,10 @@ export default class Island {
     );
 
     // Ui of item create an modificate
-    this.textItemIsland = new TextItemIsland();
+    // this.textItemIsland = new TextItemIsland();
+    this.popupIsland = new Popup();
+    this.buttonIsland = new Button();
+
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -124,6 +122,8 @@ export default class Island {
     // );
     this.loadIsland();
 
+    this.popupIsland.setPopupIsland();
+    this.buttonIsland.setButtonIsland();
     this.allScene = new Group();
   }
 
@@ -233,7 +233,7 @@ export default class Island {
           this.numberOfElementToAdd -= 1;
           this.checkIfAddItemToCreate();
         }
-        // Else we gonna to change position of this item
+        // Else we gonna change position of this item
         else {
           if (checkItem) {
             this.itemIslandManager.selectedItem = checkItem.object;

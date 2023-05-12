@@ -1,4 +1,6 @@
 import "./style.css";
+import "./Experience/UI/Popups/popup.css";
+import "./Experience/UI/Buttons/button.css";
 import { Experience } from "./Experience/Experience";
 
 // const experience =
