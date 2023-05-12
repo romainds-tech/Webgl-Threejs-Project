@@ -133,6 +133,5 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.18,
     animation: false,
-    clock: new Clock(),
   },
 };
