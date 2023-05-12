@@ -6,3 +6,62 @@
 html {
   overflow: hidden;
 }
+
+#popup_creation {
+  display: none;
+}
+
+#popup_modification {
+  display: none;
+}
+
+.island_div_popup {
+
+  opacity : 0.7;
+  position: absolute;
+  left : 5%;
+  bottom : 5%;
+  box-sizing: border-box;
+  padding : 25px;
+  width: 90%;
+  color : white;
+  font-family: roboto-font, sans-serif;
+  background-color : #e7e7e7;
+  border-radius : 6px;
+  z-index: 42;
+
+}
+
+.island_title {
+  text-align : center;
+  color: black;
+}
+
+.island_div_button {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.island_button_yes_no
+{
+  width : 40%;
+  height : 48px;
+
+  font-size : 1.5em;
+  border-radius : 6px;
+  border : none;
+  margin: 4%;
+}
+
+.island_button_yes
+{
+  background-color : #16a085;
+  color : white;
+}
+
+.island_button_no
+{
+  background-color : #c0392b;
+  color : white;
+}

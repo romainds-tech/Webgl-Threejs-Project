@@ -109,9 +109,9 @@ export const allGlbs = {
     name: "Just Robot",
     path: "glb/just-robot.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(0, 0, 1),
+    position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),
-    scale: 0.1,
+    scale: 0.01,
     animation: true,
   },
 
@@ -123,5 +123,16 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+  },
+
+  Island: {
+    name: "Island",
+    path: "glb/Island_full_modele_no_texture.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.18,
+    animation: false,
+    clock: new Clock(),
   },
 };

@@ -3,9 +3,9 @@ import Time from "./utils/Time";
 import { Scene } from "three";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
-// import Island from "./Island/Island";
+import Island from "./Island/Island";
 import Debug from "./utils/Debug";
-import Sky from "./Sky/Sky";
+// import Sky from "./Sky/Sky";
 import Light from "./Light/Light";
 import Onboarding from "./Onboarding/Onboarding";
 import Island from "./Island/Island";
@@ -21,7 +21,7 @@ export class Experience {
   public renderer: Renderer;
   public island: Island;
   public light: Light;
-  public sky: Sky;
+  // public sky: Sky;
   public debug: Debug;
   public onBoarding: Onboarding;
 
@@ -38,7 +38,6 @@ export class Experience {
     this.light = new Light();
     // this.sky = new Sky();
     // this.onBoarding = new Onboarding();
-
     this.renderer = new Renderer();
 
     this.sizes.on("resize", (): void => {
