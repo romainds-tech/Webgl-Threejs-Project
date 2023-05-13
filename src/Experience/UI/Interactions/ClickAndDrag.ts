@@ -34,25 +34,12 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
 
   init() {
     // if the user is on a touch device, listen to touch events
-
     document.addEventListener("mousemove", (event) => {
       if (event.buttons === 1) {
-        // check if the move is in direction of the bottom of the screen
-        if (event.movementY > 0) {
-          if (event.pageX > window.innerWidth / 2) {
-            this.rotateModelYNegatif();
-          }
-          if (event.pageX < window.innerWidth / 2) {
-            this.rotateModelYPositif();
-          }
-        }
-        if (event.movementY < 0) {
-          if (event.pageX > window.innerWidth / 2) {
-            this.rotateModelYPositif();
-          }
-          if (event.pageX < window.innerWidth / 2) {
-            this.rotateModelYNegatif();
-          }
+        if (event.pageX > window.innerWidth / 2) {
+          event.movementY > 0 ? this.rotateModelYNegatif() : this.rotateModelYPositif();
+        } else {
+          event.movementY > 0 ? this.rotateModelYPositif() : this.rotateModelYNegatif();
         }
       }
     });
@@ -60,35 +47,23 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
     // same but for mobile
     document.addEventListener("touchmove", (event) => {
       if (event.touches.length === 1) {
-        // check if the move is in direction of the bottom of the screen
-        if (event.touches[0].clientY > this.previousTouch) {
-          if (event.touches[0].clientX > window.innerWidth / 2) {
-            this.rotateModelYNegatif();
-          }
-          if (event.touches[0].clientX < window.innerWidth / 2) {
-            this.rotateModelYPositif();
-          }
+        if (event.touches[0].clientX > window.innerWidth / 2) {
+          event.touches[0].clientY > this.previousTouch ? this.rotateModelYNegatif() : this.rotateModelYPositif();
+        } else {
+          event.touches[0].clientY > this.previousTouch ? this.rotateModelYPositif() : this.rotateModelYNegatif();
         }
-        if (event.touches[0].clientY < this.previousTouch) {
-          if (event.touches[0].clientX > window.innerWidth / 2) {
-            this.rotateModelYPositif();
-          }
-          if (event.touches[0].clientX < window.innerWidth / 2) {
-            this.rotateModelYNegatif();
-          }
-        }
-
         this.previousTouch = event.touches[0].clientY;
       }
     });
+
   }
 
   rotateModelYPositif() {
-    this.model.rotation.y += 2;
+    this.model.rotation.y += 1;
   }
 
   rotateModelYNegatif() {
-    this.model.rotation.y -= 2;
+    this.model.rotation.y -= 1;
   }
 
   destroy() {
