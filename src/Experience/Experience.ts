@@ -34,10 +34,10 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
-    this.island = new Island();
+    //this.island = new Island();
     this.light = new Light();
     // this.sky = new Sky();
-    // this.onBoarding = new Onboarding();
+    this.onBoarding = new Onboarding();
     this.renderer = new Renderer();
 
     this.sizes.on("resize", (): void => {
@@ -66,7 +66,7 @@ export class Experience {
   private update() {
     this.camera.update();
     this.renderer.update();
-    // this.onBoarding.update();
+    this.onBoarding.update();
     // this.sky.update();
     // this.island.update();
   }
