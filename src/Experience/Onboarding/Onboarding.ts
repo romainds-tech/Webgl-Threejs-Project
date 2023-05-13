@@ -4,6 +4,8 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
+import ClickAndDrag from "../UI/Interactions/ClickAndDrag";
+import { Event } from "../UI/Interactions/ClickAndDrag";
 
 export default class Onboarding {
   public experience: Experience;
@@ -31,16 +33,20 @@ export default class Onboarding {
       new Model3D(allGlbs.TempleCircle1)
     );
     this.scene.add(this.circle1.loadedModel3D!);
+    new ClickAndDrag(this.circle1.loadedModel3D!, Event.ROTATION);
 
     this.circle2 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle2)
     );
     this.scene.add(this.circle2.loadedModel3D!);
+    new ClickAndDrag(this.circle2.loadedModel3D!, Event.ROTATION);
   }
 
   private setupCamera() {
     this.experience.camera.instance.position.set(-5, 20, 20);
     // remove orbit controls
+    this.experience.camera.instance.zoom = 1.75;
+    this.experience.camera.instance.updateProjectionMatrix();
     this.experience.camera.controls.enabled = false;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
