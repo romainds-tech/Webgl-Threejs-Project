@@ -57,15 +57,6 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
   },
-  Island: {
-    name: "Island",
-    path: "glb/island.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, 0, 0),
-    scale: 0.1,
-    animation: true,
-  },
   CubeVertexGroup: {
     name: "Cube Vertex Group",
     path: "glb/cube_vertex.gltf",
