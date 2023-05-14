@@ -19,6 +19,14 @@ export default class Button {
     );
 
     this.createButton(
+      "delete_button_item_island",
+      "button_island",
+      "SUPPRIMER",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+
+    this.createButton(
       "button_select_modificate_item_island",
       "button_island",
       "DEPLACER",

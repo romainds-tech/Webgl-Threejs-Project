@@ -18,6 +18,14 @@ export default class Popup {
     );
 
     this.createPopupTextOnly(
+      "popup_create_item_island",
+      "island_div_popup",
+      "Selectionnez un emplacement où placer votre objet.",
+      "island_title",
+      PositionY.TOP
+    );
+
+    this.createPopupTextOnly(
       "popup_select_item_island",
       "island_div_popup",
       "description du grigri + date d’obtention ",

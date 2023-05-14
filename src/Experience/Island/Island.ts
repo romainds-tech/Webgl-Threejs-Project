@@ -24,6 +24,8 @@ import {
   onClickOnDisabledModificationButton,
   displayPopupIterfaceModificateItem,
   disableInterfaceInformationItem,
+  disableInterfaceCreationItem,
+  displayInterfaceCreationItem,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Popup from "../UI/Popups/Popup";
@@ -80,7 +82,7 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = 2;
+    this.numberOfElementToAdd = 1;
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
@@ -110,7 +112,6 @@ export default class Island {
     document.addEventListener("pointerdown", this.onMouseDown, false);
 
     this.displayEditMode(false);
-    this.checkIfAddItemToCreate();
 
     this.loadIsland();
 
@@ -119,13 +120,19 @@ export default class Island {
 
     this.actionOnClickButtons();
     this.imageItem = null;
+
+    this.checkIfAddItemToCreate();
   }
 
   checkIfAddItemToCreate() {
-    if (this.numberOfElementToAdd > 0 || this.isSelected) {
+    if (this.numberOfElementToAdd > 0) {
+      displayInterfaceCreationItem();
+    } else if (this.isSelected) {
       this.displayEditMode(true);
+      disableInterfaceCreationItem();
     } else {
       this.displayEditMode(false);
+      disableInterfaceCreationItem();
     }
   }
 
@@ -241,7 +248,8 @@ export default class Island {
             this.imageItem = checkItem.object!.clone();
             this.setImageItem();
             this.displayEditMode(true);
-            displayInterfaceInformationItem(checkItem.object!);
+            displayInterfaceInformationItem();
+            disableInterfaceCreationItem();
           }
         }
 
@@ -269,6 +277,7 @@ export default class Island {
     this.clickOnCrossButtonInformationItem();
     this.clickOnAbandonedModificationItemButton();
     this.clickOnMoveItemButton();
+    this.clickOnDeleteItemButton();
   }
 
   clickOnCrossButtonInformationItem() {
@@ -302,12 +311,21 @@ export default class Island {
       .addEventListener("click", () => {
         displayPopupIterfaceModificateItem();
         disableInterfaceInformationItem();
+        disableInterfaceCreationItem();
         console.log("deplacer button");
         this.canRaycast = true;
         this.destroyImageItem();
       });
   }
 
+  clickOnDeleteItemButton() {
+    document
+      .getElementById("delete_button_item_island")!
+      .addEventListener("click", () => {
+        this.numberOfElementToAdd -= 1;
+        this.checkIfAddItemToCreate();
+      });
+  }
   resetPositionOfSelectedObject() {
     this.isSelected = false;
     this.itemIslandManager.selectedItem!.position.y = 0;

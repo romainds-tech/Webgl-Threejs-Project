@@ -1,6 +1,7 @@
 #abandonned_modificate_item_position_island,
 #button_select_modificate_item_island,
-#button_disable_select_item_island{
+#button_disable_select_item_island,
+#delete_button_item_island{
     display: none;
 }
 

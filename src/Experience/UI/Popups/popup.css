@@ -2,7 +2,9 @@
     display: none;
 }
 
-#popup_modification_item_island, #popup_select_item_island {
+#popup_modification_item_island,
+#popup_select_item_island,
+#popup_create_item_island {
     display: none;
 }
 .island_div_popup {

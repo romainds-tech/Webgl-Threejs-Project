@@ -1,8 +1,16 @@
-import { Object3D, Event, Scene } from "three";
+import { Object3D, Event } from "three";
 
-export function displayInterfaceInformationItem(object: Object3D<Event>) {
-  console.log("ojihjiji");
+export function displayInterfaceCreationItem() {
+  document.getElementById("popup_create_item_island")!.style.display = "block";
+  document.getElementById("delete_button_item_island")!.style.display = "block";
+}
 
+export function disableInterfaceCreationItem() {
+  document.getElementById("popup_create_item_island")!.style.display = "none";
+  document.getElementById("delete_button_item_island")!.style.display = "none";
+}
+
+export function displayInterfaceInformationItem() {
   document.getElementById("popup_select_item_island")!.style.display = "block";
   document.getElementById(
     "button_select_modificate_item_island"
