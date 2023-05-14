@@ -31,7 +31,6 @@ export default class Camera {
     this.instance = this.setInstance();
     this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
-    this.onZTyped();
   }
   private setInstance(): PerspectiveCamera | OrthographicCamera {
     let cameraInstance: PerspectiveCamera | OrthographicCamera;
@@ -44,7 +43,7 @@ export default class Camera {
         frustumSize / 2,
         frustumSize / -2,
         1,
-        1000
+        100
       );
 
       cameraInstance.zoom = 0.35;
@@ -116,24 +115,13 @@ export default class Camera {
     this.instance.updateProjectionMatrix();
   }
 
-  onZTyped() {
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "z") {
-        this.rotateCamera(50);
-      }
-    });
-  }
+
 
   rotateCamera(angle: number): void {
     gsap.to(this.instance.position, {
-      duration: 2,
+      duration: 3,
       y: Math.sin(angle),
       ease: "Expo.easeOut",
-    });
-    gsap.to(this.instance.position, {
-      delay: 1,
-      duration: 1,
-      y: Math.cos(angle * 0.75),
     });
   }
 

@@ -1,11 +1,12 @@
 import { Experience } from "../Experience";
-import { Scene } from "three";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag from "../UI/Interactions/ClickAndDrag";
 import { Event } from "../UI/Interactions/ClickAndDrag";
+import gsap from "gsap";
+import {Scene} from "three";
 
 export default class Onboarding {
   public experience: Experience;
@@ -43,24 +44,50 @@ export default class Onboarding {
   }
 
   private setupCamera() {
-    this.experience.camera.instance.position.set(-5, 20, 20);
+    this.experience.camera.instance.position.set(-5, 5, 20);
     // remove orbit controls
-    this.experience.camera.instance.zoom = 1.75;
+    this.experience.camera.instance.zoom = 0.35;
     this.experience.camera.instance.updateProjectionMatrix();
     this.experience.camera.controls.enabled = false;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
+    this.startMovementCamera();
+
+  }
+
+  private startMovementCamera() {
+      gsap.to(this.experience.camera.instance.position, {
+        duration: 5,
+        y: 20,
+        ease: "Expo.easeOut"
+      });
+
+
+
+
+
+      gsap.to(this.experience.camera.instance, {
+          duration: 5,
+          zoom: 1.75,
+          ease: "Expo.easeOut",
+        onUpdate: () => {
+              this.experience.camera.instance.updateProjectionMatrix();
+            }
+      });
   }
 
   private setupBackgroundImage() {
     let textureback = CustomImageLoader.getInstance().loadImage(
-      "material/background/temple_bg.jpg"
+      "material/background/temple_bg.jpg",
     );
 
     this.scene.background = textureback;
   }
 
-  update() {}
+
+
+  update() {
+  }
 
   destroy() {}
 }

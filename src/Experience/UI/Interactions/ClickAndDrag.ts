@@ -13,18 +13,14 @@ export enum Event {
   SCALE,
 }
 
-type EventMap = {
-  dragBottom: [Event];
-  dragTop: [Event];
-};
 
-export default class ClickAndDrag extends EventEmitter<EventMap> {
+
+export default class ClickAndDrag {
   private event: Event;
   private model: Object3D;
-  private previousTouch: number;
+  private previousTouch: number = 0;
 
   constructor(model: Object3D, event: Event) {
-    super();
 
     this.model = model;
     this.event = event;
@@ -33,7 +29,15 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
   }
 
   init() {
-    // if the user is on a touch device, listen to touch events
+    // Check event Enum and add the right listener
+    switch (this.event) {
+        case Event.ROTATION:
+            this.addRotationListener();
+    }
+  }
+
+
+  private addRotationListener() {
     document.addEventListener("mousemove", (event) => {
       if (event.buttons === 1) {
         if (event.pageX > window.innerWidth / 2) {
@@ -43,7 +47,6 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
         }
       }
     });
-
     // same but for mobile
     document.addEventListener("touchmove", (event) => {
       if (event.touches.length === 1) {
@@ -55,19 +58,19 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
         this.previousTouch = event.touches[0].clientY;
       }
     });
-
   }
 
-  rotateModelYPositif() {
-    this.model.rotation.y += 1;
+
+  private rotateModelYPositif(step: number = 1) {
+    this.model.rotation.y += step;
   }
 
-  rotateModelYNegatif() {
-    this.model.rotation.y -= 1;
+  private rotateModelYNegatif(step: number = 1) {
+    this.model.rotation.y -= step;
   }
 
   destroy() {
-    document.removeEventListener("mousemove", (event) => {});
-    document.removeEventListener("touchmove", (event) => {});
+    // remove listeners
+
   }
 }
