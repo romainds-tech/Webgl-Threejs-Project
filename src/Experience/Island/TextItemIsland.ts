@@ -27,18 +27,6 @@ export default class TextItemIsland {
       "island_button_yes_no island_button_no",
       "Non"
     );
-
-    this.createPopup(
-      "popup_modification",
-      "island_div_popup",
-      "island_title",
-      "Modifier la position de l'item ?",
-      "island_div_button",
-      "island_button_yes_no island_button_yes",
-      "Oui",
-      "island_button_yes_no island_button_no",
-      "Non"
-    );
   }
 
   createPopup(

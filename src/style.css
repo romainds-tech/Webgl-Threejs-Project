@@ -6,3 +6,30 @@
 html {
   overflow: hidden;
 }
+
+.top_position {
+  top : 5%;
+  left : 5%;
+}
+
+.middle_position {
+  top : 70%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.bottom_position {
+  left : 5%;
+  bottom : 5%;
+}
+
+.center_position {
+  left : 50%;
+  transform: translate(-50%, 0);
+}
+
+.right_position {
+  right : 0%;
+  left : initial;
+  transform: translate(-50%, 0);
+}

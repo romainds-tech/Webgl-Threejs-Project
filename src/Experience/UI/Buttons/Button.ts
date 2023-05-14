@@ -1,4 +1,4 @@
-import { Position } from "../Enums/Position";
+import { PositionY, PositionX } from "../Enums/Position";
 
 export default class Button {
   public buttonAbandonnedModificateChangeItemPosition: HTMLButtonElement | null;
@@ -13,8 +13,25 @@ export default class Button {
     this.createButton(
       "abandonned_modificate_item_position_island",
       "button_island",
-      "test",
-      Position.BOTTOM
+      "ANNULER",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+
+    this.createButton(
+      "button_select_modificate_item_island",
+      "button_island",
+      "DEPLACER",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+
+    this.createButton(
+      "button_disable_select_item_island",
+      "button_cross_island",
+      "X",
+      PositionY.TOP,
+      PositionX.RIGHT
     );
   }
 
@@ -22,11 +39,12 @@ export default class Button {
     idButton: string,
     classStyleNameButton: string,
     textButton: string,
-    position: Position
+    positionY: PositionY,
+    positionX: PositionX
   ) {
     const button = document.createElement("button");
     button.id = idButton;
-    button.className = classStyleNameButton + " " + position;
+    button.className = classStyleNameButton + " " + positionY + " " + positionX;
     button.innerHTML = textButton;
 
     document.body.appendChild(button);

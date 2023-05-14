@@ -1,4 +1,4 @@
-import { Position } from "../Enums/Position";
+import { PositionY } from "../Enums/Position";
 
 export default class Popup {
   public divModificateItemPositionIsland: HTMLDivElement | null;
@@ -10,11 +10,19 @@ export default class Popup {
 
   setPopupIsland() {
     this.createPopupTextOnly(
-      "popup_modification",
+      "popup_modification_item_island",
       "island_div_popup",
       "Sélectionnez un emplacement où déplacer votre objet",
       "island_title",
-      Position.TOP
+      PositionY.TOP
+    );
+
+    this.createPopupTextOnly(
+      "popup_select_item_island",
+      "island_div_popup",
+      "description du grigri + date d’obtention ",
+      "island_title",
+      PositionY.MIDDLE
     );
   }
 
@@ -23,7 +31,7 @@ export default class Popup {
     classStyleNameDivContainer: string,
     textDiv: string,
     classStyleNameText: string,
-    position: Position
+    position: PositionY
   ) {
     const divContainer = document.createElement("div");
     const titleH2 = document.createElement("h4");
