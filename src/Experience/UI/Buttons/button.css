@@ -1,0 +1,40 @@
+#abandonned_modificate_item_position_island,
+#button_select_modificate_item_island,
+#button_disable_select_item_island,
+#delete_button_item_island{
+    display: none;
+}
+
+.button_island {
+    /*pointer-events: all;*/
+    position: absolute;
+    box-sizing: border-box;
+    padding : 25px;
+    width: 150px;
+    color : white;
+    background-color: #0000001A;
+    font-family: roboto-font, sans-serif;
+    border: 1px solid white;
+    border-radius: 16px;
+    z-index: 42;
+}
+
+.button_cross_island {
+    /*pointer-events: all;*/
+    position: absolute;
+    box-sizing: border-box;
+    height: 50px;
+    width: 50px;
+    color : white;
+    background-color: #0000001A;
+    font-family: roboto-font, sans-serif;
+    border: 1px solid white;
+    border-radius: 100%;
+    z-index: 42;
+}
+
+.button_island:hover {
+    background-color: red;
+}
+
+

@@ -11,7 +11,7 @@ import {
 import { Scene } from "three";
 
 // main map of island
-export var mapMainIslandData = {
+export var mapPayIslandData = {
   data: [
     [0, 0, 0],
     [0, 0, 0],
@@ -20,7 +20,7 @@ export var mapMainIslandData = {
 };
 
 // new island add if user paid for more space
-export var mapPayIslandData = {
+export var mapMainIslandData = {
   data: [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
