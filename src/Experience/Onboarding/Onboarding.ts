@@ -1,10 +1,9 @@
-import { Experience } from "../Experience";
+import {Experience} from "../Experience";
 import Model3D from "../utils/Model3d";
-import { allGlbs } from "../../Sources/glb/glb";
+import {allGlbs} from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag from "../UI/Interactions/ClickAndDrag";
-import { Event } from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, {Event} from "../UI/Interactions/ClickAndDrag";
 import gsap from "gsap";
 import {Scene} from "three";
 
@@ -58,8 +57,11 @@ export default class Onboarding {
   private startMovementCamera() {
       gsap.to(this.experience.camera.instance.position, {
         duration: 5,
-        y: 20,
-        ease: "Expo.easeOut"
+        y: 15,
+        ease: "Expo.easeOut",
+        onUpdate: () => {
+          this.experience.camera.instance.updateProjectionMatrix();
+        }
       });
 
 
@@ -68,7 +70,7 @@ export default class Onboarding {
 
       gsap.to(this.experience.camera.instance, {
           duration: 5,
-          zoom: 1.75,
+          zoom: 2.25,
           ease: "Expo.easeOut",
         onUpdate: () => {
               this.experience.camera.instance.updateProjectionMatrix();
@@ -77,11 +79,9 @@ export default class Onboarding {
   }
 
   private setupBackgroundImage() {
-    let textureback = CustomImageLoader.getInstance().loadImage(
-      "material/background/temple_bg.jpg",
+    this.scene.background = CustomImageLoader.getInstance().loadImage(
+        "material/background/temple_bg.jpg",
     );
-
-    this.scene.background = textureback;
   }
 
 
