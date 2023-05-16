@@ -125,4 +125,14 @@ export const allGlbs = {
     scale: 0.18,
     animation: false,
   },
+
+  Cards: {
+    name: "Cards",
+    path: "glb/cards_v1.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 0, 2),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: true,
+  },
 };

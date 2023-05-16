@@ -13,6 +13,12 @@ html {
 }
 
 .middle_position {
+  top : 50%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_70_position {
   top : 70%;
   left : 5%;
   transform: translate(0, -50%);

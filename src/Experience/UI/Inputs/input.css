@@ -1,0 +1,18 @@
+/*Cartomancie*/
+
+#title_start_cartomancie,
+#title_first_arcane_cartomancie{
+    display: none;
+}
+
+#title_first_arcane_cartomancie{
+    color: white;
+}
+
+.title_cartomancie {
+    position: absolute;
+    width: 90%;
+    color: #1C154E;
+    text-align: center;
+    z-index: 42;
+}

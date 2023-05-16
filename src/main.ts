@@ -1,6 +1,8 @@
 import "./style.css";
 import "./Experience/UI/Popups/popup.css";
 import "./Experience/UI/Buttons/button.css";
+import "./Experience/UI/Inputs/input.css";
+import "./Experience/UI/Overlays/overlay.css";
 import { Experience } from "./Experience/Experience";
 
 // const experience =

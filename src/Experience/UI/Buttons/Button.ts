@@ -43,6 +43,23 @@ export default class Button {
     );
   }
 
+  setButtonCartomancie() {
+    this.createButton(
+      "button_start_cartomancie",
+      "button_cartomancie",
+      "COMMENCER",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+
+    this.createButton(
+      "button_first_arcane_cartomancie",
+      "button_island",
+      "Deuxième carte",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+  }
   createButton(
     idButton: string,
     classStyleNameButton: string,

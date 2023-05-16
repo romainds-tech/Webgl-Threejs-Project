@@ -4,10 +4,13 @@
 
 #popup_modification_item_island,
 #popup_select_item_island,
-#popup_create_item_island {
+#popup_create_item_island,
+#popup_start_cartomancie,
+#popup_first_arcane_cartomancie{
     display: none;
 }
-.island_div_popup {
+
+.div_popup {
     position: absolute;
     box-sizing: border-box;
     padding : 25px;
@@ -54,4 +57,23 @@
 {
     background-color : #c0392b;
     color : white;
+}
+
+
+/*Cartomancie*/
+
+.cartomancie_text {
+    color: #1C165E;
+    text-align: center;
+    font-weight: 100;
+}
+
+.div_arcane {
+    position: absolute;
+    box-sizing: border-box;
+    padding : 25px;
+    width: 90%;
+    color : white;
+    font-family: roboto-font, sans-serif;
+    z-index: 42;
 }

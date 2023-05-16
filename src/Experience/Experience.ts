@@ -6,9 +6,10 @@ import Renderer from "./Renderer";
 import Island from "./Island/Island";
 import Debug from "./utils/Debug";
 // import Sky from "./Sky/Sky";
+
 import Light from "./Light/Light";
 import Onboarding from "./Onboarding/Onboarding";
-import Island from "./Island/Island";
+import Cartomancie from "./Cartomancie/Cartomancie";
 
 export class Experience {
   private static instance: Experience;
@@ -21,6 +22,7 @@ export class Experience {
   public renderer: Renderer;
   public island: Island;
   public light: Light;
+  public cartomancie: Cartomancie;
   // public sky: Sky;
   public debug: Debug;
   public onBoarding: Onboarding;
@@ -34,9 +36,10 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
-    this.island = new Island();
+    // this.island = new Island();
     this.light = new Light();
     // this.sky = new Sky();
+    this.cartomancie = new Cartomancie();
     // this.onBoarding = new Onboarding();
     this.renderer = new Renderer();
 
@@ -69,6 +72,7 @@ export class Experience {
     // this.onBoarding.update();
     // this.sky.update();
     // this.island.update();
+    this.cartomancie.update();
   }
 
   static getInstance() {
