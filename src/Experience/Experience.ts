@@ -20,7 +20,7 @@ export class Experience {
   public scene: Scene;
   public camera: Camera;
   public renderer: Renderer;
-  public island: Island;
+  public island?: Island;
   public light: Light;
   public cartomancie: Cartomancie;
   // public sky: Sky;

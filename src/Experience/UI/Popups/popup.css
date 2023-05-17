@@ -6,11 +6,12 @@
 #popup_select_item_island,
 #popup_create_item_island,
 #popup_start_cartomancie,
-#popup_first_arcane_cartomancie{
+#popup_first_arcane_cartomancie,
+#popup_second_arcane_cartomancie,
+#popup_prediction_cartomancie{
     display: none;
 }
-
-.div_popup {
+.div {
     position: absolute;
     box-sizing: border-box;
     padding : 25px;
@@ -18,11 +19,13 @@
     color : white;
     font-family: roboto-font, sans-serif;
     z-index: 42;
+}
+
+.div_popup {
     background: linear-gradient(#F9F9FA, #F9F9FA) padding-box,
     linear-gradient(to right, #BA9023, #FFFFFF) border-box;
     border-radius: 16px;
     border: 4px solid transparent;
-
 }
 
 .island_title {
@@ -31,7 +34,7 @@
 }
 
 .island_div_button {
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -76,4 +79,22 @@
     color : white;
     font-family: roboto-font, sans-serif;
     z-index: 42;
+}
+
+.text_arcane {
+    border: 1px solid white;
+    border-radius: 16px;
+    padding: 20px;
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 1.4;
+    background: #0000001A;
+}
+
+.div_prediction {
+    height: 80%;
+}
+
+.height_arcane {
+    height: 80%;
 }

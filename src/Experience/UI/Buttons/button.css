@@ -3,23 +3,31 @@
 #button_disable_select_item_island,
 #delete_button_item_island,
 #button_start_cartomancie,
-#button_first_arcane_cartomancie{
+#button_first_arcane_cartomancie,
+#button_second_arcane_cartomancie,
+#button_display_prediction_cartomancie,
+#button_back_cartomancie,
+#button_select_low_item_cartomancie,
+#button_select_higher_item_cartomancie{
     display: none;
 }
 
 /*TODO : renommer et fusion les classe*/
-.button_island {
-    /*pointer-events: all;*/
+
+.button {
     position: absolute;
     box-sizing: border-box;
-    padding : 25px;
-    width: 150px;
-    color : white;
-    background-color: #0000001A;
+    height : 50px;
+    width: 170px;
+    z-index: 42;
     font-family: roboto-font, sans-serif;
     border: 1px solid white;
     border-radius: 16px;
-    z-index: 42;
+    color : white;
+}
+.button_island {
+    /*pointer-events: all;*/
+    background-color: #0000001A;
 }
 
 .button_cross_island {
@@ -40,16 +48,47 @@
     background-color: red;
 }
 
+/*CARTOMANCIE*/
+
 .button_cartomancie{
-    position: absolute;
-    box-sizing: border-box;
-    padding : 25px;
-    width: 150px;
-    color : white;
     background-color: #1C154E;
-    font-family: roboto-font, sans-serif;
-    border: 1px solid white;
-    border-radius: 16px;
-    z-index: 42;
 }
 
+.button_prediction {
+    background: linear-gradient(#1C154E, #1C154E) padding-box,
+    linear-gradient(to right, #BA9023, #FFFFFF) border-box;
+    border: 1px solid transparent;
+}
+
+.button_white {
+    width: 290px;
+    background-color: #0000001A;
+}
+
+.margin_icon_right {
+    margin-left: 5px;
+}
+
+.margin_icon_left {
+    margin-right: 5px;
+}
+
+.button_prediction_back {
+    background: #00000000;
+    border: 0;
+}
+
+.button_icon_back {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+}
+
+#button_select_higher_item_cartomancie{
+    width: 220px;
+}
+
+#button_display_prediction_cartomancie {
+    width: 250px;
+}

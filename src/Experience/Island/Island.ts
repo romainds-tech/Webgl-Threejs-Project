@@ -37,13 +37,13 @@ export default class Island {
   public sizes: Sizes;
   public camera: Camera;
 
-  private robot?: Model3D;
+  public item?: Model3D;
   private island?: Model3D;
 
   public debug: Debug;
   public debugFolder: GUI | null;
 
-  private numberOfElementToAdd: number;
+  public numberOfElementToAdd: number;
 
   // Map
   // var for trigger event
@@ -67,7 +67,7 @@ export default class Island {
   public overlay: HTMLDivElement | null;
   public cursor?: Mesh;
 
-  constructor() {
+  constructor(elementToAdd: number) {
     // Experience
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
@@ -82,13 +82,13 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = 1;
+    this.numberOfElementToAdd = elementToAdd;
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new RaycasterExperience();
 
-    this.loadModelsItemIsland();
+    // this.loadModelsItemIsland();
 
     this.isSelected = false;
     // Load the map
@@ -121,6 +121,7 @@ export default class Island {
     this.actionOnClickButtons();
     this.imageItem = null;
 
+    console.log(this.numberOfElementToAdd);
     this.checkIfAddItemToCreate();
   }
 
@@ -226,7 +227,7 @@ export default class Island {
 
         // If we dont have item on this case, we create one
         if (checkItem == null && this.numberOfElementToAdd > 0) {
-          let newItem = this.robot!.loadedModel3D!.clone();
+          let newItem = this.item!.loadedModel3D!.clone();
 
           newItem.position.set(
             selectedBloc.position.x,
@@ -352,7 +353,7 @@ export default class Island {
   }
   // Models
   private async loadModelsItemIsland() {
-    this.robot = await CustomGlbLoader.getInstance().loadOne(
+    this.item = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.JustRobot)
     );
   }

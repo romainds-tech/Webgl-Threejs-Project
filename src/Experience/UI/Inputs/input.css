@@ -1,18 +1,42 @@
 /*Cartomancie*/
 
 #title_start_cartomancie,
-#title_first_arcane_cartomancie{
+#title_first_arcane_cartomancie,
+#title_second_arcane_cartomancie,
+#title_prediction_cartomancie,
+#title_select_item_cartomancie{
     display: none;
 }
 
-#title_first_arcane_cartomancie{
+#title_first_arcane_cartomancie,
+#title_second_arcane_cartomancie,
+#title_prediction_cartomancie,
+#title_select_item_cartomancie{
     color: white;
 }
 
+
+.input_div {
+    position: absolute;
+    width: 90%;
+    color: #1C154E;
+    text-align: center;
+    z-index: 42;
+}
 .title_cartomancie {
     position: absolute;
     width: 90%;
     color: #1C154E;
     text-align: center;
     z-index: 42;
+}
+
+
+
+.subtitle_cartomancie {
+    margin-top: 10px
+}
+
+#title_select_item_cartomancie {
+    margin-top: 3%;
 }
