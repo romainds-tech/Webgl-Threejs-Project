@@ -142,13 +142,15 @@ export default class Cartomancie {
       clipMixer.setLoop(LoopOnce, 1);
       clipMixer.clampWhenFinished = true;
       this.mixer.addEventListener("finished", () => {
-        this.setImageItem();
-        this.destroyCard();
-        displayInterfaceFirstArcaneCartomancie();
-        this.setOverlayArcane();
-        if (this.firstArcaneImageItem) {
-          this.scene.add(this.firstArcaneImageItem);
-        }
+        setTimeout(() => {
+          this.setImageItem();
+          this.destroyCard();
+          displayInterfaceFirstArcaneCartomancie();
+          this.setOverlayArcane();
+          if (this.firstArcaneImageItem) {
+            this.scene.add(this.firstArcaneImageItem);
+          }
+        }, 500);
       });
     }
   }
@@ -313,7 +315,7 @@ export default class Cartomancie {
   }
 
   update() {
-    this.mixer?.update(this.experience.time.delta * 0.01);
+    this.mixer?.update(this.experience.time.delta * 0.001);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

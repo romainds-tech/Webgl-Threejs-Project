@@ -189,7 +189,6 @@ export default class Island {
     if (intersects.length > 0 && this.canRaycast) {
       this.addDebug();
 
-      // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
       // modification item position
@@ -350,12 +349,6 @@ export default class Island {
       );
       this.scene.add(arrow);
     }
-  }
-  // Models
-  private async loadModelsItemIsland() {
-    this.item = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.JustRobot)
-    );
   }
 
   private async loadIsland() {
