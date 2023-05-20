@@ -25,12 +25,16 @@ export default class Whale {
     this.model = this.resource;
     this.model.scale.set(0.001, 0.001, 0.001);
     this.model.position.set(1, 2, 0);
-    this.model.layers.toggle(0);
+    ;
+    console.log(this.model.layers)
     this.scene.add(this.model);
+
+
 
     this.model.traverse((child) => {
       if (child instanceof THREE.Mesh) {
         child.castShadow = true;
+        child.layers.toggle(1)
       }
     });
   }

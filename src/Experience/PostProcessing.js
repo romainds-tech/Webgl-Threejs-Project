@@ -29,9 +29,9 @@ export default class PostProcessing {
     this.BLOOM_SCENE = 1;
 
     this.params = {
-      exposure: 1,
-      bloomStrength: 5,
-      bloomThreshold: 0,
+      exposure: 0.3,
+      bloomStrength: 3,
+      bloomThreshold: 0.3,
       bloomRadius: 0,
       scene: "Scene with Glow",
     };
@@ -57,7 +57,7 @@ export default class PostProcessing {
       this.setEffect();
     });
 
-
+    this.renderer.autoClear = false
   }
 
   setInstance() {
@@ -147,34 +147,24 @@ export default class PostProcessing {
       new THREE.Vector2(this.sizes.width, this.sizes.height),
       1.5,
       0.4,
-      0.85
+      0.3
     );
     bloomPass.threshold = this.params.bloomThreshold;
     bloomPass.strength = this.params.bloomStrength;
     bloomPass.radius = this.params.bloomRadius;
 
-    this.instance.addPass(bloomPass);
-
-
+    this.bloomComposer = new EffectComposer( this.renderer.instance );
+    this.bloomComposer.renderToScreen = false;
+    this.bloomComposer.addPass( this.renderPass );
+    this.bloomComposer.addPass( bloomPass );
 
     if (this.debug.active) {
       this.bloomFolder = this.debugFolder.addFolder("Bloom");
-      this.bloomFolder.add(bloomPass, "enabled").name("Enabled");
-
-      this.bloomFolder
-        .add(this.params, "exposure")
-        .min(0.1)
-        .max(2)
-        .step(0.01)
-        .name("Interior")
-        .onChange(function (value) {
-          this.renderer.toneMappingExposure = Math.pow(value, 4.0);
-        });
 
       this.bloomFolder
         .add(this.params, "bloomThreshold")
-        .min(0.1)
-        .max(2)
+        .min(0.15)
+        .max(1)
         .step(0.01)
         .onChange(function (value) {
           bloomPass.threshold = value;
@@ -200,7 +190,7 @@ export default class PostProcessing {
       new ShaderMaterial({
         uniforms: {
           baseTexture: { value: null },
-          bloomTexture: { value: this.instance.renderTarget2.texture },
+          bloomTexture: { value: this.bloomComposer.renderTarget2.texture },
         },
         vertexShader: `
         varying vec2 vUv;
@@ -217,6 +207,8 @@ export default class PostProcessing {
         uniform sampler2D bloomTexture;
 
         varying vec2 vUv;
+        
+        
 
         void main() {
             gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );
@@ -229,12 +221,7 @@ export default class PostProcessing {
 
     this.finalPass.needsSwap = true;
 
-    this.finalComposer = new EffectComposer(
-      this.renderer.instance,
-      this.renderTarget
-    );
-    this.finalComposer.addPass(this.renderPass);
-    this.finalComposer.addPass(this.finalPass);
+    this.instance.addPass(this.finalPass);
   }
   settFilmPass() {
     const filmPass = new FilmPass(
@@ -262,7 +249,7 @@ export default class PostProcessing {
     this.renderBloom(true);
 
     // render the entire scene, then render bloom scene on top
-    this.finalComposer.render();
+    this.instance.render();
   }
 
   renderBloom(mask) {
@@ -270,7 +257,8 @@ export default class PostProcessing {
       this.scene.traverse( (objet) => {
         this.darkenNonBloomed(objet)
       });
-      this.instance.render();
+      // this.renderer.clear()
+      this.bloomComposer.render();
       this.scene.traverse( (objet) => {
         this.restoreMaterial(objet)
       });

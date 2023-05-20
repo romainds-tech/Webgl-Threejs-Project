@@ -36,6 +36,7 @@ export default class Cube {
     this.mesh = new Mesh(this.geometryCube, this.materialCube);
 
     // this.mesh.layers.toggle(this.experience.postProcessing.BLOOM_SCENE );
+    this.mesh.position.set(3,1,0)
     this.mesh.layers.toggle(1);
     this.scene.add(this.mesh);
   }

@@ -48,6 +48,12 @@ export default class Experience {
         this.time.on('tick', () => {
             this.update()
         })
+
+        this.scene.traverse( ( object )  =>{
+
+            if ( object ) console.log( object );
+
+        } );
     }
 
     resize() {
@@ -60,7 +66,7 @@ export default class Experience {
 
         this.camera.update()
         this.world.update()
-        this.renderer.update()
+        // this.renderer.update()
 
         this.postProcessing.update()
 

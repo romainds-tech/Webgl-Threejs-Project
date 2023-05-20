@@ -17,10 +17,10 @@ export default class World {
     // Wait for resources
     this.resources.on("ready", () => {
       // Setup
-      // this.floor = new Floor();
-      // this.fox = new Fox();
-      // this.robot = new Robot("robot1");
-      // this.whale = new Whale();
+      this.floor = new Floor();
+      this.fox = new Fox();
+      this.robot = new Robot("robot1");
+      this.whale = new Whale();
       // this.griffe = new Griffe();
       this.cube = new Cube();
       this.htmlPoint = new HTMLPoint();
