@@ -35,15 +35,29 @@ export default class PostProcessing {
       bloomRadius: 0,
       scene: "Scene with Glow",
     };
+    this.darkMaterial = new THREE.MeshBasicMaterial( { color: 'black' } );
+    this.materials = {};
+
 
     if (this.debug.active) {
       this.debugFolder = this.debug.ui.addFolder("Post preocessing");
     }
 
+    //Layer
+    this.bloomLayer = new THREE.Layers();
+    this.bloomLayer.set(this.BLOOM_SCENE);
+
+    this.setInstance();
+
+    this.setBloomPass();
+    this.settFilmPass();
+    this.setFinalPass();
+
     this.resources.on("ready", () => {
       this.setEffect();
     });
-    this.setInstance();
+
+
   }
 
   setInstance() {
@@ -83,9 +97,8 @@ export default class PostProcessing {
     displacementPass.enabled = false;
     this.instance.addPass(displacementPass);
 
-    this.setBloomPass();
-    this.settFilmPass();
-    this.setFinalPass();
+
+
     if (this.debug.active) {
       this.glitchFolder = this.debugFolder.addFolder("Glitch");
       this.glitchFolder.add(glitchPass, "enabled").name("Enabled");
@@ -142,9 +155,7 @@ export default class PostProcessing {
 
     this.instance.addPass(bloomPass);
 
-    //Layer
-    const bloomLayer = new THREE.Layers();
-    bloomLayer.set(this.BLOOM_SCENE);
+
 
     if (this.debug.active) {
       this.bloomFolder = this.debugFolder.addFolder("Bloom");
@@ -247,7 +258,7 @@ export default class PostProcessing {
     this.instance.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   }
 
-  render() {
+  renderPostProcessing() {
     this.renderBloom(true);
 
     // render the entire scene, then render bloom scene on top
@@ -255,12 +266,39 @@ export default class PostProcessing {
   }
 
   renderBloom(mask) {
-    if (mask === true) {
+    if (mask) {
+      this.scene.traverse( (objet) => {
+        this.darkenNonBloomed(objet)
+      });
       this.instance.render();
+      this.scene.traverse( (objet) => {
+        this.restoreMaterial(objet)
+      });
     }
   }
 
+  darkenNonBloomed( obj ) {
+    if (obj.isMesh && this.bloomLayer.test(obj.layers) === false) {
+
+      this.materials[obj.uuid] = obj.material;
+      obj.material = this.darkMaterial;
+
+    }
+  }
+
+  restoreMaterial( obj ) {
+
+    if ( this.materials[ obj.uuid ] ) {
+
+      obj.material = this.materials[ obj.uuid ];
+      delete this.materials[ obj.uuid ];
+
+    }
+
+  }
+
+
   update() {
-    this.instance.render();
+    this.renderPostProcessing();
   }
 }
