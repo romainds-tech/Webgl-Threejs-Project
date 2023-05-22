@@ -185,10 +185,8 @@ export default class Island {
     // if I clicked on a raycastable object
     if (intersects.length > 0 && this.canRaycast) {
       this.addDebug();
-
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
-
       // modification item position
       if (this.isSelected) {
         this.modificationItemPosition(selectedBloc);
@@ -199,8 +197,6 @@ export default class Island {
           selectedBloc.position.x,
           selectedBloc.position.z
         );
-
-        console.log(selectedBloc.name);
 
         // If we dont have item on this case, we create one
         if (
@@ -386,6 +382,11 @@ export default class Island {
     }
   }
 
+  loadAllScene() {
+    this.scene.add(this.island?.loadedModel3D!);
+    this.scene.add(this.mapGroup);
+  }
+
   destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
@@ -393,5 +394,8 @@ export default class Island {
   destroy() {
     this.scene.remove(this.island?.loadedModel3D!);
     this.island?.loadedModel3D?.remove();
+
+    this.scene.remove(this.mapGroup);
+    this.mapGroup.remove();
   }
 }

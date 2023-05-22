@@ -1,8 +1,6 @@
 import { Experience } from "../Experience";
 import {
   AnimationMixer,
-  BoxGeometry,
-  Color,
   DoubleSide,
   LoopOnce,
   Mesh,
@@ -128,11 +126,14 @@ export default class Cartomancie {
   }
 
   private async loadCards() {
-    this.cards = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Cards)
-    );
+    if (this.cards == undefined) {
+      this.cards = await CustomGlbLoader.getInstance().loadOne(
+        new Model3D(allGlbs.Cards)
+      );
 
-    this.scene.add(this.cards.loadedModel3D!);
+      this.scene.add(this.cards.loadedModel3D!);
+    }
+
     this.playAnimations();
   }
 
@@ -242,6 +243,7 @@ export default class Cartomancie {
       this.experience.island.item = item;
       this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
       this.experience.island.setupCamera();
+      this.experience.island.loadAllScene();
     }
 
     this.removeItemFromScene();
@@ -314,7 +316,7 @@ export default class Cartomancie {
     console.log(this.cards);
     this.scene.remove(this.cards?.loadedModel3D!);
     this.cards?.destroy();
-    this.cards = undefined;
+    // this.cards = undefined;
   }
 
   destroyFirstArcane() {
