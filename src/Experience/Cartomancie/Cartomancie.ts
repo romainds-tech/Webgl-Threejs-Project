@@ -315,7 +315,7 @@ export default class Cartomancie {
   }
 
   update() {
-    this.mixer?.update(this.experience.time.delta * 0.001);
+    this.mixer?.update(this.experience.time.delta * 0.01);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

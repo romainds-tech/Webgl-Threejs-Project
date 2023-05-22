@@ -63,8 +63,8 @@ export default class Island {
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
 
-  private allScene: Group;
-  public overlay: HTMLDivElement | null;
+  private allScene?: Group;
+  public overlay?: HTMLDivElement | null;
   public cursor?: Mesh;
 
   constructor(elementToAdd: number) {
@@ -73,6 +73,7 @@ export default class Island {
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
+    this.setupCamera();
 
     // Debug
     this.debug = this.experience.debug;
@@ -157,17 +158,9 @@ export default class Island {
   }
 
   //change the value of all the scene
-  allSceneInfo() {
-    if (this.island && this.island.loadedModel3D) {
-      this.allScene.add(this.island.loadedModel3D);
-    }
-
-    this.allScene.add(this.mapGroup);
-
-    let size = 1.4;
-
-    this.allScene.scale.set(size, size, size);
-    this.scene.add(this.allScene);
+  setupCamera() {
+    this.camera.instance.zoom = 0.6;
+    this.camera.instance.updateProjectionMatrix();
   }
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
@@ -359,15 +352,14 @@ export default class Island {
     this.scene.add(this.island.loadedModel3D!);
 
     // this.allScene.add(this.island.loadedModel3D!);
-    this.allSceneInfo();
   }
 
   setImageItem() {
-    let sizeImageItem = 0.1;
+    let sizeImageItem = 0.05;
     if (this.imageItem) {
       this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
 
-      this.imageItem.position.set(0, 5, 0);
+      this.imageItem.position.set(0, 3, 0);
       this.scene.add(this.imageItem);
     }
   }

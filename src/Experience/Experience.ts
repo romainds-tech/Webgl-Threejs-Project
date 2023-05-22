@@ -20,7 +20,7 @@ export class Experience {
   public scene: Scene;
   public camera: Camera;
   public renderer: Renderer;
-  public island?: Island;
+  // public island?: Island;
   public light: Light;
   public cartomancie: Cartomancie;
   // public sky: Sky;
@@ -36,7 +36,7 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
-    // this.island = new Island();
+    // this.island = new Island(0);
     this.light = new Light();
     // this.sky = new Sky();
     this.cartomancie = new Cartomancie();
