@@ -10,8 +10,12 @@ import { Scene } from "three";
 import Text from "../UI/Texts/Text";
 import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
+import { EventEmitter } from "../utils/EventEmitter";
 
-export default class Onboarding {
+type EventMap = {
+  onboardingFinish: [];
+};
+export default class Onboarding extends EventEmitter<EventMap> {
   public experience: Experience;
   public scene: Scene;
   private temple?: Model3D;
@@ -22,10 +26,11 @@ export default class Onboarding {
     | { Title: string; Content: string; Type: string; Options: string[] }
   )[];
   private currentQuestionIndex = 0;
-  private buttonOnboarding: Button;
+  private buttonOnboarding?: Button;
   private drag?: ClickAndDrag;
 
   constructor() {
+    super();
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.questions = questions;
@@ -61,6 +66,7 @@ export default class Onboarding {
   }
 
   private setupCamera() {
+    console.log(this.experience.camera.instance.position);
     this.experience.camera.instance.position.set(-5, 5, 20);
     // remove orbit controls
     this.experience.camera.instance.zoom = 0.35;
@@ -74,13 +80,13 @@ export default class Onboarding {
   private startMovementCamera() {
     addEventListener("load", () => {
       gsap.to(this.experience.camera.instance.position, {
-        duration: 5,
+        duration: 1,
         y: 20,
         ease: "Expo.easeOut",
       });
 
       gsap.to(this.experience.camera.instance, {
-        duration: 5,
+        duration: 1,
         zoom: 1.75,
         ease: "Expo.easeOut",
         onUpdate: () => {
@@ -99,16 +105,21 @@ export default class Onboarding {
   }
 
   private showQuestion() {
-    if (this.currentQuestionIndex >= this.questions!.length) {
-    }
-
-    // avant de montrer la question, on détruit la précédente
     document.querySelectorAll(".text")?.forEach((text) => {
       text.remove();
     });
     document.querySelector(".input")?.remove();
     this.drag?.destroy();
     this.drag = undefined;
+
+    if (this.currentQuestionIndex >= this.questions!.length) {
+      this.trigger("onboardingFinish");
+      document.querySelector(".button_onboarding")?.remove();
+      this.buttonOnboarding = undefined;
+      return;
+    }
+
+    // avant de montrer la question, on détruit la précédente
 
     let question = this.questions![this.currentQuestionIndex];
     // on affiche la question
@@ -155,5 +166,17 @@ export default class Onboarding {
 
   update() {}
 
-  destroy() {}
+  destroy() {
+    this.scene.remove(this.temple?.loadedModel3D!);
+    this.temple?.loadedModel3D?.remove();
+    this.temple = undefined;
+
+    this.scene.remove(this.circle1?.loadedModel3D!);
+    this.circle1?.loadedModel3D?.remove();
+    this.circle1 = undefined;
+
+    this.scene.remove(this.circle2?.loadedModel3D!);
+    this.circle2?.loadedModel3D?.remove();
+    this.circle2 = undefined;
+  }
 }

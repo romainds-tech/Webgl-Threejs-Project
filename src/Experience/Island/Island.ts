@@ -124,6 +124,7 @@ export default class Island {
 
     console.log(this.numberOfElementToAdd);
     this.checkIfAddItemToCreate();
+    console.log(this.camera.instance);
   }
 
   checkIfAddItemToCreate() {
@@ -159,8 +160,10 @@ export default class Island {
 
   //change the value of all the scene
   setupCamera() {
-    this.camera.instance.zoom = 0.6;
-    this.camera.instance.updateProjectionMatrix();
+    this.experience.camera.instance.zoom = 0.6;
+    this.experience.camera.instance.position.set(-5, 5, -5);
+
+    this.experience.camera.instance.updateProjectionMatrix();
   }
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube

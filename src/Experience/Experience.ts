@@ -33,7 +33,6 @@ export class Experience {
     this.time = new Time();
     this.scene = new Scene();
     this.camera = new Camera();
-    //this.island = new Island();
     this.light = new Light();
     // this.sky = new Sky();
     this.onBoarding = new Onboarding();
@@ -45,6 +44,11 @@ export class Experience {
 
     this.time.on("tick", (): void => {
       this.update();
+    });
+
+    this.onBoarding.on("onboardingFinish", () => {
+      this.onBoarding.destroy();
+      this.island = new Island(0);
     });
   }
 
