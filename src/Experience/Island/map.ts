@@ -90,7 +90,7 @@ export function loadMap(
           templateOtherPlane.position.set(posx, 0, posy);
           templateOtherPlane.rotation.x = Math.PI / 2;
           // scene.add(templateOtherPlane);
-          templateOtherPlane.name = "blue";
+          templateOtherPlane.name = "catomancie";
           // allObjectsCreateInMap.push(templateOtherPlane);
           map.add(templateOtherPlane);
           break;
