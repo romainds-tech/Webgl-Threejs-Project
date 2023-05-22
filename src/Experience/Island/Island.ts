@@ -37,13 +37,13 @@ export default class Island {
   public sizes: Sizes;
   public camera: Camera;
 
-  private robot?: Model3D;
+  public item?: Model3D;
   private island?: Model3D;
 
   public debug: Debug;
   public debugFolder: GUI | null;
 
-  private numberOfElementToAdd: number;
+  public numberOfElementToAdd: number;
 
   // Map
   // var for trigger event
@@ -63,16 +63,17 @@ export default class Island {
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
 
-  private allScene: Group;
-  public overlay: HTMLDivElement | null;
+  private allScene?: Group;
+  public overlay?: HTMLDivElement | null;
   public cursor?: Mesh;
 
-  constructor() {
+  constructor(elementToAdd: number) {
     // Experience
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
+    this.setupCamera();
 
     // Debug
     this.debug = this.experience.debug;
@@ -82,13 +83,13 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = 1;
+    this.numberOfElementToAdd = elementToAdd;
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new RaycasterExperience();
 
-    this.loadModelsItemIsland();
+    // this.loadModelsItemIsland();
 
     this.isSelected = false;
     // Load the map
@@ -121,6 +122,7 @@ export default class Island {
     this.actionOnClickButtons();
     this.imageItem = null;
 
+    console.log(this.numberOfElementToAdd);
     this.checkIfAddItemToCreate();
   }
 
@@ -156,17 +158,9 @@ export default class Island {
   }
 
   //change the value of all the scene
-  allSceneInfo() {
-    if (this.island && this.island.loadedModel3D) {
-      this.allScene.add(this.island.loadedModel3D);
-    }
-
-    this.allScene.add(this.mapGroup);
-
-    let size = 1.4;
-
-    this.allScene.scale.set(size, size, size);
-    this.scene.add(this.allScene);
+  setupCamera() {
+    this.camera.instance.zoom = 0.6;
+    this.camera.instance.updateProjectionMatrix();
   }
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
@@ -188,7 +182,6 @@ export default class Island {
     if (intersects.length > 0 && this.canRaycast) {
       this.addDebug();
 
-      // displayPopupIterfaceCreateItem();
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
       // modification item position
@@ -226,7 +219,7 @@ export default class Island {
 
         // If we dont have item on this case, we create one
         if (checkItem == null && this.numberOfElementToAdd > 0) {
-          let newItem = this.robot!.loadedModel3D!.clone();
+          let newItem = this.item!.loadedModel3D!.clone();
 
           newItem.position.set(
             selectedBloc.position.x,
@@ -350,12 +343,6 @@ export default class Island {
       this.scene.add(arrow);
     }
   }
-  // Models
-  private async loadModelsItemIsland() {
-    this.robot = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.JustRobot)
-    );
-  }
 
   private async loadIsland() {
     this.island = await CustomGlbLoader.getInstance().loadOne(
@@ -365,15 +352,14 @@ export default class Island {
     this.scene.add(this.island.loadedModel3D!);
 
     // this.allScene.add(this.island.loadedModel3D!);
-    this.allSceneInfo();
   }
 
   setImageItem() {
-    let sizeImageItem = 0.1;
+    let sizeImageItem = 0.05;
     if (this.imageItem) {
       this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
 
-      this.imageItem.position.set(0, 5, 0);
+      this.imageItem.position.set(0, 3, 0);
       this.scene.add(this.imageItem);
     }
   }

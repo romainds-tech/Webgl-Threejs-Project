@@ -1,0 +1,15 @@
+#overlay_start_cartomancie {
+    display: none;
+}
+
+/*TODO : renommer et fusion les classe*/
+
+.overlay_cartomancie {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    background-color: white;
+    opacity: 0.6;
+}

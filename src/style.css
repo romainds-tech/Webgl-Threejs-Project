@@ -13,6 +13,30 @@ html {
 }
 
 .middle_position {
+  top : 50%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_10_position {
+  top : 10%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_50_position {
+  top : 50%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_55_position {
+  top : 55%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_70_position {
   top : 70%;
   left : 5%;
   transform: translate(0, -50%);

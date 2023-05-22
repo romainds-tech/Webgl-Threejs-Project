@@ -8,7 +8,6 @@ import Debug from "./utils/Debug";
 // import Sky from "./Sky/Sky";
 import Light from "./Light/Light";
 import Onboarding from "./Onboarding/Onboarding";
-import Island from "./Island/Island";
 
 export class Experience {
   private static instance: Experience;
@@ -69,6 +68,7 @@ export class Experience {
     this.onBoarding.update();
     // this.sky.update();
     // this.island.update();
+    // this.catomancie.update();
   }
 
   static getInstance() {
