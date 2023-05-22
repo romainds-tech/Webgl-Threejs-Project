@@ -43,6 +43,16 @@ export default class Button {
     );
   }
 
+  setButtonOnboarding() {
+    this.createButton(
+      "button_onboarding",
+      "button_onboarding",
+      "Suivant",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+  }
+
   createButton(
     idButton: string,
     classStyleNameButton: string,
