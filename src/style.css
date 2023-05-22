@@ -36,6 +36,12 @@ html {
   transform: translate(0, -50%);
 }
 
+.top_60_position {
+  top : 60%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
 .top_70_position {
   top : 70%;
   left : 5%;

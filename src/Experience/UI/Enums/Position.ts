@@ -4,6 +4,7 @@ export enum PositionY {
   TOP_10 = "top_10_position",
   TOP_50 = "top_50_position",
   TOP_55 = "top_55_position",
+  TOP_60 = "top_60_position",
   TOP_70 = "top_70_position",
   BOTTOM = "bottom_position",
 }

@@ -30,6 +30,7 @@ import {
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Popup from "../UI/Popups/Popup";
 import Button from "../UI/Buttons/Button";
+import Cartomancie from "../Cartomancie/Cartomancie";
 
 export default class Island {
   public experience: Experience;
@@ -83,7 +84,7 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = elementToAdd;
+    this.numberOfElementToAdd = 0;
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
@@ -160,9 +161,9 @@ export default class Island {
 
   //change the value of all the scene
   setupCamera() {
+    this.camera.controls.enabled = true;
     this.experience.camera.instance.zoom = 0.6;
     this.experience.camera.instance.position.set(-5, 5, -5);
-
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -184,34 +185,11 @@ export default class Island {
     // if I clicked on a raycastable object
     if (intersects.length > 0 && this.canRaycast) {
       this.addDebug();
-
       // Add cursor on the bloc
       let selectedBloc = intersects[0].object;
       // modification item position
       if (this.isSelected) {
-        this.displayEditMode(true);
-        // places item on a new selected block
-
-        if (
-          !this.itemIslandManager.getItemAtPosition(
-            selectedBloc.position.x,
-            selectedBloc.position.z
-          )
-        ) {
-          this.itemIslandManager.selectedItem!.position.set(
-            selectedBloc.position.x,
-            0,
-            selectedBloc.position.z
-          );
-        }
-        // put back the item if it is already on the block or if the place is already taken
-        else {
-          this.itemIslandManager.selectedItem!.position.y = 0;
-        }
-        this.isSelected = false;
-        this.destroyImageItem();
-        this.checkIfAddItemToCreate();
-        disablePopupIterfaceModificateItem();
+        this.modificationItemPosition(selectedBloc);
       }
       // if we create object
       else {
@@ -221,7 +199,12 @@ export default class Island {
         );
 
         // If we dont have item on this case, we create one
-        if (checkItem == null && this.numberOfElementToAdd > 0) {
+        if (
+          checkItem == null &&
+          this.numberOfElementToAdd > 0 &&
+          selectedBloc.name == "edit"
+        ) {
+          console.log("can edit");
           let newItem = this.item!.loadedModel3D!.clone();
 
           newItem.position.set(
@@ -232,9 +215,16 @@ export default class Island {
           this.itemIslandManager.newItemToCreate = newItem;
           this.numberOfElementToAdd -= 1;
           this.checkIfAddItemToCreate();
+        } else if (
+          selectedBloc.name == "cartomancie" &&
+          this.numberOfElementToAdd == 0
+        ) {
+          this.destroy();
+          this.experience.cartomancie = new Cartomancie();
         }
         // Else we gonna change position of this item
         else {
+          console.log("mince c'est le else");
           if (checkItem) {
             this.itemIslandManager.selectedItem = checkItem.object;
             this.itemIslandManager.selectedItem!.position.y = 1;
@@ -267,6 +257,31 @@ export default class Island {
     }
   };
 
+  modificationItemPosition(selectedBloc: Object3D<Event>) {
+    this.displayEditMode(true);
+    // places item on a new selected block
+    if (
+      !this.itemIslandManager.getItemAtPosition(
+        selectedBloc.position.x,
+        selectedBloc.position.z
+      ) &&
+      selectedBloc.name == "edit"
+    ) {
+      this.itemIslandManager.selectedItem!.position.set(
+        selectedBloc.position.x,
+        0,
+        selectedBloc.position.z
+      );
+    }
+    // put back the item if it is already on the block or if the place is already taken
+    else {
+      this.itemIslandManager.selectedItem!.position.y = 0;
+    }
+    this.isSelected = false;
+    this.destroyImageItem();
+    this.checkIfAddItemToCreate();
+    disablePopupIterfaceModificateItem();
+  }
   actionOnClickButtons() {
     onClickOnDisabledModificationButton();
 
@@ -367,9 +382,20 @@ export default class Island {
     }
   }
 
+  loadAllScene() {
+    this.scene.add(this.island?.loadedModel3D!);
+    this.scene.add(this.mapGroup);
+  }
+
   destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
-  destroy() {}
+  destroy() {
+    this.scene.remove(this.island?.loadedModel3D!);
+    this.island?.loadedModel3D?.remove();
+
+    this.scene.remove(this.mapGroup);
+    this.mapGroup.remove();
+  }
 }
