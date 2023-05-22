@@ -57,8 +57,7 @@ export default class Cartomancie {
 
   public overlay?: Mesh;
   public cards?: Model3D;
-  public lowItem?: Model3D;
-  public higherItem?: Model3D;
+  public item?: Model3D;
   public mixer?: AnimationMixer;
 
   public popup: Popup;
@@ -72,13 +71,9 @@ export default class Cartomancie {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
-    let cameraPosition = 10;
-    this.camera.instance.position.set(
-      -cameraPosition,
-      cameraPosition,
-      -cameraPosition
-    );
-    this.camera.constrols.enabled = false;
+    this.setupCamera();
+
+    console.log(this.camera.instance.zoom);
     this.sizes = this.experience.sizes;
 
     this.debug = this.experience.debug;
@@ -106,6 +101,17 @@ export default class Cartomancie {
     this.displayButton();
   }
 
+  setupCamera() {
+    let cameraPosition = 10;
+    this.camera.instance.position.set(
+      -cameraPosition,
+      cameraPosition,
+      -cameraPosition
+    );
+    this.camera.instance.zoom = 0.35;
+    this.camera.controls.enabled = false;
+    this.camera.instance.updateProjectionMatrix();
+  }
   startPrediction() {
     document
       .getElementById("button_start_cartomancie")!
@@ -142,6 +148,7 @@ export default class Cartomancie {
       clipMixer.setLoop(LoopOnce, 1);
       clipMixer.clampWhenFinished = true;
       this.mixer.addEventListener("finished", () => {
+        console.log("card finished");
         setTimeout(() => {
           this.setImageItem();
           this.destroyCard();
@@ -160,8 +167,8 @@ export default class Cartomancie {
     this.displayPrediction();
     this.displayChooseItem();
     this.displayBackSelectItem();
-    this.selectLowItem();
-    this.selectHigherItem();
+    this.selectAnswerQuestionForItem();
+    this.selectPaidItem();
   }
   displaySecondArcane() {
     document
@@ -170,8 +177,10 @@ export default class Cartomancie {
         disabledInterfaceFirstArcaneCartomancie();
         this.destroyFirstArcane();
         if (this.secondArcaneImageItem) {
+          // @ts-ignore
           this.secondArcaneImageItem.material.color.b = 0;
           this.scene.add(this.secondArcaneImageItem);
+          // @ts-ignore
           console.log(this.secondArcaneImageItem.material);
         }
         displayInterfaceSecondArcaneCartomancie();
@@ -195,8 +204,7 @@ export default class Cartomancie {
         disabledInterfacePredictionCartomancie();
         this.destroySecondArcane();
         displayInterfaceSelectItemCartomancie();
-        this.setLowItem(0, 5, 0);
-        this.setHightItem(0, -9, 0);
+        this.setupItem(0, 2, 0);
       });
   }
 
@@ -210,75 +218,58 @@ export default class Cartomancie {
       });
   }
 
-  selectLowItem() {
+  selectAnswerQuestionForItem() {
     document
-      .getElementById("button_select_low_item_cartomancie")!
+      .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
-        disabledInterfaceSelectItemCartomancie();
-        this.destroyAll();
-        this.experience.island = new Island(1);
-        this.experience.island.item = this.lowItem;
-        this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
-        this.removeItemFromScene();
-        this.destroyAll();
+        this.setupIsland(this.item!);
       });
   }
 
-  selectHigherItem() {
+  selectPaidItem() {
     document
-      .getElementById("button_select_higher_item_cartomancie")!
+      .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
-        disabledInterfaceSelectItemCartomancie();
-
-        this.experience.island = new Island(1);
-        this.experience.island.item = this.higherItem;
-        this.experience.island.item?.loadedModel3D!.scale.set(0.1, 0.1, 0.1);
-        this.removeItemFromScene();
-        this.destroyAll();
+        this.setupIsland(this.item!);
       });
+  }
+
+  setupIsland(item: Model3D) {
+    disabledInterfaceSelectItemCartomancie();
+    if (this.experience.island) {
+      this.experience.island.numberOfElementToAdd = 1;
+      this.experience.island.checkIfAddItemToCreate();
+      this.experience.island.item = item;
+      this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
+      this.experience.island.setupCamera();
+    }
+
+    this.removeItemFromScene();
+    this.destroyAll();
   }
 
   private async loadModelsItemIsland() {
-    this.lowItem = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.JustRobot)
-    );
-
-    this.higherItem = await CustomGlbLoader.getInstance().loadOne(
+    this.item = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.JustRobot)
     );
   }
 
-  setLowItem(x: number, y: number, z: number) {
+  setupItem(x: number, y: number, z: number) {
     let sizeImageItem = 0.08;
-    if (this.lowItem) {
-      if (this.lowItem.loadedModel3D) {
-        this.lowItem.loadedModel3D.scale.set(
+    if (this.item) {
+      if (this.item.loadedModel3D) {
+        this.item.loadedModel3D.scale.set(
           sizeImageItem,
           sizeImageItem,
           sizeImageItem
         );
 
-        this.lowItem.loadedModel3D.position.set(x, y, z);
-        this.scene.add(this.lowItem.loadedModel3D!);
+        this.item.loadedModel3D.position.set(x, y, z);
+        this.scene.add(this.item.loadedModel3D!);
       }
     }
   }
 
-  setHightItem(x: number, y: number, z: number) {
-    let sizeImageItem = 0.08;
-    if (this.higherItem) {
-      if (this.higherItem.loadedModel3D) {
-        this.higherItem.loadedModel3D.scale.set(
-          sizeImageItem,
-          sizeImageItem,
-          sizeImageItem
-        );
-
-        this.higherItem.loadedModel3D.position.set(x, y, z);
-        this.scene.add(this.higherItem.loadedModel3D!);
-      }
-    }
-  }
   setOverlayArcane() {
     const geometry = new PlaneGeometry(this.sizes.width, this.sizes.height);
     const material = new MeshBasicMaterial({
@@ -320,6 +311,7 @@ export default class Cartomancie {
   }
 
   destroyCard() {
+    console.log(this.cards);
     this.scene.remove(this.cards?.loadedModel3D!);
     this.cards?.destroy();
     this.cards = undefined;
@@ -341,9 +333,8 @@ export default class Cartomancie {
   }
 
   removeItemFromScene() {
-    if (this.lowItem && this.higherItem) {
-      this.scene.remove(this.lowItem.loadedModel3D!);
-      this.scene.remove(this.higherItem.loadedModel3D!);
+    if (this.item) {
+      this.scene.remove(this.item.loadedModel3D!);
     }
   }
 

@@ -1,4 +1,4 @@
-import { PositionY, PositionX } from "../Enums/Position";
+import { PositionX, PositionY } from "../Enums/Position";
 
 export default class Button {
   public buttonAbandonnedModificateChangeItemPosition: HTMLButtonElement | null;
@@ -87,30 +87,32 @@ export default class Button {
     );
 
     this.createButton(
-      "button_select_low_item_cartomancie",
+      "button_select_answer_question_item_cartomancie",
       "button button_white",
-      "SACRIFIER DES CARACTÉRISTIQUES",
-      PositionY.TOP_50,
+      "RÉPONDRE À UNE QUESTION",
+      PositionY.TOP_70,
       PositionX.CENTER
     );
 
     this.createButtonWithIcon(
-      "button_select_higher_item_cartomancie",
-      "button button_prediction button_icon_back",
+      "button_select_paid_item_cartomancie",
+      "button little_width button_prediction button_icon_back",
       "fa fa-lock margin_icon_left",
-      "DEBLOQUER L'OBJET");
-    
+      "2.99 €",
+      PositionY.TOP_60,
+      PositionX.CENTER
+    );
   }
 
   setButtonOnboarding() {
-      this.createButton(
-        "button_onboarding",
-        "button_onboarding",
-        "Suivant",
-        PositionY.BOTTOM,
-        PositionX.CENTER
-      );
-    }
+    this.createButton(
+      "button_onboarding",
+      "button_onboarding",
+      "Suivant",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+  }
 
   createButton(
     idButton: string,
