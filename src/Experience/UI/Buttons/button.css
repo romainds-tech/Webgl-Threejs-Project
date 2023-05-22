@@ -19,6 +19,26 @@
     z-index: 42;
 }
 
+.button_onboarding {
+    /*pointer-events: all;*/
+    position: absolute;
+    padding : 25px;
+    width: 150px;
+    color : white;
+    background-color: #1C154E;
+    font-family: roboto-font, sans-serif;
+    border-radius: 18px;
+    z-index: 42;
+
+}
+
+.button_onboarding:hover {
+    color: lightgray;
+    border: none;
+}
+
+
+
 .button_cross_island {
     /*pointer-events: all;*/
     position: absolute;

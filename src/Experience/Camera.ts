@@ -1,10 +1,5 @@
 import Sizes from "./utils/Sizes";
-import {
-  AxesHelper,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Scene,
-} from "three";
+import { AxesHelper, OrthographicCamera, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
@@ -13,18 +8,16 @@ import { GUI } from "lil-gui";
 
 export default class Camera {
   public experience: Experience;
-  public ortho: Boolean;
   public sizes: Sizes;
   public scene: Scene;
   public canvas: HTMLCanvasElement | undefined;
   public controls: OrbitControls;
-  public instance: PerspectiveCamera | OrthographicCamera;
+  public instance: OrthographicCamera;
   public debug: Debug;
   public debugFolder?: GUI;
 
   constructor() {
     this.experience = Experience.getInstance();
-    this.ortho = window.location.pathname.includes("ortho");
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
@@ -32,30 +25,21 @@ export default class Camera {
     this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
   }
-  private setInstance(): PerspectiveCamera | OrthographicCamera {
-    let cameraInstance: PerspectiveCamera | OrthographicCamera;
-    if (this.ortho) {
-      const aspect = this.sizes.width / this.sizes.height;
-      const frustumSize = 10;
-      cameraInstance = new OrthographicCamera(
-        (frustumSize * aspect) / -2,
-        (frustumSize * aspect) / 2,
-        frustumSize / 2,
-        frustumSize / -2,
-        1,
-        100
-      );
+  private setInstance(): OrthographicCamera {
+    let cameraInstance: OrthographicCamera;
+    const aspect = this.sizes.width / this.sizes.height;
+    const frustumSize = 10;
+    cameraInstance = new OrthographicCamera(
+      (frustumSize * aspect) / -2,
+      (frustumSize * aspect) / 2,
+      frustumSize / 2,
+      frustumSize / -2,
+      1,
+      100
+    );
 
-      cameraInstance.zoom = 0.35;
-      cameraInstance.updateProjectionMatrix();
-    } else {
-      cameraInstance = new PerspectiveCamera(
-        75,
-        this.sizes.width / this.sizes.height,
-        0.1,
-        100
-      );
-    }
+    cameraInstance.zoom = 0.35;
+    cameraInstance.updateProjectionMatrix();
 
     // cameraInstance.position.set(1, 2, 30);
     cameraInstance.position.set(-5, 5, -5);
@@ -103,19 +87,13 @@ export default class Camera {
   }
 
   resize(): void {
-    if (!(this.instance instanceof PerspectiveCamera)) {
-      this.instance.left = this.sizes.width / -1000;
-      this.instance.right = this.sizes.width / 1000;
-      this.instance.top = this.sizes.height / 1000;
-      this.instance.bottom = this.sizes.height / -1000;
-    } else {
-      this.instance.aspect = this.sizes.width / this.sizes.height;
-    }
+    this.instance.left = this.sizes.width / -1000;
+    this.instance.right = this.sizes.width / 1000;
+    this.instance.top = this.sizes.height / 1000;
+    this.instance.bottom = this.sizes.height / -1000;
 
     this.instance.updateProjectionMatrix();
   }
-
-
 
   rotateCamera(angle: number): void {
     gsap.to(this.instance.position, {

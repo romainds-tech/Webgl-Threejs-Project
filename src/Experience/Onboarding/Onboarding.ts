@@ -3,10 +3,13 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag from "../UI/Interactions/ClickAndDrag";
-import { Event } from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, { Event } from "../UI/Interactions/ClickAndDrag";
+import questions from "./questions.json";
 import gsap from "gsap";
-import {Scene} from "three";
+import { Scene } from "three";
+import Text from "../UI/Texts/Text";
+import { typeText } from "../UI/Enums/Text";
+import Button from "../UI/Buttons/Button";
 
 export default class Onboarding {
   public experience: Experience;
@@ -14,14 +17,30 @@ export default class Onboarding {
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle2?: Model3D;
+  private questions?: (
+    | { Title: string; Content: string; Type: string; Options?: undefined }
+    | { Title: string; Content: string; Type: string; Options: string[] }
+  )[];
+  private currentQuestionIndex = 0;
+  private buttonOnboarding: Button;
+  private drag?: ClickAndDrag;
 
   constructor() {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
+    this.questions = questions;
+
+    this.buttonOnboarding = new Button();
+    this.buttonOnboarding.setButtonOnboarding();
+    let button = document.querySelector(".button_onboarding");
+    button?.addEventListener("click", () => {
+      this.showQuestion();
+    });
 
     this.loadAllModels();
     this.setupCamera();
     this.setupBackgroundImage();
+    this.showQuestion();
   }
 
   private async loadAllModels() {
@@ -34,13 +53,11 @@ export default class Onboarding {
       new Model3D(allGlbs.TempleCircle1)
     );
     this.scene.add(this.circle1.loadedModel3D!);
-    new ClickAndDrag(this.circle1.loadedModel3D!, Event.ROTATION);
 
     this.circle2 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle2)
     );
     this.scene.add(this.circle2.loadedModel3D!);
-    new ClickAndDrag(this.circle2.loadedModel3D!, Event.ROTATION);
   }
 
   private setupCamera() {
@@ -52,42 +69,91 @@ export default class Onboarding {
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
     this.startMovementCamera();
-
   }
 
   private startMovementCamera() {
+    addEventListener("load", () => {
       gsap.to(this.experience.camera.instance.position, {
         duration: 5,
         y: 20,
-        ease: "Expo.easeOut"
+        ease: "Expo.easeOut",
       });
-
-
-
-
 
       gsap.to(this.experience.camera.instance, {
-          duration: 5,
-          zoom: 1.75,
-          ease: "Expo.easeOut",
+        duration: 5,
+        zoom: 1.75,
+        ease: "Expo.easeOut",
         onUpdate: () => {
-              this.experience.camera.instance.updateProjectionMatrix();
-            }
+          this.experience.camera.instance.updateProjectionMatrix();
+        },
       });
+    });
   }
 
   private setupBackgroundImage() {
     let textureback = CustomImageLoader.getInstance().loadImage(
-      "material/background/temple_bg.jpg",
+      "material/background/temple_bg.jpg"
     );
 
     this.scene.background = textureback;
   }
 
+  private showQuestion() {
+    if (this.currentQuestionIndex >= this.questions!.length) {
+    }
 
+    // avant de montrer la question, on détruit la précédente
+    document.querySelectorAll(".text")?.forEach((text) => {
+      text.remove();
+    });
+    document.querySelector(".input")?.remove();
+    this.drag?.destroy();
+    this.drag = undefined;
 
-  update() {
+    let question = this.questions![this.currentQuestionIndex];
+    // on affiche la question
+    let title = new Text(question.Title, typeText.TITLE);
+    let content = new Text(question.Content, typeText.TEXT);
+
+    if (question.Type === "input") {
+      let input = document.createElement("input");
+      input.type = "text";
+      input.className = "input";
+      document.querySelector("#interactions")?.appendChild(input);
+
+      // on attend la réponse
+      input.addEventListener("input", (e) => {
+        console.log(e);
+      });
+
+      // on stocke la réponse dans les cookies
+    }
+
+    if (question.Type === "wheel") {
+      this.drag = new ClickAndDrag(
+        this.circle1!.loadedModel3D!,
+        Event.ROTATION
+      );
+      // on découpe le cercle en fonction du nombre de réponses
+      let nbOptions = question.Options!.length - 1;
+      let angle = 360 / nbOptions;
+
+      this.drag.on("rotationMovement", (): void => {
+        // faire un console.log de l'option selectionné par rapport à l'angle
+        let angleRotation = this.circle1?.loadedModel3D?.rotation.y;
+        // on normalise l'angle pour qu'il soit entre 0 et 360
+        angleRotation = angleRotation! % 360;
+        let index = Math.abs(Math.floor(angleRotation / angle));
+        //
+
+        console.log(question.Options![index], index, angleRotation);
+      });
+    }
+
+    this.currentQuestionIndex++;
   }
+
+  update() {}
 
   destroy() {}
 }

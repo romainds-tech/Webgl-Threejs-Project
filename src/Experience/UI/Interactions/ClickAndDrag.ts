@@ -4,8 +4,8 @@
  * @classdesc Click and drag interaction
  *
  */
-import { EventEmitter } from "../../utils/EventEmitter";
 import { Object3D } from "three";
+import { EventEmitter } from "../../utils/EventEmitter";
 
 export enum Event {
   ROTATION,
@@ -13,15 +13,17 @@ export enum Event {
   SCALE,
 }
 
+type EventMap = {
+  rotationMovement: [];
+};
 
-
-export default class ClickAndDrag {
+export default class ClickAndDrag extends EventEmitter<EventMap> {
   private event: Event;
   private model: Object3D;
   private previousTouch: number = 0;
 
   constructor(model: Object3D, event: Event) {
-
+    super();
     this.model = model;
     this.event = event;
 
@@ -31,46 +33,63 @@ export default class ClickAndDrag {
   init() {
     // Check event Enum and add the right listener
     switch (this.event) {
-        case Event.ROTATION:
-            this.addRotationListener();
+      case Event.ROTATION:
+        this.detectClickAndDragMobile();
+        this.detectClickAndDragMouse();
     }
   }
 
-
-  private addRotationListener() {
-    document.addEventListener("mousemove", (event) => {
+  private detectClickAndDragMouse() {
+    document.addEventListener("mousemove", (event: MouseEvent) => {
       if (event.buttons === 1) {
-        if (event.pageX > window.innerWidth / 2) {
-          event.movementY > 0 ? this.rotateModelYNegatif() : this.rotateModelYPositif();
-        } else {
-          event.movementY > 0 ? this.rotateModelYPositif() : this.rotateModelYNegatif();
-        }
+        this.addRotationListenerMouse(event);
       }
     });
-    // same but for mobile
-    document.addEventListener("touchmove", (event) => {
+  }
+  private detectClickAndDragMobile() {
+    document.addEventListener("touchmove", (event: TouchEvent) => {
       if (event.touches.length === 1) {
-        if (event.touches[0].clientX > window.innerWidth / 2) {
-          event.touches[0].clientY > this.previousTouch ? this.rotateModelYNegatif() : this.rotateModelYPositif();
-        } else {
-          event.touches[0].clientY > this.previousTouch ? this.rotateModelYPositif() : this.rotateModelYNegatif();
-        }
+        this.addRotationListenerMobile(event);
         this.previousTouch = event.touches[0].clientY;
       }
     });
   }
 
-
-  private rotateModelYPositif(step: number = 1) {
-    this.model.rotation.y += step;
+  private addRotationListenerMouse(event: MouseEvent) {
+    if (event.pageX > window.innerWidth / 2) {
+      event.movementY > 0
+        ? this.rotateModelYNegatif()
+        : this.rotateModelYPositif();
+    } else {
+      event.movementY > 0
+        ? this.rotateModelYPositif()
+        : this.rotateModelYNegatif();
+    }
+  }
+  private addRotationListenerMobile(event: TouchEvent) {
+    if (event.touches[0].clientX > window.innerWidth / 2) {
+      event.touches[0].clientY > this.previousTouch
+        ? this.rotateModelYNegatif()
+        : this.rotateModelYPositif();
+    } else {
+      event.touches[0].clientY > this.previousTouch
+        ? this.rotateModelYPositif()
+        : this.rotateModelYNegatif();
+    }
   }
 
-  private rotateModelYNegatif(step: number = 1) {
+  private rotateModelYPositif(step: number = 2) {
+    this.model.rotation.y += step;
+    this.trigger("rotationMovement");
+  }
+  private rotateModelYNegatif(step: number = 2) {
     this.model.rotation.y -= step;
+    this.trigger("rotationMovement");
   }
 
   destroy() {
     // remove listeners
-
+    document.removeEventListener("mousemove", () => {});
+    document.removeEventListener("touchmove", () => {});
   }
 }
