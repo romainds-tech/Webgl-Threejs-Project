@@ -175,8 +175,6 @@ export default class Cartomancie {
     );
     console.log(this.firstArcaneImageItem);
 
-    this.firstArcaneImageItem.position.set(-4, 10, -4);
-
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
 
@@ -184,8 +182,6 @@ export default class Cartomancie {
     this.secondArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].modelMinorArcane)
     );
-
-    this.secondArcaneImageItem.position.set(-4, 10, -4);
 
     this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
@@ -310,21 +306,6 @@ export default class Cartomancie {
     this.overlay.lookAt(this.camera.instance.position);
     this.scene.add(this.overlay);
   }
-  setImageItem() {
-    let sizeImageItem = 4;
-    if (this.firstArcaneImageItem) {
-      this.firstArcaneImageItem.scale.set(
-        sizeImageItem,
-        sizeImageItem,
-        sizeImageItem
-      );
-
-      this.firstArcaneImageItem.position.set(-4, 10, -4);
-      // this.firstArcaneImageItem.rotation.set(0, Math.PI / 2, 0);
-
-      this.secondArcaneImageItem = this.firstArcaneImageItem.clone();
-    }
-  }
 
   update() {
     this.mixer?.update(this.experience.time.delta * 0.01);
@@ -365,5 +346,9 @@ export default class Cartomancie {
       this.overlay.remove();
       this.overlay = undefined;
     }
+
+    this.scene.remove(this.item?.loadedModel3D!);
+    this.item?.loadedModel3D?.remove();
+    this.item = undefined;
   }
 }
