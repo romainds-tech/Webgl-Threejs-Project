@@ -11,6 +11,7 @@ import Text from "../UI/Texts/Text";
 import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
+import { User } from "../utils/Types";
 
 type EventMap = {
   onboardingFinish: [];
@@ -21,13 +22,11 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle2?: Model3D;
-  private questions?: (
-    | { Title: string; Content: string; Type: string; Options?: undefined }
-    | { Title: string; Content: string; Type: string; Options: string[] }
-  )[];
+  private questions?: any;
   private currentQuestionIndex = 0;
   private buttonOnboarding?: Button;
   private drag?: ClickAndDrag;
+  private user?: User;
 
   constructor() {
     super();
@@ -37,7 +36,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.buttonOnboarding = new Button();
     this.buttonOnboarding.setButtonOnboarding();
-    let button = document.querySelector(".button_onboarding");
+    let button = document.querySelector("#button_onboarding");
     button?.addEventListener("click", () => {
       this.showQuestion();
     });
@@ -45,7 +44,26 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.loadAllModels();
     this.setupCamera();
     this.setupBackgroundImage();
+    this.user = this.setUserFromCookie();
+
     this.showQuestion();
+  }
+
+  private setUserFromCookie(): User {
+    let cookie = document.cookie;
+    if (cookie) {
+      console.log(cookie);
+      return JSON.parse(cookie);
+    }
+    return {
+      phoneNumber: "",
+      zodiacSign: "",
+      hourBirth: "",
+    };
+  }
+
+  private setCookie(user: User) {
+    document.cookie = JSON.stringify(user);
   }
 
   private async loadAllModels() {
@@ -54,14 +72,21 @@ export default class Onboarding extends EventEmitter<EventMap> {
     );
     this.scene.add(this.temple.loadedModel3D!);
 
+    let textureCircle = CustomImageLoader.getInstance().loadImage(
+      "textures/circle/glyphes.png"
+    );
     this.circle1 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle1)
     );
+
+    this.circle1.loadedModel3D!.children[0].material.map = textureCircle;
+    console.log(this.circle1.loadedModel3D!.children[0]);
     this.scene.add(this.circle1.loadedModel3D!);
 
     this.circle2 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle2)
     );
+
     this.scene.add(this.circle2.loadedModel3D!);
   }
 
@@ -119,10 +144,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
       return;
     }
 
-    // avant de montrer la question, on détruit la précédente
+    // before show the question, we delete the previous one
 
-    let question = this.questions![this.currentQuestionIndex];
-    // on affiche la question
+    let question = Object.values(this.questions![this.currentQuestionIndex])[0];
+    // we show the question
     let title = new Text(question.Title, typeText.TITLE);
     let content = new Text(question.Content, typeText.TEXT);
 
@@ -132,12 +157,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
       input.className = "input";
       document.querySelector("#interactions")?.appendChild(input);
 
-      // on attend la réponse
+      // user answer
       input.addEventListener("input", (e) => {
-        console.log(e);
+        // save the answer in the user object
+        this.user!.phoneNumber = input.value;
+        this.setCookie(this.user!);
+        console.log(this.user);
       });
 
-      // on stocke la réponse dans les cookies
+      // save the answer in the cookies
     }
 
     if (question.Type === "wheel") {
@@ -145,17 +173,16 @@ export default class Onboarding extends EventEmitter<EventMap> {
         this.circle1!.loadedModel3D!,
         Event.ROTATION
       );
-      // on découpe le cercle en fonction du nombre de réponses
+      // cut the circle in parts
       let nbOptions = question.Options!.length - 1;
       let angle = 360 / nbOptions;
 
       this.drag.on("rotationMovement", (): void => {
-        // faire un console.log de l'option selectionné par rapport à l'angle
         let angleRotation = this.circle1?.loadedModel3D?.rotation.y;
-        // on normalise l'angle pour qu'il soit entre 0 et 360
-        angleRotation = angleRotation! % 360;
+        angleRotation = angleRotation * (180 / Math.PI);
+        angleRotation = Math.abs(Math.floor(angleRotation! % 360));
+
         let index = Math.abs(Math.floor(angleRotation / angle));
-        //
 
         console.log(question.Options![index], index, angleRotation);
       });
@@ -178,5 +205,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();
     this.circle2 = undefined;
+
+    this.drag?.destroy();
+    this.drag = undefined;
   }
 }

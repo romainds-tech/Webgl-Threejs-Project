@@ -98,19 +98,19 @@ export default class Button {
       "button_select_higher_item_cartomancie",
       "button button_prediction button_icon_back",
       "fa fa-lock margin_icon_left",
-      "DEBLOQUER L'OBJET");
-    
+      "DEBLOQUER L'OBJET"
+    );
   }
 
   setButtonOnboarding() {
-      this.createButton(
-        "button_onboarding",
-        "button_onboarding",
-        "Suivant",
-        PositionY.BOTTOM,
-        PositionX.CENTER
-      );
-    }
+    this.createButton(
+      "button_onboarding",
+      "button_prediction button",
+      "Suivant",
+      PositionY.BOTTOM,
+      PositionX.CENTER
+    );
+  }
 
   createButton(
     idButton: string,

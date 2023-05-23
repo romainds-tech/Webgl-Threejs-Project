@@ -1,61 +1,70 @@
 [
   {
-    "Title": "Connexion",
-    "Content": "Saissisez votre numéro de téléphone",
-    "Type": "input"
-  }, {
-    "Title": "Inscription",
-    "Content": "Saissisez votre numéro de téléphone",
-    "Type": "input"
+    "connexion": {
+      "Title": "Connexion",
+      "Content": "Saissisez votre numéro de téléphone",
+      "Type": "input"
+    }
   },
   {
-    "Title": "Choix du signe astrologique",
-    "Content": "",
-    "Type": "wheel",
-    "Options": [
-      "Bélier",
-      "Taureau",
-      "Gémeaux",
-      "Cancer",
-      "Lion",
-      "Vierge",
-      "Balance",
-      "Scorpion",
-      "Sagittaire",
-      "Capricorne",
-      "Verseau",
-      "Poisson"
-    ]
+    "inscription": {
+      "Title": "Inscription",
+      "Content": "Saissisez votre numéro de téléphone",
+      "Type": "input"
+    }
   },
   {
-    "Title": "Choix de l'heure de naissance",
-    "Content" : "",
-    "Type" : "wheel",
-    "Options" : [
-      "00h",
-      "01h",
-      "02h",
-      "03h",
-      "04h",
-      "05h",
-      "06h",
-      "07h",
-      "08h",
-      "09h",
-      "10h",
-      "11h",
-      "12h",
-      "13h",
-      "14h",
-      "15h",
-      "16h",
-      "17h",
-      "18h",
-      "19h",
-      "20h",
-      "21h",
-      "22h",
-      "23h"
-    ]
+    "signastro": {
+      "Title": "Choix du signe astrologique",
+      "Content": "",
+      "Type": "wheel",
+      "Options": [
+        "Bélier",
+        "Taureau",
+        "Gémeaux",
+        "Cancer",
+        "Lion",
+        "Vierge",
+        "Balance",
+        "Scorpion",
+        "Sagittaire",
+        "Capricorne",
+        "Verseau",
+        "Poisson"
+      ]
+    }
+  },
+  {
+    "hourbirth": {
+      "Title": "Choix de l'heure de naissance",
+      "Content": "",
+      "Type": "wheel",
+      "Options": [
+        "00h",
+        "01h",
+        "02h",
+        "03h",
+        "04h",
+        "05h",
+        "06h",
+        "07h",
+        "08h",
+        "09h",
+        "10h",
+        "11h",
+        "12h",
+        "13h",
+        "14h",
+        "15h",
+        "16h",
+        "17h",
+        "18h",
+        "19h",
+        "20h",
+        "21h",
+        "22h",
+        "23h"
+      ]
+    }
   }
 ]

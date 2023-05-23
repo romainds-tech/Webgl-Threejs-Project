@@ -36,7 +36,8 @@
     padding : 25px;
     width: 150px;
     color : white;
-    background-color: #1C154E;
+    background: linear-gradient(#1C154E, #1C154E) padding-box, linear-gradient(to right, #BA9023, #FFFFFF) border-box;
+    border: 4px solid transparent;
     font-family: roboto-font, sans-serif;
     border-radius: 18px;
     z-index: 42;
