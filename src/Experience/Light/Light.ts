@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import { DirectionalLight, Light, Scene } from "three";
+import { DirectionalLight, HemisphereLight, Scene } from "three";
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 
@@ -7,7 +7,8 @@ export default class Light {
   public experience: Experience;
   public scene: Scene;
 
-  public sunLight?: Light;
+  public sunLight?: DirectionalLight;
+  public hemisphereLight?: HemisphereLight;
   public debug: Debug;
   public debugFolder: GUI | null;
 
@@ -29,13 +30,22 @@ export default class Light {
   }
 
   loadLightIsland(): void {
-    this.sunLight = new DirectionalLight("#ffffff");
-    this.sunLight.intensity = 3;
+    this.sunLight = new DirectionalLight(0xffffff, 1);
+
+    this.sunLight.intensity = 1;
     this.sunLight!.castShadow = true;
     this.sunLight!.shadow.mapSize.set(1024, 1024);
-    this.sunLight!.shadow.normalBias = 0.05;
-    this.sunLight!.position.set(3.5, 2, -1.25);
+    // this.sunLight!.shadow.normalBias = 0.05;
+    this.sunLight!.position.set(0, 5, 0);
+    this.sunLight.color.setHSL(0.1, 1, 0.95);
+    this.sunLight.position.multiplyScalar(30);
     this.scene.add(this.sunLight);
+
+    this.hemisphereLight = new HemisphereLight(0xffffff, 0xffffff, 3);
+    this.hemisphereLight.color.setHSL(0.6, 1, 0.6);
+    this.hemisphereLight.groundColor.setHSL(0.095, 1, 0.75);
+    this.scene.add(this.hemisphereLight);
+
     // Debug
     if (this.debug.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("Light");
@@ -57,7 +67,7 @@ export default class Light {
         .add(this.sunLight!.position, "y")
         .name("sunLightY")
         .min(-5)
-        .max(5)
+        .max(50)
         .step(0.001);
 
       lightFolder
@@ -66,6 +76,13 @@ export default class Light {
         .min(-5)
         .max(5)
         .step(0.001);
+
+      lightFolder
+        .add(this.hemisphereLight!, "intensity")
+        .name("hemisphereLightIntensity")
+        .min(0)
+        .max(10)
+        .step(0.1);
 
       lightFolder.addColor(this.sunLight!, "color");
     }

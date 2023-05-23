@@ -108,7 +108,7 @@ export default class Island {
   }
 
   public loadAllScene() {
-    this.scene.add(this.island?.loadedModel3D!);
+    // this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
   }
 
@@ -352,7 +352,9 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
-
+    this.island.loadedModel3D!.castShadow = true;
+    this.island.loadedModel3D!.receiveShadow = true;
+    console.log(this.island.loadedModel3D!);
     this.scene.add(this.island.loadedModel3D!);
   }
 

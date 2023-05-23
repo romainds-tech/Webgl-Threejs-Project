@@ -22,6 +22,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle2?: Model3D;
+  private background?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
   private buttonOnboarding?: Button;
@@ -121,12 +122,11 @@ export default class Onboarding extends EventEmitter<EventMap> {
     });
   }
 
-  private setupBackgroundImage() {
-    let textureback = CustomImageLoader.getInstance().loadImage(
-      "material/background/temple_bg.jpg"
+  private async setupBackgroundImage() {
+    this.background = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Background)
     );
-
-    this.scene.background = textureback;
+    this.scene.add(this.background.loadedModel3D!);
   }
 
   private showQuestion() {
@@ -162,7 +162,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
         // save the answer in the user object
         this.user!.phoneNumber = input.value;
         this.setCookie(this.user!);
-        console.log(this.user);
       });
 
       // save the answer in the cookies
@@ -182,9 +181,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
         angleRotation = angleRotation * (180 / Math.PI);
         angleRotation = Math.abs(Math.floor(angleRotation! % 360));
 
-        let index = Math.abs(Math.floor(angleRotation / angle));
-
-        console.log(question.Options![index], index, angleRotation);
+        // let index = Math.abs(Math.floor(angleRotation / angle));
       });
     }
 
@@ -208,5 +205,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.drag?.destroy();
     this.drag = undefined;
+
+    document.querySelector("#button_onboarding")?.remove();
   }
 }

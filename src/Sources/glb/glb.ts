@@ -118,12 +118,12 @@ export const allGlbs = {
 
   Island: {
     name: "Island",
-    path: "glb/Island_full_modele_no_texture.gltf",
+    path: "glb/island_test.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(0, -3.2, 0),
+    position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 20, 0),
-    scale: 0.18,
-    animation: false,
+    scale: 1,
+    animation: true,
   },
 
   Cards: {
@@ -134,5 +134,15 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 1,
     animation: true,
+  },
+
+  Background: {
+    name: "Background",
+    path: "glb/bg.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(12, -5, 11),
+    rotation: new Vector3(-1.6, 3.1, 2.4),
+    scale: 2,
+    animation: false,
   },
 };
