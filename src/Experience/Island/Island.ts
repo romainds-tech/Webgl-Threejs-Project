@@ -1,13 +1,5 @@
 import { Experience } from "../Experience";
-import {
-  ArrowHelper,
-  Group,
-  Mesh,
-  Object3D,
-  Scene,
-  Vector2,
-  Event,
-} from "three";
+import { ArrowHelper, Group, Object3D, Scene, Vector2, Event } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -30,6 +22,8 @@ import {
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Popup from "../UI/Popups/Popup";
 import Button from "../UI/Buttons/Button";
+import Cartomancie from "../Cartomancie/Cartomancie";
+import ItemIsland from "./ItemIsland";
 
 export default class Island {
   public experience: Experience;
@@ -63,11 +57,7 @@ export default class Island {
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
 
-  private allScene?: Group;
-  public overlay?: HTMLDivElement | null;
-  public cursor?: Mesh;
-
-  constructor(elementToAdd: number) {
+  constructor() {
     // Experience
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
@@ -83,13 +73,11 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = elementToAdd;
+    this.numberOfElementToAdd = 0;
 
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new RaycasterExperience();
-
-    // this.loadModelsItemIsland();
 
     this.isSelected = false;
     // Load the map
@@ -100,7 +88,6 @@ export default class Island {
     );
 
     // Ui of item create an modificate
-    // this.textItemIsland = new TextItemIsland();
     this.popupIsland = new Popup();
     this.buttonIsland = new Button();
 
@@ -110,6 +97,7 @@ export default class Island {
 
     this.canRaycast = true;
 
+    // check if we click on plane
     document.addEventListener("pointerdown", this.onMouseDown, false);
 
     this.displayEditMode(false);
@@ -122,12 +110,22 @@ export default class Island {
     this.actionOnClickButtons();
     this.imageItem = null;
 
-    console.log(this.numberOfElementToAdd);
     this.checkIfAddItemToCreate();
-    console.log(this.camera.instance);
   }
 
-  checkIfAddItemToCreate() {
+  public loadAllScene() {
+    this.scene.add(this.island?.loadedModel3D!);
+    this.scene.add(this.mapGroup);
+  }
+
+  public setupCamera() {
+    this.camera.controls.enabled = true;
+    this.experience.camera.instance.zoom = 0.6;
+    this.experience.camera.instance.position.set(-5, 5, -5);
+    this.experience.camera.instance.updateProjectionMatrix();
+  }
+
+  public checkIfAddItemToCreate() {
     if (this.numberOfElementToAdd > 0) {
       displayInterfaceCreationItem();
     } else if (this.isSelected) {
@@ -139,7 +137,7 @@ export default class Island {
     }
   }
 
-  displayEditMode(isEdit: boolean) {
+  private displayEditMode(isEdit: boolean) {
     var opacity = 0.4;
     if (!isEdit) {
       opacity = 0.2;
@@ -147,6 +145,7 @@ export default class Island {
     this.mapGroup.children.forEach((group) => {
       if (group.name == "editMode") {
         group.children.forEach((mesh) => {
+          // @ts-ignore
           mesh.material.opacity = opacity;
         });
       }
@@ -154,23 +153,18 @@ export default class Island {
   }
 
   // Get map and apply modification on all the map
-  mapGroupInfo() {
+  private mapGroupInfo() {
     this.mapGroup.position.set(3, -0.15, 3);
   }
 
   //change the value of all the scene
-  setupCamera() {
-    this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -5);
-
-    this.experience.camera.instance.updateProjectionMatrix();
-  }
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
   // modify the position of the item if we click on
   onClickDown = (event: MouseEvent) => {
     event.preventDefault();
 
+    // position cursor on screen from center of the screen
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
@@ -180,72 +174,42 @@ export default class Island {
       this.camera.instance,
       this.allObjectsCreateInMap
     );
-
     // if I clicked on a raycastable object
     if (intersects.length > 0 && this.canRaycast) {
       this.addDebug();
+      // first plane clicked
+      let selectedPlane = intersects[0].object;
 
-      // Add cursor on the bloc
-      let selectedBloc = intersects[0].object;
       // modification item position
       if (this.isSelected) {
-        this.displayEditMode(true);
-        // places item on a new selected block
-
-        if (
-          !this.itemIslandManager.getItemAtPosition(
-            selectedBloc.position.x,
-            selectedBloc.position.z
-          )
-        ) {
-          this.itemIslandManager.selectedItem!.position.set(
-            selectedBloc.position.x,
-            0,
-            selectedBloc.position.z
-          );
-        }
-        // put back the item if it is already on the block or if the place is already taken
-        else {
-          this.itemIslandManager.selectedItem!.position.y = 0;
-        }
-        this.isSelected = false;
-        this.destroyImageItem();
-        this.checkIfAddItemToCreate();
-        disablePopupIterfaceModificateItem();
+        this.modificationItemPosition(selectedPlane);
       }
-      // if we create object
+      // if create object
       else {
         let checkItem = this.itemIslandManager.getItemAtPosition(
-          selectedBloc.position.x,
-          selectedBloc.position.z
+          selectedPlane.position.x,
+          selectedPlane.position.z
         );
-
         // If we dont have item on this case, we create one
-        if (checkItem == null && this.numberOfElementToAdd > 0) {
-          let newItem = this.item!.loadedModel3D!.clone();
-
-          newItem.position.set(
-            selectedBloc.position.x,
-            0,
-            selectedBloc.position.z
-          );
-          this.itemIslandManager.newItemToCreate = newItem;
-          this.numberOfElementToAdd -= 1;
-          this.checkIfAddItemToCreate();
+        if (
+          checkItem == null &&
+          this.numberOfElementToAdd > 0 &&
+          selectedPlane.name == "edit"
+        ) {
+          this.createItemAtPosition(selectedPlane);
+        }
+        // Click on center to have a prediction
+        else if (
+          selectedPlane.name == "cartomancie" &&
+          this.numberOfElementToAdd == 0
+        ) {
+          this.destroy();
+          this.experience.cartomancie = new Cartomancie();
         }
         // Else we gonna change position of this item
         else {
           if (checkItem) {
-            this.itemIslandManager.selectedItem = checkItem.object;
-            this.itemIslandManager.selectedItem!.position.y = 1;
-            this.isSelected = true;
-            this.canRaycast = false;
-
-            this.imageItem = checkItem.object!.clone();
-            this.setImageItem();
-            this.displayEditMode(true);
-            displayInterfaceInformationItem();
-            disableInterfaceCreationItem();
+            this.selectItem(checkItem);
           }
         }
 
@@ -267,94 +231,53 @@ export default class Island {
     }
   };
 
-  actionOnClickButtons() {
-    onClickOnDisabledModificationButton();
-
-    this.clickOnCrossButtonInformationItem();
-    this.clickOnAbandonedModificationItemButton();
-    this.clickOnMoveItemButton();
-    this.clickOnDeleteItemButton();
-  }
-
-  clickOnCrossButtonInformationItem() {
-    document
-      .getElementById("button_disable_select_item_island")!
-      .addEventListener("click", () => {
-        disableInterfaceInformationItem();
-        console.log("cross button");
-        this.resetPositionOfSelectedObject();
-        this.canRaycast = true;
-        this.checkIfAddItemToCreate();
-        this.destroyImageItem();
-      });
-  }
-
-  clickOnAbandonedModificationItemButton() {
-    document
-      .getElementById("abandonned_modificate_item_position_island")!
-      .addEventListener("click", () => {
-        disablePopupIterfaceModificateItem();
-        console.log("annuler button");
-        this.resetPositionOfSelectedObject();
-        this.checkIfAddItemToCreate();
-        this.destroyImageItem();
-      });
-  }
-
-  clickOnMoveItemButton() {
-    document
-      .getElementById("button_select_modificate_item_island")!
-      .addEventListener("click", () => {
-        displayPopupIterfaceModificateItem();
-        disableInterfaceInformationItem();
-        disableInterfaceCreationItem();
-        console.log("deplacer button");
-        this.canRaycast = true;
-        this.destroyImageItem();
-      });
-  }
-
-  clickOnDeleteItemButton() {
-    document
-      .getElementById("delete_button_item_island")!
-      .addEventListener("click", () => {
-        this.numberOfElementToAdd -= 1;
-        this.checkIfAddItemToCreate();
-      });
-  }
-  resetPositionOfSelectedObject() {
-    this.isSelected = false;
-    this.itemIslandManager.selectedItem!.position.y = 0;
-  }
-
-  // Debug
-  addDebugFolder(): GUI | null {
-    if (this.debug.active) {
-      return this.debug.ui!.addFolder("Island");
-    }
-    return null;
-  }
-
-  addDebug() {
-    if (this.debug.active) {
-      var arrow = new ArrowHelper(
-        this.raycaster.raycaster.ray.direction,
-        this.raycaster.raycaster.ray.origin,
-        8,
-        0xff0000
+  // MANAGE ITEM
+  private modificationItemPosition(selectedBloc: Object3D<Event>) {
+    this.displayEditMode(true);
+    // places item on a new selected block
+    if (
+      !this.itemIslandManager.getItemAtPosition(
+        selectedBloc.position.x,
+        selectedBloc.position.z
+      ) &&
+      selectedBloc.name == "edit"
+    ) {
+      this.itemIslandManager.selectedItem!.position.set(
+        selectedBloc.position.x,
+        0,
+        selectedBloc.position.z
       );
-      this.scene.add(arrow);
     }
+    // put back the item if it is already on the block or if the place is already taken
+    else {
+      this.itemIslandManager.selectedItem!.position.y = 0;
+    }
+    this.isSelected = false;
+    this.destroyImageItem();
+    this.checkIfAddItemToCreate();
+    disablePopupIterfaceModificateItem();
   }
 
-  private async loadIsland() {
-    this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Island)
-    );
+  private createItemAtPosition(positionPlane: Object3D<Event>) {
+    let newItem = this.item!.loadedModel3D!.clone();
 
-    this.scene.add(this.island.loadedModel3D!);
+    newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
+    this.itemIslandManager.newItemToCreate = newItem;
+    this.numberOfElementToAdd -= 1;
+    this.checkIfAddItemToCreate();
+  }
 
-    // this.allScene.add(this.island.loadedModel3D!);
+  private selectItem(itemSelected: ItemIsland) {
+    this.itemIslandManager.selectedItem = itemSelected.object;
+    this.itemIslandManager.selectedItem!.position.y = 1;
+    this.isSelected = true;
+    this.canRaycast = false;
+
+    this.imageItem = itemSelected.object!.clone();
+    this.setImageItem();
+    this.displayEditMode(true);
+    displayInterfaceInformationItem();
+    disableInterfaceCreationItem();
   }
 
   setImageItem() {
@@ -367,9 +290,107 @@ export default class Island {
     }
   }
 
-  destroyImageItem() {
+  // BUTTONS
+  // all action on buttons
+  private actionOnClickButtons() {
+    onClickOnDisabledModificationButton();
+
+    this.clickOnCrossButtonInformationItem();
+    this.clickOnAbandonedModificationItemButton();
+    this.clickOnMoveItemButton();
+    this.clickOnDeleteItemButton();
+  }
+
+  private clickOnCrossButtonInformationItem() {
+    document
+      .getElementById("button_disable_select_item_island")!
+      .addEventListener("click", () => {
+        disableInterfaceInformationItem();
+        console.log("cross button");
+        this.resetPositionOfSelectedObject();
+        this.canRaycast = true;
+        this.checkIfAddItemToCreate();
+        this.destroyImageItem();
+      });
+  }
+
+  private clickOnAbandonedModificationItemButton() {
+    document
+      .getElementById("abandonned_modificate_item_position_island")!
+      .addEventListener("click", () => {
+        disablePopupIterfaceModificateItem();
+        console.log("annuler button");
+        this.resetPositionOfSelectedObject();
+        this.checkIfAddItemToCreate();
+        this.destroyImageItem();
+      });
+  }
+
+  private clickOnMoveItemButton() {
+    document
+      .getElementById("button_select_modificate_item_island")!
+      .addEventListener("click", () => {
+        displayPopupIterfaceModificateItem();
+        disableInterfaceInformationItem();
+        disableInterfaceCreationItem();
+        console.log("deplacer button");
+        this.canRaycast = true;
+        this.destroyImageItem();
+      });
+  }
+
+  private clickOnDeleteItemButton() {
+    document
+      .getElementById("delete_button_item_island")!
+      .addEventListener("click", () => {
+        this.numberOfElementToAdd -= 1;
+        this.checkIfAddItemToCreate();
+      });
+  }
+
+  private resetPositionOfSelectedObject() {
+    this.isSelected = false;
+    this.itemIslandManager.selectedItem!.position.y = 0;
+  }
+
+  // Debug
+  private addDebugFolder(): GUI | null {
+    if (this.debug.active) {
+      return this.debug.ui!.addFolder("Island");
+    }
+    return null;
+  }
+
+  private addDebug() {
+    if (this.debug.active) {
+      var arrow = new ArrowHelper(
+        this.raycaster.raycaster.ray.direction,
+        this.raycaster.raycaster.ray.origin,
+        8,
+        0xff0000
+      );
+      this.scene.add(arrow);
+    }
+  }
+
+  // ITEMS
+  private async loadIsland() {
+    this.island = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Island)
+    );
+
+    this.scene.add(this.island.loadedModel3D!);
+  }
+
+  private destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
-  destroy() {}
+  destroy() {
+    this.scene.remove(this.island?.loadedModel3D!);
+    this.island?.loadedModel3D?.remove();
+
+    this.scene.remove(this.mapGroup);
+    this.mapGroup.remove();
+  }
 }

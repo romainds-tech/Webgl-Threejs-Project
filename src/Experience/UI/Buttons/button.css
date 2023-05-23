@@ -7,8 +7,8 @@
 #button_second_arcane_cartomancie,
 #button_display_prediction_cartomancie,
 #button_back_cartomancie,
-#button_select_low_item_cartomancie,
-#button_select_higher_item_cartomancie{
+#button_select_answer_question_item_cartomancie,
+#button_select_paid_item_cartomancie{
     display: none;
 }
 
@@ -106,8 +106,8 @@
     justify-content: center;
 }
 
-#button_select_higher_item_cartomancie{
-    width: 220px;
+.little_width {
+   width: 120px;
 }
 
 #button_display_prediction_cartomancie {

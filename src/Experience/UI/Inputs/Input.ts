@@ -8,7 +8,7 @@ export default class Input {
     this.createInput(
       "title_start_cartomancie",
       "title_cartomancie",
-      "Découvrir votre rédiction du jour",
+      "Découvrir votre prédiction du jour",
       PositionY.TOP,
       PositionX.CENTER
     );

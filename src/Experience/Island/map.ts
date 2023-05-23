@@ -79,7 +79,7 @@ export function loadMap(
           templatePlane.position.set(posx, 0, posy);
           templatePlane.rotation.x = Math.PI / 2;
 
-          templatePlane.name = "gray";
+          templatePlane.name = "edit";
           allObjectsCreateInMap.push(templatePlane);
           map.add(templatePlane);
           editMode.add(templatePlane);
@@ -90,8 +90,8 @@ export function loadMap(
           templateOtherPlane.position.set(posx, 0, posy);
           templateOtherPlane.rotation.x = Math.PI / 2;
           // scene.add(templateOtherPlane);
-          templateOtherPlane.name = "catomancie";
-          // allObjectsCreateInMap.push(templateOtherPlane);
+          templateOtherPlane.name = "cartomancie";
+          allObjectsCreateInMap.push(templateOtherPlane);
           map.add(templateOtherPlane);
           break;
       }

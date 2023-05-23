@@ -74,10 +74,11 @@ export function displayInterfaceSelectItemCartomancie() {
   document.getElementById("button_back_cartomancie")!.style.display = "flex";
   document.getElementById("title_select_item_cartomancie")!.style.display =
     "block";
-  document.getElementById("button_select_low_item_cartomancie")!.style.display =
-    "block";
   document.getElementById(
-    "button_select_higher_item_cartomancie"
+    "button_select_answer_question_item_cartomancie"
+  )!.style.display = "block";
+  document.getElementById(
+    "button_select_paid_item_cartomancie"
   )!.style.display = "flex";
 }
 
@@ -85,9 +86,10 @@ export function disabledInterfaceSelectItemCartomancie() {
   document.getElementById("button_back_cartomancie")!.style.display = "none";
   document.getElementById("title_select_item_cartomancie")!.style.display =
     "none";
-  document.getElementById("button_select_low_item_cartomancie")!.style.display =
-    "none";
   document.getElementById(
-    "button_select_higher_item_cartomancie"
+    "button_select_answer_question_item_cartomancie"
+  )!.style.display = "none";
+  document.getElementById(
+    "button_select_paid_item_cartomancie"
   )!.style.display = "none";
 }
