@@ -145,4 +145,44 @@ export const allGlbs = {
     scale: 2,
     animation: false,
   },
+
+  Card1: {
+    name: "Card1",
+    path: "glb/cartomancie/carte_1.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 1, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+  },
+
+  Card2: {
+    name: "Card2",
+    path: "glb/cartomancie/carte_2.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 1, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+  },
+
+  Card3: {
+    name: "Card3",
+    path: "glb/cartomancie/carte_3.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 1, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+  },
+
+  Card4: {
+    name: "Card4",
+    path: "glb/cartomancie/carte_4.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 1, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+  },
 };
