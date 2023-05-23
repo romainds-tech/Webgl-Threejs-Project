@@ -356,6 +356,8 @@ export default class Island {
     this.island.loadedModel3D!.receiveShadow = true;
     console.log(this.island.loadedModel3D!);
     this.scene.add(this.island.loadedModel3D!);
+    console.log(this.island.animationAction, "animation");
+    this.island.animationAction![0].play();
   }
 
   private destroyImageItem() {
