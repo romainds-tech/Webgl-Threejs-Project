@@ -78,11 +78,11 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
     }
   }
 
-  private rotateModelYPositif(step: number = 2) {
+  private rotateModelYPositif(step: number = 0.02) {
     this.model.rotation.y += step;
     this.trigger("rotationMovement");
   }
-  private rotateModelYNegatif(step: number = 2) {
+  private rotateModelYNegatif(step: number = 0.02) {
     this.model.rotation.y -= step;
     this.trigger("rotationMovement");
   }
