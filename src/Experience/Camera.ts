@@ -87,10 +87,13 @@ export default class Camera {
   }
 
   resize(): void {
-    this.instance.left = this.sizes.width / -1000;
-    this.instance.right = this.sizes.width / 1000;
-    this.instance.top = this.sizes.height / 1000;
-    this.instance.bottom = this.sizes.height / -1000;
+    const aspect = this.sizes.width / this.sizes.height;
+    const frustumSize = 10;
+
+    this.instance.left = (frustumSize * aspect) / -2;
+    this.instance.right = (frustumSize * aspect) / 2;
+    this.instance.top = frustumSize / 2;
+    this.instance.bottom = frustumSize / -2;
 
     this.instance.updateProjectionMatrix();
   }
