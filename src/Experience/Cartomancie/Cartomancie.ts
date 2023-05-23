@@ -40,6 +40,7 @@ import Button from "../UI/Buttons/Button";
 import Input from "../UI/Inputs/Input";
 import Overlay from "../UI/Overlays/Overlay";
 import Island from "../Island/Island";
+import { predictions } from "./predictions";
 
 export default class Cartomancie {
   public experience: Experience;
@@ -62,16 +63,17 @@ export default class Cartomancie {
   public button: Button;
   public input: Input;
   public overlayUI: Overlay;
-  public firstArcaneImageItem?: Object3D;
-  public secondArcaneImageItem?: Object3D;
+  public firstArcaneImageItem?: Model3D;
+  public secondArcaneImageItem?: Model3D;
+
+  public predictionNumber: number;
 
   constructor() {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.setupCamera();
-
-    console.log(this.camera.instance.zoom);
+    this.predictionNumber = this.setupPrediction();
     this.sizes = this.experience.sizes;
 
     this.debug = this.experience.debug;
@@ -109,6 +111,10 @@ export default class Cartomancie {
     this.camera.instance.zoom = 0.35;
     this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
+  }
+
+  setupPrediction() {
+    return Math.floor(Math.random() * predictions.length);
   }
   startPrediction() {
     document
@@ -151,16 +157,33 @@ export default class Cartomancie {
       this.mixer.addEventListener("finished", () => {
         console.log("card finished");
         setTimeout(() => {
-          this.setImageItem();
+          document.querySelector(
+            "#popup_first_arcane_cartomancie .text_arcane"
+          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
           this.destroyCard();
           displayInterfaceFirstArcaneCartomancie();
           this.setOverlayArcane();
-          if (this.firstArcaneImageItem) {
-            this.scene.add(this.firstArcaneImageItem);
-          }
+          this.loadMajorArcane();
         }, 500);
       });
     }
+  }
+
+  private async loadMajorArcane() {
+    this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(predictions[this.predictionNumber].modelMajorArcane)
+    );
+    console.log(this.firstArcaneImageItem);
+
+    this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
+  }
+
+  private async loadMinorArcane() {
+    this.secondArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(predictions[this.predictionNumber].modelMinorArcane)
+    );
+
+    this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
 
   displayButton() {
@@ -177,13 +200,10 @@ export default class Cartomancie {
       .addEventListener("click", () => {
         disabledInterfaceFirstArcaneCartomancie();
         this.destroyFirstArcane();
-        if (this.secondArcaneImageItem) {
-          // @ts-ignore
-          this.secondArcaneImageItem.material.color.b = 0;
-          this.scene.add(this.secondArcaneImageItem);
-          // @ts-ignore
-          console.log(this.secondArcaneImageItem.material);
-        }
+        this.loadMinorArcane();
+        document.querySelector(
+          "#popup_second_arcane_cartomancie .text_arcane"
+        )!.innerHTML = predictions[this.predictionNumber].textMinorArcane;
         displayInterfaceSecondArcaneCartomancie();
       });
   }
@@ -195,6 +215,9 @@ export default class Cartomancie {
         disabledInterfaceSecondArcaneCartomancie();
         this.destroySecondArcane();
         displayInterfacePredictionCartomancie();
+        document.querySelector(
+          "#popup_prediction_cartomancie .text_arcane"
+        )!.innerHTML = predictions[this.predictionNumber].textPrediction;
       });
   }
 
@@ -252,7 +275,7 @@ export default class Cartomancie {
 
   private async loadModelsItemIsland() {
     this.item = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.JustRobot)
+      new Model3D(predictions[this.predictionNumber].item)
     );
   }
 
@@ -284,29 +307,6 @@ export default class Cartomancie {
     this.scene.add(this.overlay);
   }
 
-  setImageItem() {
-    const geometry = new PlaneGeometry(1, 2);
-    const material = new MeshBasicMaterial({
-      color: 0xff00ff,
-      side: DoubleSide,
-    });
-    this.firstArcaneImageItem = new Mesh(geometry, material);
-
-    let sizeImageItem = 4;
-    if (this.firstArcaneImageItem) {
-      this.firstArcaneImageItem.scale.set(
-        sizeImageItem,
-        sizeImageItem,
-        sizeImageItem
-      );
-
-      this.firstArcaneImageItem.position.set(-4, 10, -4);
-      this.firstArcaneImageItem.rotation.set(0, Math.PI / 2, 0);
-
-      this.secondArcaneImageItem = this.firstArcaneImageItem.clone();
-    }
-  }
-
   update() {
     this.mixer?.update(this.experience.time.delta * 0.01);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
@@ -321,15 +321,15 @@ export default class Cartomancie {
 
   destroyFirstArcane() {
     if (this.firstArcaneImageItem) {
-      this.scene.remove(this.firstArcaneImageItem);
-      this.firstArcaneImageItem.remove();
+      this.scene.remove(this.firstArcaneImageItem.loadedModel3D!);
+      this.firstArcaneImageItem.loadedModel3D!.remove();
       this.firstArcaneImageItem = undefined;
     }
   }
   destroySecondArcane() {
     if (this.secondArcaneImageItem) {
-      this.scene.remove(this.secondArcaneImageItem);
-      this.secondArcaneImageItem.remove();
+      this.scene.remove(this.secondArcaneImageItem.loadedModel3D!);
+      this.secondArcaneImageItem.loadedModel3D!.remove();
       this.secondArcaneImageItem = undefined;
     }
   }
@@ -346,5 +346,9 @@ export default class Cartomancie {
       this.overlay.remove();
       this.overlay = undefined;
     }
+
+    this.scene.remove(this.item?.loadedModel3D!);
+    this.item?.loadedModel3D?.remove();
+    this.item = undefined;
   }
 }
