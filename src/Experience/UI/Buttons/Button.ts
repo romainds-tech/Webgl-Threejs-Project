@@ -98,7 +98,6 @@ export default class Button {
       "button_select_paid_item_cartomancie",
       "button little_width button_prediction button_icon_back",
       "fa fa-lock margin_icon_left",
-      "DEBLOQUER L'OBJET"
       "2.99 €",
       PositionY.TOP_60,
       PositionX.CENTER
@@ -109,7 +108,6 @@ export default class Button {
     this.createButton(
       "button_onboarding",
       "button_prediction button",
-      "button_onboarding",
       "Suivant",
       PositionY.BOTTOM,
       PositionX.CENTER
