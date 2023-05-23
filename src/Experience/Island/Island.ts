@@ -1,10 +1,8 @@
 import { Experience } from "../Experience";
-import { ArrowHelper, Group, Object3D, Scene, Vector2, Event } from "three";
+import { Group, Object3D, Scene, Vector2, Event } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-import Debug from "../utils/Debug";
-import { GUI } from "lil-gui";
 import { mapMainIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
@@ -24,18 +22,17 @@ import Popup from "../UI/Popups/Popup";
 import Button from "../UI/Buttons/Button";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
+import Debug from "../utils/Debug";
 
 export default class Island {
   public experience: Experience;
+  public debug: Debug;
   public scene: Scene;
   public sizes: Sizes;
   public camera: Camera;
 
   public item?: Model3D;
   private island?: Model3D;
-
-  public debug: Debug;
-  public debugFolder: GUI | null;
 
   public numberOfElementToAdd: number;
 
@@ -50,9 +47,9 @@ export default class Island {
   private isSelected: boolean;
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
-
+  //
   public itemIslandManager: ItemIslandManager;
-  // public textItemIsland: TextItemIsland;
+  // // public textItemIsland: TextItemIsland;
   public popupIsland: Popup;
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
@@ -63,22 +60,19 @@ export default class Island {
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
-    this.setupCamera();
-
-    // Debug
     this.debug = this.experience.debug;
-    this.debugFolder = this.addDebugFolder();
+    this.setupCamera();
 
     // Mouse position
     this.mouse = new Vector2();
 
     // Map
     this.numberOfElementToAdd = 0;
-
+    //
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
     this.raycaster = new RaycasterExperience();
-
+    //
     this.isSelected = false;
     // Load the map
     this.mapGroup = loadMap(
@@ -98,7 +92,7 @@ export default class Island {
     this.canRaycast = true;
 
     // check if we click on plane
-    document.addEventListener("pointerdown", this.onMouseDown, false);
+    document.addEventListener("pointerdown", this.onMouseDown, true);
 
     this.displayEditMode(false);
 
@@ -138,7 +132,7 @@ export default class Island {
   }
 
   private displayEditMode(isEdit: boolean) {
-    var opacity = 0.4;
+    let opacity = 0.4;
     if (!isEdit) {
       opacity = 0.2;
     }
@@ -162,11 +156,12 @@ export default class Island {
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
   // modify the position of the item if we click on
   onClickDown = (event: MouseEvent) => {
-    event.preventDefault();
+    // event.preventDefault();
 
     // position cursor on screen from center of the screen
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    console.log(this.mouse);
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
     let intersects = this.raycaster.getRaycastObject(
@@ -176,7 +171,6 @@ export default class Island {
     );
     // if I clicked on a raycastable object
     if (intersects.length > 0 && this.canRaycast) {
-      this.addDebug();
       // first plane clicked
       let selectedPlane = intersects[0].object;
 
@@ -351,26 +345,6 @@ export default class Island {
   private resetPositionOfSelectedObject() {
     this.isSelected = false;
     this.itemIslandManager.selectedItem!.position.y = 0;
-  }
-
-  // Debug
-  private addDebugFolder(): GUI | null {
-    if (this.debug.active) {
-      return this.debug.ui!.addFolder("Island");
-    }
-    return null;
-  }
-
-  private addDebug() {
-    if (this.debug.active) {
-      var arrow = new ArrowHelper(
-        this.raycaster.raycaster.ray.direction,
-        this.raycaster.raycaster.ray.origin,
-        8,
-        0xff0000
-      );
-      this.scene.add(arrow);
-    }
   }
 
   // ITEMS
