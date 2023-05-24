@@ -32,6 +32,7 @@ export default class Island {
   public camera: Camera;
 
   public item?: Model3D;
+  public textItem?: string;
   private island?: Model3D;
 
   public numberOfElementToAdd: number;
@@ -209,10 +210,12 @@ export default class Island {
 
         // add object in array of object
         let templateItem = this.itemIslandManager.newItemToCreate;
-        if (templateItem) {
+        let templateItemText = this.itemIslandManager.newTextToCreate;
+        if (templateItem && templateItemText) {
           this.mapGroup.add(templateItem);
-          this.itemIslandManager.addItem(templateItem);
+          this.itemIslandManager.addItem(templateItem, templateItemText);
           this.itemIslandManager.newItemToCreate = null;
+          this.itemIslandManager.newTextToCreate = null;
         }
       }
       // if i didn't click on a raycastable object i reset the props
@@ -254,15 +257,21 @@ export default class Island {
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem = this.item!.loadedModel3D!.clone();
+    let text = this.textItem!;
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
+    this.itemIslandManager.newTextToCreate = text;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
   }
 
   private selectItem(itemSelected: ItemIsland) {
     this.itemIslandManager.selectedItem = itemSelected.object;
+    this.itemIslandManager.selectItemPrediction = itemSelected.text;
+    document.querySelector("#popup_select_item_island h4")!.innerHTML =
+      this.itemIslandManager.selectItemPrediction!;
+
     this.itemIslandManager.selectedItem!.position.y = 1;
     this.isSelected = true;
     this.canRaycast = false;

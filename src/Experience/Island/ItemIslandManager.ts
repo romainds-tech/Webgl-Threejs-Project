@@ -4,19 +4,24 @@ import ItemIsland from "./ItemIsland";
 export default class ItemIslandManager {
   public itemArray: ItemIsland[];
   public newItemToCreate: Object3D | null;
+  public newTextToCreate: string | null;
   public selectedItem: Object3D | null;
+  public selectItemPrediction: string | null;
 
   constructor() {
     this.itemArray = [];
 
     this.newItemToCreate = null;
+    this.newTextToCreate = null;
     this.selectedItem = null;
+    this.selectItemPrediction = null;
   }
 
   // add new item (type object3D) in the array of item
-  addItem(newItemMesh: Object3D) {
+  addItem(newItemMesh: Object3D, newItemText: string) {
     let newItem = new ItemIsland();
     newItem.object = newItemMesh;
+    newItem.text = newItemText;
     newItem.object.add(new AxesHelper(5));
     this.itemArray.push(newItem);
   }
