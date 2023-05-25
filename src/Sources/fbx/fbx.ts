@@ -10,7 +10,7 @@ export const allFbx = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.001,
     animation: true,
-    clock: new Clock(),
+    shadow: true,
   },
   Whale: {
     name: "Whale",
@@ -20,7 +20,7 @@ export const allFbx = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.001,
     animation: true,
-    clock: new Clock(),
+    shadow: true,
   },
   Cygne: {
     name: "Cygne",
@@ -30,6 +30,6 @@ export const allFbx = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.001,
     animation: true,
-    clock: new Clock(),
+    shadow: true,
   },
 };

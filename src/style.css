@@ -24,6 +24,12 @@ html {
   transform: translate(0, -50%);
 }
 
+.top_20_position {
+  top : 20%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
 .top_50_position {
   top : 50%;
   left : 5%;
@@ -66,9 +72,8 @@ html {
 
 .text{
   z-index: 42;
-  position: relative;
+  position: absolute;
   text-align: center;
-  margin: 50px;
   color: white;
 }
 
@@ -86,6 +91,11 @@ html {
   border: #BA9023 solid 2px;
   border-radius: 10px;
   margin: auto;
+  position: absolute;
+  box-sizing: border-box;
+  height: 50px;
+  width: 170px;
+  z-index: 42;
 }
 
 #interactions{

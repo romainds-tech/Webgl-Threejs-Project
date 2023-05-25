@@ -1,13 +1,18 @@
 import { Experience } from "./Experience";
 import Sizes from "./utils/Sizes";
 import {
+  ACESFilmicToneMapping,
   CineonToneMapping,
+  LinearToneMapping,
+  NoToneMapping,
   PCFSoftShadowMap,
+  ReinhardToneMapping,
   Scene,
   sRGBEncoding,
   WebGLRenderer,
 } from "three";
 import Camera from "./Camera";
+import { GUI } from "lil-gui";
 
 export default class Renderer {
   public experience: Experience;
@@ -16,6 +21,7 @@ export default class Renderer {
   public scene: Scene;
   public camera: Camera;
   public instance: WebGLRenderer;
+  public envDebug: GUI | undefined;
 
   public constructor() {
     this.experience = Experience.getInstance();
@@ -25,6 +31,7 @@ export default class Renderer {
     this.camera = this.experience.camera;
 
     this.instance = this.setInstance();
+    this.envDebug = this.addDebug();
   }
 
   private setInstance(): WebGLRenderer {
@@ -33,13 +40,17 @@ export default class Renderer {
       antialias: true, //  todo invert for performance
       // powerPreference: "high-performance", // todo reactivate for performance
     });
+    instance.physicallyCorrectLights = true;
+    instance.gammaFactor = 2.2;
     instance.useLegacyLights = true;
+    instance.toneMapping = ReinhardToneMapping;
     instance.toneMappingExposure = 1.75;
     instance.shadowMap.enabled = true;
     instance.shadowMap.type = PCFSoftShadowMap;
     instance.setClearColor("#211d20");
     instance.setSize(this.sizes.width, this.sizes.height);
     instance.setPixelRatio(this.sizes.pixelRatio);
+
     return instance;
   }
 
@@ -47,6 +58,31 @@ export default class Renderer {
     this.instance.setSize(this.sizes.width, this.sizes.height);
 
     this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
+  }
+
+  public addDebug() {
+    if (this.experience.debug.active) {
+      //create a folder for the renderer
+      let rendererFolder: GUI = this.experience.debug.ui!.addFolder("Renderer");
+
+      rendererFolder.add(this.instance, "toneMapping", {
+        No: NoToneMapping,
+        Linear: LinearToneMapping,
+        Reinhard: ReinhardToneMapping,
+        Cineon: CineonToneMapping,
+        AcesFilmic: ACESFilmicToneMapping,
+      });
+
+      rendererFolder
+        .add(this.instance, "toneMappingExposure")
+        .min(0)
+        .max(10)
+        .step(0.1);
+
+      return rendererFolder;
+    }
+    return;
+    // add tone mapping debug
   }
 
   public update() {

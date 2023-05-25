@@ -49,7 +49,8 @@ export default class Camera {
 
   private setOrbitControls(): OrbitControls {
     let controls: OrbitControls = new OrbitControls(this.instance, this.canvas);
-    controls.enableDamping = true;
+    console.log(controls);
+    // controls.enableDamping = true;
     return controls;
   }
 

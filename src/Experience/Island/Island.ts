@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import { Group, Object3D, Scene, Vector2, Event } from "three";
+import { Group, Object3D, Scene, Vector2, Event, Color } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -108,8 +108,12 @@ export default class Island {
   }
 
   public loadAllScene() {
-    // this.scene.add(this.island?.loadedModel3D!);
+    this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+  }
+
+  public setupScene() {
+    this.scene.background = new Color(0x000000);
   }
 
   public setupCamera() {
@@ -122,6 +126,7 @@ export default class Island {
   public checkIfAddItemToCreate() {
     if (this.numberOfElementToAdd > 0) {
       displayInterfaceCreationItem();
+      this.displayEditMode(true);
     } else if (this.isSelected) {
       this.displayEditMode(true);
       disableInterfaceCreationItem();
@@ -358,12 +363,19 @@ export default class Island {
     this.scene.add(this.island.loadedModel3D!);
     console.log(this.island.animationAction, "animation");
     this.island.animationAction![0].play();
+    this.island.animationAction![1].play();
+    this.island.animationAction![2].play();
   }
 
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
+
+  update() {
+    this.island?.mixer?.update(this.experience.time.delta * 0.002);
+  }
+
   destroy() {
     this.scene.remove(this.island?.loadedModel3D!);
     this.island?.loadedModel3D?.remove();

@@ -41,10 +41,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     button?.addEventListener("click", () => {
       this.showQuestion();
     });
-
     this.loadAllModels();
     this.setupCamera();
-    this.setupBackgroundImage();
+    // this.setupBackgroundImage();
     this.user = this.setUserFromCookie();
 
     this.showQuestion();
@@ -94,7 +93,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private setupCamera() {
     console.log(this.experience.camera.instance.position);
     this.experience.camera.instance.position.set(-5, 5, 20);
-    // remove orbit controls
+
     this.experience.camera.instance.zoom = 0.35;
     this.experience.camera.instance.updateProjectionMatrix();
     this.experience.camera.controls.enabled = false;
@@ -139,7 +138,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     if (this.currentQuestionIndex >= this.questions!.length) {
       this.trigger("onboardingFinish");
-      document.querySelector(".button_onboarding")?.remove();
+      document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
       return;
     }
@@ -154,8 +153,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (question.Type === "input") {
       let input = document.createElement("input");
       input.type = "text";
-      input.className = "input";
-      document.querySelector("#interactions")?.appendChild(input);
+      input.className = "input center_position top_70_position";
+      document.body.appendChild(input);
 
       // user answer
       input.addEventListener("input", (e) => {
@@ -205,6 +204,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.drag?.destroy();
     this.drag = undefined;
+
+    console.log("destroy onboarding");
+    console.log(document.querySelector("#button_onboarding"));
+
+    document
+      .querySelector("#button_onboarding")
+      ?.removeEventListener("click", (e) => {
+        console.log("click", e);
+      });
 
     document.querySelector("#button_onboarding")?.remove();
   }

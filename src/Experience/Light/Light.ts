@@ -30,20 +30,19 @@ export default class Light {
   }
 
   loadLightIsland(): void {
-    this.sunLight = new DirectionalLight(0xffffff, 1);
+    this.sunLight = new DirectionalLight(0xf4e8bc, 5.3);
 
-    this.sunLight.intensity = 1;
+    this.sunLight.intensity = 5.3;
     this.sunLight!.castShadow = true;
-    this.sunLight!.shadow.mapSize.set(1024, 1024);
-    // this.sunLight!.shadow.normalBias = 0.05;
-    this.sunLight!.position.set(0, 5, 0);
-    this.sunLight.color.setHSL(0.1, 1, 0.95);
-    this.sunLight.position.multiplyScalar(30);
+    this.sunLight!.shadow.mapSize.set(2048, 2048);
+    this.sunLight!.shadow.normalBias = 0.035;
+    this.sunLight!.position.set(5, 6.235, 7.5);
+    // this.sunLight.color.setHSL(0.1, 1, 0.95);
+    // this.sunLight.position.multiplyScalar(30);
     this.scene.add(this.sunLight);
 
-    this.hemisphereLight = new HemisphereLight(0xffffff, 0xffffff, 3);
-    this.hemisphereLight.color.setHSL(0.6, 1, 0.6);
-    this.hemisphereLight.groundColor.setHSL(0.095, 1, 0.75);
+    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 1);
+    // this.hemisphereLight.castShadow = true;
     this.scene.add(this.hemisphereLight);
 
     // Debug
@@ -53,29 +52,29 @@ export default class Light {
         .add(this.sunLight!, "intensity")
         .name("sunLightIntensity")
         .min(0)
-        .max(10)
-        .step(0.001);
+        .max(100)
+        .step(0.1);
 
       lightFolder
         .add(this.sunLight!.position, "x")
         .name("sunLightX")
         .min(-5)
-        .max(5)
-        .step(0.001);
+        .max(100)
+        .step(1);
 
       lightFolder
         .add(this.sunLight!.position, "y")
         .name("sunLightY")
         .min(-5)
-        .max(50)
-        .step(0.001);
+        .max(100)
+        .step(1);
 
       lightFolder
         .add(this.sunLight!.position, "z")
         .name("sunLightZ")
         .min(-5)
         .max(5)
-        .step(0.001);
+        .step(1);
 
       lightFolder
         .add(this.hemisphereLight!, "intensity")

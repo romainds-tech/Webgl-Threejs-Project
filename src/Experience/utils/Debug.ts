@@ -9,7 +9,7 @@ export default class Debug {
     this.ui = null;
 
     this.addDebug();
-    this.debugModelFolder = this.addModelDebugFolder();
+    this.debugModelFolder = this.addModelDebugFolder()?.close();
   }
 
   addModelDebugFolder(): GUI | null {
