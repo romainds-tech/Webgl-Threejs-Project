@@ -1,10 +1,16 @@
 export default class Overlay {
-  constructor() {}
-
-  setOverlayCartomancie() {
-    this.createOverlay("overlay_start_cartomancie", "overlay_cartomancie");
-    this.createOverlay("overlay_arcane", "overlay_all_arcane");
+  private static instance: Overlay;
+  constructor() {
+    Overlay.instance = this;
   }
+
+  public static getInstance(): Overlay {
+    if (!Overlay.instance) {
+      Overlay.instance = new Overlay();
+    }
+    return Overlay.instance;
+  }
+
   createOverlay(idOverlay: string, classStyleNameOverlay: string) {
     const overlay = document.createElement("div");
     overlay.id = idOverlay;

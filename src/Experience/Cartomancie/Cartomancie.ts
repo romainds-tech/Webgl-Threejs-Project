@@ -23,7 +23,6 @@ import { allGlbs } from "../../Sources/glb/glb";
 // import { gsap } from "gsap";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
-import Popup from "../UI/Popups/Popup";
 import {
   disabledInterfaceStartCartomancie,
   displayInterfaceStartCartomancie,
@@ -35,11 +34,8 @@ import {
   disabledInterfacePredictionCartomancie,
   displayInterfaceSelectItemCartomancie,
   disabledInterfaceSelectItemCartomancie,
+  createUICartomancie,
 } from "./displayInterfaceCartomancie";
-import Button from "../UI/Buttons/Button";
-import Input from "../UI/Inputs/Input";
-import Overlay from "../UI/Overlays/Overlay";
-import Island from "../Island/Island";
 import { predictions } from "./predictions";
 
 export default class Cartomancie {
@@ -52,19 +48,15 @@ export default class Cartomancie {
   private sizes: Sizes;
 
   private debug: Debug;
-  public debugFolder: GUI | null;
+  private debugFolder: GUI | null;
 
-  public time: Time;
+  private time: Time;
 
   private overlay?: Mesh;
   private cards?: Model3D;
   private item?: Model3D;
   private mixer?: AnimationMixer;
 
-  private popup: Popup;
-  private button: Button;
-  private input: Input;
-  private overlayUI: Overlay;
   private firstArcaneImageItem?: Model3D;
   private secondArcaneImageItem?: Model3D;
 
@@ -85,19 +77,7 @@ export default class Cartomancie {
 
     this.loadModelsItemIsland();
 
-    // this.loadCarte();
-    this.popup = new Popup();
-    this.popup.setPopupCartomancie();
-
-    this.button = new Button();
-    this.button.setButtonCartomancie();
-
-    this.input = new Input();
-    this.input.setInputCartomancie();
-
-    this.overlayUI = new Overlay();
-    this.overlayUI.setOverlayCartomancie();
-
+    createUICartomancie();
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
@@ -147,16 +127,16 @@ export default class Cartomancie {
 
   private playAnimations(): void {
     if (this.cards?.animationAction) {
-      this.mixer = new AnimationMixer(this.cards.loadedModel3D!);
+      this.mixer = this.cards.mixer;
 
-      const clipMixer = this.mixer.clipAction(
+      const clipMixer = this.mixer!.clipAction(
         this.cards.animationAction[0].getClip()
       );
-      console.log(clipMixer);
+
       clipMixer.play();
       clipMixer.setLoop(LoopOnce, 1);
       clipMixer.clampWhenFinished = true;
-      this.mixer.addEventListener("finished", () => {
+      this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
         setTimeout(() => {
           document.querySelector(
@@ -267,7 +247,10 @@ export default class Cartomancie {
       this.experience.island.checkIfAddItemToCreate();
       this.itemPrediction = this.item;
       this.textPrediction = predictions[this.predictionNumber].textPrediction;
-      this.itemPrediction!.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
+
+      if (this.itemPrediction) {
+        this.itemPrediction.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
+      }
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
     }
@@ -311,7 +294,7 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.experience.time.delta * 0.01);
+    this.mixer?.update(this.time.delta * 0.01);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

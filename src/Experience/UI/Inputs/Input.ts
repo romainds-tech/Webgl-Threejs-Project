@@ -1,55 +1,18 @@
 import { PositionX, PositionY } from "../Enums/Position";
-import { sub } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
-
 export default class Input {
-  constructor() {}
-
-  setInputCartomancie() {
-    this.createInput(
-      "title_start_cartomancie",
-      "title_cartomancie",
-      "Découvrir votre prédiction du jour",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInput(
-      "title_first_arcane_cartomancie",
-      "title_cartomancie",
-      "L’arcane majeur",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInput(
-      "title_second_arcane_cartomancie",
-      "title_cartomancie",
-      "L’arcane mineur",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInputWithSubtitle(
-      "title_prediction_cartomancie",
-      "title_prediction_cartomancie",
-      "Prédiciton du xx/xx/xxxx",
-      "subtitle_cartomancie",
-      "CARTOMANCIE",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInputWithSubtitle(
-      "title_select_item_cartomancie",
-      "title_prediction_cartomancie",
-      "CHOISISSEZ VOTRE AMULETTE",
-      "subtitle_cartomancie",
-      "Vous pourrez ensuite la placer sur votre île",
-      PositionY.TOP_10,
-      PositionX.CENTER
-    );
+  private static instance: Input;
+  constructor() {
+    Input.instance = this;
   }
-  createInput(
+
+  public static getInstance(): Input {
+    if (!Input.instance) {
+      Input.instance = new Input();
+    }
+    return Input.instance;
+  }
+
+  public createInput(
     idInput: string,
     classStyleNameInput: string,
     textInput: string,
@@ -64,7 +27,7 @@ export default class Input {
     document.body.appendChild(input);
   }
 
-  createInputWithSubtitle(
+  public createInputWithSubtitle(
     idInput: string,
     classStyleNameInput: string,
     textInput: string,

@@ -16,10 +16,9 @@ import {
   disableInterfaceInformationItem,
   disableInterfaceCreationItem,
   displayInterfaceCreationItem,
+  createUIIsland,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
-import Popup from "../UI/Popups/Popup";
-import Button from "../UI/Buttons/Button";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
@@ -51,9 +50,7 @@ export default class Island {
   //
   public itemIslandManager: ItemIslandManager;
   // // public textItemIsland: TextItemIsland;
-  public popupIsland: Popup;
   public imageItem: Object3D<Event> | null;
-  public buttonIsland: Button;
 
   constructor() {
     // Experience
@@ -82,10 +79,6 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
-    // Ui of item create an modificate
-    this.popupIsland = new Popup();
-    this.buttonIsland = new Button();
-
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -99,8 +92,7 @@ export default class Island {
 
     this.loadIsland();
 
-    this.popupIsland.setPopupIsland();
-    this.buttonIsland.setButtonIsland();
+    createUIIsland();
 
     this.actionOnClickButtons();
     this.imageItem = null;
