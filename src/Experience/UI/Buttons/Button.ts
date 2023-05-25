@@ -58,4 +58,27 @@ export default class Button {
 
     button.appendChild(icon);
   }
+
+  public createButtonWithImage(
+    idButton: string,
+    classStyleNameButton: string,
+    srcImg: string,
+    classStyleNameImg: string,
+    textButton: string,
+    positionY: PositionY,
+    positionX: PositionX
+  ) {
+    const button = document.createElement("button");
+    const image = document.createElement("img");
+
+    button.id = idButton;
+    document.body.appendChild(button);
+    button.className = classStyleNameButton + " " + positionY + " " + positionX;
+    button.innerHTML = textButton;
+
+    image.className = classStyleNameImg;
+    image.src = srcImg;
+
+    button.appendChild(image);
+  }
 }

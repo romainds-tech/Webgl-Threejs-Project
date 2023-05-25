@@ -2,6 +2,13 @@ import { PositionX, PositionY } from "../UI/Enums/Position";
 import Popup from "../UI/Popups/Popup";
 import Button from "../UI/Buttons/Button";
 
+export function displayInterfaceGlobalOnIsland() {
+  document.getElementById("button_rings_island")!.style.display = "block";
+}
+
+export function disableInterfaceGlobalOnIsland() {
+  document.getElementById("button_rings_island")!.style.display = "none";
+}
 export function displayInterfaceCreationItem() {
   document.getElementById("popup_create_item_island")!.style.display = "block";
   document.getElementById("delete_button_item_island")!.style.display = "block";
@@ -19,6 +26,7 @@ export function displayInterfaceInformationItem() {
   )!.style.display = "block";
   document.getElementById("button_disable_select_item_island")!.style.display =
     "block";
+  disableInterfaceGlobalOnIsland();
 }
 
 export function disableInterfaceInformationItem() {
@@ -28,6 +36,7 @@ export function disableInterfaceInformationItem() {
   )!.style.display = "none";
   document.getElementById("button_disable_select_item_island")!.style.display =
     "none";
+  displayInterfaceGlobalOnIsland();
 }
 
 export function displayPopupIterfaceModificateItem() {
@@ -109,6 +118,16 @@ export function createUIIsland() {
     "button_disable_select_item_island",
     "button_cross_island",
     "X",
+    PositionY.TOP,
+    PositionX.RIGHT
+  );
+
+  Button.getInstance().createButtonWithImage(
+    "button_rings_island",
+    "button_cross_island button_island_permanent",
+    "/public/images/btn_image_rings.png",
+    "button_rings",
+    "",
     PositionY.TOP,
     PositionX.RIGHT
   );

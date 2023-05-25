@@ -17,11 +17,14 @@ import {
   disableInterfaceCreationItem,
   displayInterfaceCreationItem,
   createUIIsland,
+  displayInterfaceGlobalOnIsland,
+  disableInterfaceGlobalOnIsland,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
+import Sky from "../Sky/Sky";
 
 export default class Island {
   public numberOfElementToAdd: number;
@@ -90,6 +93,7 @@ export default class Island {
     this.loadIsland();
 
     createUIIsland();
+    displayInterfaceGlobalOnIsland();
 
     this.actionOnClickButtons();
     this.imageItem = null;
@@ -100,6 +104,7 @@ export default class Island {
   public loadAllScene() {
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+    displayInterfaceGlobalOnIsland();
   }
 
   public setupScene() {
@@ -192,6 +197,7 @@ export default class Island {
           this.numberOfElementToAdd == 0
         ) {
           this.destroy();
+          disableInterfaceGlobalOnIsland();
           this.experience.cartomancie = new Cartomancie();
         }
         // Else we gonna change position of this item
@@ -296,8 +302,18 @@ export default class Island {
     this.clickOnAbandonedModificationItemButton();
     this.clickOnMoveItemButton();
     this.clickOnDeleteItemButton();
+    this.clickOnRingButton();
   }
 
+  private clickOnRingButton() {
+    document
+      .getElementById("button_rings_island")!
+      .addEventListener("click", () => {
+        disableInterfaceGlobalOnIsland();
+        this.destroy();
+        this.experience.sky = new Sky();
+      });
+  }
   private clickOnCrossButtonInformationItem() {
     document
       .getElementById("button_disable_select_item_island")!

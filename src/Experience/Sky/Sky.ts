@@ -12,10 +12,14 @@ import {
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 import Time from "../utils/Time";
+import Camera from "../Camera";
+import { createUISky } from "./displayInterfaceSky";
 
 export default class Sky {
   public experience: Experience;
   public scene: Scene;
+  private camera: Camera;
+
   public debug: Debug;
   public debugFolder: GUI | null;
   public time: Time;
@@ -27,6 +31,8 @@ export default class Sky {
   constructor() {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
+    this.camera = this.experience.camera;
+    this.setupCamera();
 
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
@@ -38,6 +44,9 @@ export default class Sky {
     this.healthRing = null;
 
     this.addRings();
+    createUISky();
+
+    this.allActionOnButton();
   }
 
   addDebugFolder(): GUI | null {
@@ -47,7 +56,26 @@ export default class Sky {
     return null;
   }
 
-  addRings(): void {
+  private setupCamera() {
+    this.camera.instance.zoom = 0.15;
+    this.experience.camera.instance.position.set(-5, 10, -5);
+    this.camera.instance.updateProjectionMatrix();
+  }
+
+  private allActionOnButton() {
+    this.clickBackOnIslandButton();
+  }
+
+  private clickBackOnIslandButton() {
+    document
+      .getElementById("button_back_island_sky")!
+      .addEventListener("click", () => {
+        this.destroy();
+        this.experience.island?.loadAllScene();
+      });
+  }
+
+  private addRings(): void {
     this.loveRing = this.createRing(
       10,
       0.7,
@@ -88,7 +116,7 @@ export default class Sky {
     this.scene.add(this.healthRing);
   }
 
-  createRing(
+  private createRing(
     radius: number,
     tube: number,
     arc: number,
@@ -174,7 +202,7 @@ export default class Sky {
     }
     return ringGroup;
   }
-  update() {
+  public update() {
     this.loveRing!.rotation.x += this.time.delta * 0.0005;
     this.loveRing!.rotation.z += this.time.delta * 0.0002;
 
@@ -187,8 +215,11 @@ export default class Sky {
   }
 
   destroy() {
-    this.loveRing = null;
-    this.workRing = null;
-    this.healthRing = null;
+    this.scene.remove(this.loveRing!);
+    // this.loveRing = null;
+    this.scene.remove(this.workRing!);
+    // this.workRing = null;
+    this.scene.remove(this.healthRing!);
+    // this.healthRing = null;
   }
 }

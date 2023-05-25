@@ -104,13 +104,13 @@ export function createUICartomancie() {
   // OVERLAY
   Overlay.getInstance().createOverlay(
     "overlay_start_cartomancie",
-    "overlay_cartomancie"
+    "overlay_cartomancie all_ui_cartomancie"
   );
 
   //TEXTES
   Input.getInstance().createInput(
     "title_start_cartomancie",
-    "title_cartomancie",
+    "title_cartomancie all_ui_cartomancie",
     "Découvrir votre prédiction du jour",
     PositionY.TOP,
     PositionX.CENTER
@@ -118,7 +118,7 @@ export function createUICartomancie() {
 
   Input.getInstance().createInput(
     "title_first_arcane_cartomancie",
-    "title_cartomancie",
+    "title_cartomancie all_ui_cartomancie",
     "L’arcane majeur",
     PositionY.TOP,
     PositionX.CENTER
@@ -126,7 +126,7 @@ export function createUICartomancie() {
 
   Input.getInstance().createInput(
     "title_second_arcane_cartomancie",
-    "title_cartomancie",
+    "title_cartomancie all_ui_cartomancie",
     "L’arcane mineur",
     PositionY.TOP,
     PositionX.CENTER
@@ -134,9 +134,9 @@ export function createUICartomancie() {
 
   Input.getInstance().createInputWithSubtitle(
     "title_prediction_cartomancie",
-    "title_prediction_cartomancie",
+    "title_prediction_cartomancie all_ui_cartomancie",
     "Prédiciton du xx/xx/xxxx",
-    "subtitle_cartomancie",
+    "subtitle_cartomancie all_ui_cartomancie",
     "CARTOMANCIE",
     PositionY.TOP,
     PositionX.CENTER
@@ -144,9 +144,9 @@ export function createUICartomancie() {
 
   Input.getInstance().createInputWithSubtitle(
     "title_select_item_cartomancie",
-    "title_prediction_cartomancie",
+    "title_prediction_cartomancie all_ui_cartomancie",
     "CHOISISSEZ VOTRE AMULETTE",
-    "subtitle_cartomancie",
+    "subtitle_cartomancie all_ui_cartomancie",
     "Vous pourrez ensuite la placer sur votre île",
     PositionY.TOP_10,
     PositionX.CENTER
@@ -155,46 +155,36 @@ export function createUICartomancie() {
   // POPUPS
   Popup.getInstance().createPopupTextOnly(
     "popup_start_cartomancie",
-    "div div_popup",
+    "div div_popup all_ui_cartomancie",
     "Votre prédiction du jour provient de la\n" +
       "cartomancie\n" +
       "<br>" +
       "<br>" +
       "Cet art consiste en une pratique divinatoire qui utilise les cartes pour obtenir des informations ou des prédictions sur vos événements passés, présents ou futurs, ainsi que sur des aspects de votre vie.",
-    "cartomancie_text",
+    "cartomancie_text all_ui_cartomancie",
     PositionY.MIDDLE
   );
 
   Popup.getInstance().createPopupTextOnly(
     "popup_first_arcane_cartomancie",
-    "div div_arcane",
-    "Je tire l'arcane majeure La Tempérance, qui représente l'équilibre, " +
-      "la modération et l'harmonie. Cette carte indique que vous devrez bientôt trouver un juste milieu dans votre vie, " +
-      "peut-être en cherchant un équilibre entre travail et vie personnelle, ou entre vos relations et vos obligations. " +
-      "Vous pourriez être invité à prendre des décisions éclairées, à faire preuve de patience et à trouver une voie médiane pour atteindre vos objectifs.s",
+    "div div_arcane all_ui_cartomancie",
+    "",
     "text_arcane",
     PositionY.TOP_70
   );
 
   Popup.getInstance().createPopupTextOnly(
     "popup_second_arcane_cartomancie",
-    "div div_arcane",
-    "Ensuite, je tire l'arcane mineure 6 des coupes, qui représente les souvenirs, " +
-      "la nostalgie et la remémoration. Cette carte indique que vous pourriez être amené à vous " +
-      "remémorer des moments heureux du passé, peut-être en vous connectant avec des amis ou de la " +
-      "famille que vous n'avez pas vu depuis longtemps. Cette carte peut également indiquer une période " +
-      "de réflexion et de contemplation, au cours de laquelle vous chercherez à comprendre vos racines et votre histoire personnelle.",
+    "div div_arcane all_ui_cartomancie",
+    "",
     "text_arcane",
     PositionY.TOP_70
   );
 
   Popup.getInstance().createPopupTextOnly(
     "popup_prediction_cartomancie",
-    "div div_arcane div_prediction",
-    "En combinant ces deux cartes, je vois une image de vous cherchant à trouver un équilibre dans votre vie tout en vous remémorant votre passé et vos racines. Vous pourriez être appelé à prendre des décisions importantes en vous basant sur votre expérience passée, tout en gardant un œil sur l'avenir et en cherchant à créer un avenir plus équilibré et harmonieux. Gardez en tête que rien n'est figé dans le temps, et que vous pouvez toujours trouver un juste milieu et avancer avec confiance dans la vie.\n" +
-      "<br>" +
-      "<br>" +
-      "et cela prend forme d’une géode enfermé dans une fiole symbole de ....",
+    "div div_arcane div_prediction all_ui_cartomancie",
+    "",
     "text_arcane height_arcane",
     PositionY.TOP_55
   );
@@ -202,7 +192,7 @@ export function createUICartomancie() {
   // BUTTONS
   Button.getInstance().createButton(
     "button_start_cartomancie",
-    "button button_cartomancie",
+    "button button_cartomancie all_ui_cartomancie",
     "COMMENCER",
     PositionY.BOTTOM,
     PositionX.CENTER
@@ -210,7 +200,7 @@ export function createUICartomancie() {
 
   Button.getInstance().createButton(
     "button_first_arcane_cartomancie",
-    "button button_prediction",
+    "button button_prediction all_ui_cartomancie",
     "DEUXIÈME CARTE",
     PositionY.BOTTOM,
     PositionX.CENTER
@@ -218,7 +208,7 @@ export function createUICartomancie() {
 
   Button.getInstance().createButtonWithIcon(
     "button_second_arcane_cartomancie",
-    "button button_prediction",
+    "button button_prediction all_ui_cartomancie",
     "fa fa-arrow-right margin_icon_right",
     "MA PRÉDICTION",
     PositionY.BOTTOM,
@@ -227,7 +217,7 @@ export function createUICartomancie() {
 
   Button.getInstance().createButton(
     "button_display_prediction_cartomancie",
-    "button button_prediction",
+    "button button_prediction all_ui_cartomancie",
     "DÉCOUVRIR MON AMULETTE",
     PositionY.BOTTOM,
     PositionX.CENTER
@@ -235,7 +225,7 @@ export function createUICartomancie() {
 
   Button.getInstance().createButtonWithIcon(
     "button_back_cartomancie",
-    "button button_prediction_back button_icon_back",
+    "button button_prediction_back button_icon_back all_ui_cartomancie",
     "fa fa-arrow-left margin_icon_left",
     "RETOUR",
     PositionY.TOP,
@@ -244,7 +234,7 @@ export function createUICartomancie() {
 
   Button.getInstance().createButton(
     "button_select_answer_question_item_cartomancie",
-    "button button_white",
+    "button button_white all_ui_cartomancie",
     "RÉPONDRE À UNE QUESTION",
     PositionY.TOP_70,
     PositionX.CENTER
@@ -252,10 +242,19 @@ export function createUICartomancie() {
 
   Button.getInstance().createButtonWithIcon(
     "button_select_paid_item_cartomancie",
-    "button little_width button_prediction button_icon_back",
+    "button little_width button_prediction button_icon_back all_ui_cartomancie",
     "fa fa-lock margin_icon_left",
     "2.99 €",
     PositionY.TOP_60,
     PositionX.CENTER
   );
+}
+
+export function deleteAllUI() {
+  document.querySelectorAll(".all_ui_cartomancie").forEach((ui) => {
+    ui.remove();
+  });
+
+  document.getElementById("title_select_item_cartomancie")!.remove();
+  document.getElementById("title_prediction_cartomancie")!.remove();
 }

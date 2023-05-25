@@ -35,6 +35,7 @@ import {
   displayInterfaceSelectItemCartomancie,
   disabledInterfaceSelectItemCartomancie,
   createUICartomancie,
+  deleteAllUI,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
 
@@ -229,6 +230,7 @@ export default class Cartomancie {
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
         this.setupIsland();
+        deleteAllUI();
       });
   }
 
@@ -237,6 +239,7 @@ export default class Cartomancie {
       .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
         this.setupIsland();
+        deleteAllUI();
       });
   }
 
