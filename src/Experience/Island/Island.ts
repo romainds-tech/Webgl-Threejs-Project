@@ -167,7 +167,6 @@ export default class Island {
     // position cursor on screen from center of the screen
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    console.log(this.mouse);
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
     let intersects = this.raycaster.getRaycastObject(
@@ -261,7 +260,8 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
-    let newItem = this.item!.loadedModel3D!.clone();
+    let newItem =
+      this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -368,9 +368,7 @@ export default class Island {
     );
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
-    console.log(this.island.loadedModel3D!);
     this.scene.add(this.island.loadedModel3D!);
-    console.log(this.island.animationAction, "animation");
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     this.island.animationAction![2].play();
