@@ -24,33 +24,30 @@ import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 
 export default class Island {
-  public experience: Experience;
-  public debug: Debug;
-  public scene: Scene;
-  public sizes: Sizes;
-  public camera: Camera;
-
-  public item?: Model3D;
-  public textItem?: string;
-  private island?: Model3D;
-
   public numberOfElementToAdd: number;
 
+  private experience: Experience;
+  private debug: Debug;
+  private scene: Scene;
+  private sizes: Sizes;
+  private camera: Camera;
+
   // Map
+  private island?: Model3D;
   // var for trigger event
   private readonly onMouseDown: (event: MouseEvent) => void;
 
   // Map object
-  public mapGroup: Group;
+  private mapGroup: Group;
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
-  //
-  public itemIslandManager: ItemIslandManager;
-  // // public textItemIsland: TextItemIsland;
-  public imageItem: Object3D<Event> | null;
+
+  private itemIslandManager: ItemIslandManager;
+
+  private imageItem: Object3D<Event> | null;
 
   constructor() {
     // Experience
