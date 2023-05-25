@@ -246,7 +246,10 @@ export default class Cartomancie {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(this.item!);
+        this.setupIsland(
+          this.item!,
+          predictions[this.predictionNumber].textPrediction
+        );
       });
   }
 
@@ -254,16 +257,20 @@ export default class Cartomancie {
     document
       .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(this.item!);
+        this.setupIsland(
+          this.item!,
+          predictions[this.predictionNumber].textPrediction
+        );
       });
   }
 
-  setupIsland(item: Model3D) {
+  setupIsland(item: Model3D, text: string) {
     disabledInterfaceSelectItemCartomancie();
     if (this.experience.island) {
       this.experience.island.numberOfElementToAdd = 1;
       this.experience.island.checkIfAddItemToCreate();
       this.experience.island.item = item;
+      this.experience.island.textItem = text;
       this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
