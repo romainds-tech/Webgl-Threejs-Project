@@ -109,7 +109,7 @@ export default class Cartomancie {
       -cameraPosition
     );
     this.camera.instance.zoom = 0.35;
-    this.camera.controls.enabled = false;
+    this.camera.controls.enabled = true;
     this.camera.instance.updateProjectionMatrix();
   }
 
@@ -308,7 +308,7 @@ export default class Cartomancie {
   }
 
   update() {
-    this.mixer?.update(this.experience.time.delta * 0.01);
+    this.mixer?.update(this.experience.time.delta * 0.001);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

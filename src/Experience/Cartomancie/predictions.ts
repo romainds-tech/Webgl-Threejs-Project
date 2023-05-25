@@ -15,6 +15,6 @@ export const predictions = [
     modelMinorArcane: allGlbs.Card4,
     textMinorArcane: "je suis le texte de l'arcane mineur prediction 2",
     textPrediction: "Je suis la sainte prediction de la second prediciton",
-    item: allGlbs.Island,
+    item: allGlbs.LowTree,
   },
 ];

@@ -16,20 +16,22 @@ export default class Text {
 
     switch (this.typeText) {
       case typeText.TITLE:
-        styleClass = "title_text";
+        styleClass = "title_text top_10_position";
         break;
       case typeText.TEXT:
-        styleClass = "text";
+        styleClass = "text top_20_position";
         break;
       case typeText.TEXT_MAJ:
         styleClass = "text_maj";
         break;
     }
 
-    text.className = "text" + " " + styleClass;
+    styleClass += " " + "text center_position";
+
+    text.className = styleClass;
     text.id = this.typeText.toString();
     text.innerHTML = this.text;
-    document.querySelector("#interactions")?.appendChild(text);
+    document.body.appendChild(text);
   }
 
   destroy() {

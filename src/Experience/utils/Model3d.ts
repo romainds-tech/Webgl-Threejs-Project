@@ -26,6 +26,7 @@ export interface IModel3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
+  shadow: boolean;
 }
 
 export default class Model3D {
@@ -39,6 +40,7 @@ export default class Model3D {
   rotation: Vector3;
   scale: number;
   animation: boolean;
+  shadow: boolean;
   clock?: Clock;
   mixer?: AnimationMixer;
   loadedModel3D?: Group;
@@ -55,6 +57,7 @@ export default class Model3D {
     this.rotation = props.rotation;
     this.scale = props.scale;
     this.animation = props.animation;
+    this.shadow = props.shadow;
   }
 
   destroy() {

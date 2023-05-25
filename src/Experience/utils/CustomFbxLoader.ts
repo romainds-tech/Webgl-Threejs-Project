@@ -1,6 +1,14 @@
 // this is a Singleton class because we only need one instance of the loader
 import Model3D from "./Model3d";
-import { AnimationClip, AnimationMixer, Clock, Euler, Group } from "three";
+import {
+  AnimationClip,
+  AnimationMixer,
+  Clock,
+  Euler,
+  Group,
+  Mesh,
+  MeshToonMaterial,
+} from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
 export default class CustomFbxLoader {
@@ -17,6 +25,13 @@ export default class CustomFbxLoader {
       CustomFbxLoader.instance = new CustomFbxLoader();
     }
     return CustomFbxLoader.instance;
+  }
+
+  private setMaterial(child) {
+    child.material = new MeshToonMaterial({
+      ...child.material,
+      type: "MeshToonMaterial",
+    });
   }
 
   loadOne(model: Model3D): Promise<Model3D> {
@@ -41,6 +56,16 @@ export default class CustomFbxLoader {
               model.animationAction?.push(model.mixer.clipAction(animation));
             } else {
               throw new Error("fbx.mixer is undefined");
+            }
+          });
+        }
+
+        if (model.shadow) {
+          loadedModel.traverse((child) => {
+            if (child instanceof Mesh) {
+              // this.setMaterial(child);
+              child.castShadow = true;
+              child.receiveShadow = true;
             }
           });
         }

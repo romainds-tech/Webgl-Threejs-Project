@@ -1,7 +1,14 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import Model3D from "./Model3d";
-import { AnimationClip, AnimationMixer, Clock, Euler } from "three";
+import {
+  AnimationClip,
+  AnimationMixer,
+  Clock,
+  Euler,
+  Mesh,
+  MeshToonMaterial,
+} from "three";
 
 export default class CustomGlbLoader {
   private static instance: CustomGlbLoader;
@@ -30,6 +37,14 @@ export default class CustomGlbLoader {
     return gltfLoader;
   }
 
+  private setMaterial(child) {
+    child.material = new MeshToonMaterial({
+      ...child.material,
+      type: "MeshToonMaterial",
+    });
+    console.log(child.material);
+  }
+
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene
     return new Promise((resolve) => {
@@ -50,6 +65,16 @@ export default class CustomGlbLoader {
               model.animationAction?.push(model.mixer.clipAction(animation));
             } else {
               throw new Error("gltf.mixer is undefined");
+            }
+          });
+        }
+
+        if (model.shadow) {
+          loadedModel.scene.traverse((child) => {
+            if (child instanceof Mesh) {
+              // this.setMaterial(child);
+              child.castShadow = true;
+              child.receiveShadow = true;
             }
           });
         }

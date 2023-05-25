@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import { DirectionalLight, Light, Scene } from "three";
+import { DirectionalLight, HemisphereLight, Scene } from "three";
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 
@@ -7,7 +7,8 @@ export default class Light {
   public experience: Experience;
   public scene: Scene;
 
-  public sunLight?: Light;
+  public sunLight?: DirectionalLight;
+  public hemisphereLight?: HemisphereLight;
   public debug: Debug;
   public debugFolder: GUI | null;
 
@@ -29,13 +30,21 @@ export default class Light {
   }
 
   loadLightIsland(): void {
-    this.sunLight = new DirectionalLight("#ffffff");
-    this.sunLight.intensity = 3;
+    this.sunLight = new DirectionalLight(0xf4e8bc, 5.3);
+
+    this.sunLight.intensity = 5.3;
     this.sunLight!.castShadow = true;
-    this.sunLight!.shadow.mapSize.set(1024, 1024);
-    this.sunLight!.shadow.normalBias = 0.05;
-    this.sunLight!.position.set(3.5, 2, -1.25);
+    this.sunLight!.shadow.mapSize.set(2048, 2048);
+    this.sunLight!.shadow.normalBias = 0.035;
+    this.sunLight!.position.set(5, 6.235, 7.5);
+    // this.sunLight.color.setHSL(0.1, 1, 0.95);
+    // this.sunLight.position.multiplyScalar(30);
     this.scene.add(this.sunLight);
+
+    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 1);
+    // this.hemisphereLight.castShadow = true;
+    this.scene.add(this.hemisphereLight);
+
     // Debug
     if (this.debug.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("Light");
@@ -43,29 +52,36 @@ export default class Light {
         .add(this.sunLight!, "intensity")
         .name("sunLightIntensity")
         .min(0)
-        .max(10)
-        .step(0.001);
+        .max(100)
+        .step(0.1);
 
       lightFolder
         .add(this.sunLight!.position, "x")
         .name("sunLightX")
         .min(-5)
-        .max(5)
-        .step(0.001);
+        .max(100)
+        .step(1);
 
       lightFolder
         .add(this.sunLight!.position, "y")
         .name("sunLightY")
         .min(-5)
-        .max(5)
-        .step(0.001);
+        .max(100)
+        .step(1);
 
       lightFolder
         .add(this.sunLight!.position, "z")
         .name("sunLightZ")
         .min(-5)
         .max(5)
-        .step(0.001);
+        .step(1);
+
+      lightFolder
+        .add(this.hemisphereLight!, "intensity")
+        .name("hemisphereLightIntensity")
+        .min(0)
+        .max(10)
+        .step(0.1);
 
       lightFolder.addColor(this.sunLight!, "color");
     }

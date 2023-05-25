@@ -10,6 +10,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.01,
     animation: false,
+    shadow: true,
   },
 
   LowTree: {
@@ -20,6 +21,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.01,
     animation: false,
+    shadow: true,
   },
   TempleCircle1: {
     name: "TempleCircle1",
@@ -29,6 +31,7 @@ export const allGlbs = {
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
+    shadow: true,
   },
   TempleCircle2: {
     name: "TempleCircle2",
@@ -38,6 +41,7 @@ export const allGlbs = {
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
+    shadow: true,
   },
   Temple: {
     name: "Temple",
@@ -47,6 +51,7 @@ export const allGlbs = {
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
+    shadow: true,
   },
   Herbe: {
     name: "Herbe",
@@ -56,6 +61,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
   CubeVertexGroup: {
     name: "Cube Vertex Group",
@@ -65,6 +71,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
   Robot: {
     name: "Robot",
@@ -74,6 +81,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
 
   Robot2Gltf: {
@@ -84,6 +92,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
 
   Robot2Glb: {
@@ -94,6 +103,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
 
   JustRobot: {
@@ -104,6 +114,7 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.01,
     animation: true,
+    shadow: true,
   },
 
   Lattive: {
@@ -114,16 +125,18 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 0.1,
     animation: true,
+    shadow: true,
   },
 
   Island: {
     name: "Island",
-    path: "glb/Island_full_modele_no_texture.gltf",
+    path: "glb/island_test.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(0, -3.2, 0),
-    rotation: new Vector3(0, 20, 0),
-    scale: 0.18,
-    animation: false,
+    position: new Vector3(0, -0.5, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
   },
 
   Cards: {
@@ -134,6 +147,62 @@ export const allGlbs = {
     rotation: new Vector3(0, 0, 0),
     scale: 1,
     animation: true,
+    shadow: true,
+  },
+
+  Background: {
+    name: "Background",
+    path: "glb/bg.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(12, -5, 11),
+    rotation: new Vector3(-1.6, 3.1, 2.4),
+    scale: 2,
+    animation: false,
+    shadow: true,
+  },
+
+  Card1: {
+    name: "Card1",
+    path: "glb/cartomancie/carte_1.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 4, -4),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+  },
+
+  Card2: {
+    name: "Card2",
+    path: "glb/cartomancie/carte_2.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 4, -4),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+  },
+
+  Card3: {
+    name: "Card3",
+    path: "glb/cartomancie/carte_3.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 4, -4),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+  },
+
+  Card4: {
+    name: "Card4",
+    path: "glb/cartomancie/carte_4.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 4, -4),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
   },
 
   Card1: {
