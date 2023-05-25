@@ -5,12 +5,12 @@ import {
   LoopOnce,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
-  Object3D,
+  // MeshStandardMaterial,
+  // Object3D,
   PlaneGeometry,
   Scene,
-  ShaderMaterial,
-  TextureLoader,
+  // ShaderMaterial,
+  // TextureLoader,
 } from "three";
 import Debug from "../utils/Debug";
 import Time from "../utils/Time";
@@ -18,9 +18,9 @@ import { GUI } from "lil-gui";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
-import cardVertexShader from "../../shaders/card/vertex.glsl";
-import cardFragmentShader from "../../shaders/card/fragment.glsl";
-import { gsap } from "gsap";
+// import cardVertexShader from "../../shaders/card/vertex.glsl";
+// import cardFragmentShader from "../../shaders/card/fragment.glsl";
+// import { gsap } from "gsap";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
 import Popup from "../UI/Popups/Popup";
@@ -67,6 +67,7 @@ export default class Cartomancie {
   public secondArcaneImageItem?: Model3D;
 
   public predictionNumber: number;
+  public textPrediction?: string;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -246,10 +247,7 @@ export default class Cartomancie {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(
-          this.item!,
-          predictions[this.predictionNumber].textPrediction
-        );
+        this.setupIsland(this.item!);
       });
   }
 
@@ -257,20 +255,17 @@ export default class Cartomancie {
     document
       .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(
-          this.item!,
-          predictions[this.predictionNumber].textPrediction
-        );
+        this.setupIsland(this.item!);
       });
   }
 
-  setupIsland(item: Model3D, text: string) {
+  setupIsland(item: Model3D) {
     disabledInterfaceSelectItemCartomancie();
     if (this.experience.island) {
       this.experience.island.numberOfElementToAdd = 1;
       this.experience.island.checkIfAddItemToCreate();
       this.experience.island.item = item;
-      this.experience.island.textItem = text;
+      this.textPrediction = predictions[this.predictionNumber].textPrediction;
       this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
@@ -315,7 +310,7 @@ export default class Cartomancie {
   }
 
   update() {
-    this.mixer?.update(this.experience.time.delta * 0.001);
+    this.mixer?.update(this.experience.time.delta * 0.01);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

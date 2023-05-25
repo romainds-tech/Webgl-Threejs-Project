@@ -4,7 +4,7 @@ import ItemIsland from "./ItemIsland";
 export default class ItemIslandManager {
   public itemArray: ItemIsland[];
   public newItemToCreate: Object3D | null;
-  public newTextToCreate: string | null;
+  public newTextToCreate: string | undefined;
   public selectedItem: Object3D | null;
   public selectItemPrediction: string | null;
 
@@ -12,7 +12,7 @@ export default class ItemIslandManager {
     this.itemArray = [];
 
     this.newItemToCreate = null;
-    this.newTextToCreate = null;
+    this.newTextToCreate = undefined;
     this.selectedItem = null;
     this.selectItemPrediction = null;
   }

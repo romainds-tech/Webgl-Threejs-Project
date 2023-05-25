@@ -220,7 +220,7 @@ export default class Island {
           this.mapGroup.add(templateItem);
           this.itemIslandManager.addItem(templateItem, templateItemText);
           this.itemIslandManager.newItemToCreate = null;
-          this.itemIslandManager.newTextToCreate = null;
+          this.itemIslandManager.newTextToCreate = undefined;
         }
       }
       // if i didn't click on a raycastable object i reset the props
@@ -262,11 +262,11 @@ export default class Island {
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem = this.item!.loadedModel3D!.clone();
-    let text = this.textItem!;
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
-    this.itemIslandManager.newTextToCreate = text;
+    this.itemIslandManager.newTextToCreate =
+      this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
   }
