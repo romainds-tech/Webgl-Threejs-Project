@@ -42,6 +42,9 @@ import { predictions } from "./predictions";
 export default class Cartomancie {
   public textPrediction?: string;
   public itemPrediction?: Model3D;
+  public lovePercent?: number;
+  public workPercent?: number;
+  public healthPercent?: number;
 
   private experience: Experience;
   private scene: Scene;
@@ -230,6 +233,7 @@ export default class Cartomancie {
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
         this.setupIsland();
+        this.setupSky();
         deleteAllUI();
       });
   }
@@ -239,6 +243,7 @@ export default class Cartomancie {
       .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
         this.setupIsland();
+        this.setupSky();
         deleteAllUI();
       });
   }
@@ -260,6 +265,12 @@ export default class Cartomancie {
 
     this.removeItemFromScene();
     this.destroyAll();
+  }
+
+  private setupSky() {
+    this.lovePercent = predictions[this.predictionNumber].love;
+    this.workPercent = predictions[this.predictionNumber].work;
+    this.healthPercent = predictions[this.predictionNumber].health;
   }
 
   private async loadModelsItemIsland() {

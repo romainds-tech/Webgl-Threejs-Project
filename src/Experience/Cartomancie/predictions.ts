@@ -8,6 +8,9 @@ export const predictions = [
     textMinorArcane: "je suis le texte de l'arcane mineur prediction 1",
     textPrediction: "Je suis la sainte prediction de la first prediciton",
     item: allGlbs.JustRobot,
+    love: 40,
+    work: 35,
+    health: 80,
   },
   {
     modelMajorArcane: allGlbs.Card3,
@@ -16,5 +19,8 @@ export const predictions = [
     textMinorArcane: "je suis le texte de l'arcane mineur prediction 2",
     textPrediction: "Je suis la sainte prediction de la second prediciton",
     item: allGlbs.LowTree,
+    love: 74,
+    work: 60,
+    health: 12,
   },
 ];

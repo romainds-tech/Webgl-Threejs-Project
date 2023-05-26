@@ -102,6 +102,7 @@ export default class Island {
   }
 
   public loadAllScene() {
+    this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
     displayInterfaceGlobalOnIsland();

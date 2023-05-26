@@ -44,6 +44,9 @@ export default class Sky {
     this.healthRing = null;
 
     this.addRings();
+    console.log(this.experience.cartomancie?.lovePercent);
+    console.log(this.experience.cartomancie?.workPercent);
+    console.log(this.experience.cartomancie?.healthPercent);
     createUISky();
 
     this.allActionOnButton();
@@ -76,40 +79,47 @@ export default class Sky {
       });
   }
 
+  private calculPercentToArc(number?: number): number {
+    if (number) {
+      return (6.283185307179586 * number) / 100;
+    }
+    return 0;
+  }
+
   private addRings(): void {
     this.loveRing = this.createRing(
       10,
       0.7,
-      4.5,
+      this.calculPercentToArc(this.experience.cartomancie?.lovePercent),
       -0.9,
       0.55,
       -1.15,
       new Color(0xfb607f),
-      new Color("green"),
+      new Color(0x1a1b36),
       "Love Ring"
     );
 
     this.workRing = this.createRing(
       7,
       0.7,
-      5,
+      this.calculPercentToArc(this.experience.cartomancie?.workPercent!),
       -1,
       0.2,
       0,
       new Color("cyan"),
-      new Color("yellow"),
+      new Color(0x1a1b36),
       "Work Ring"
     );
 
     this.healthRing = this.createRing(
       4,
       0.7,
-      5,
+      this.calculPercentToArc(this.experience.cartomancie?.healthPercent!),
       -1,
       2.7,
       1.8,
       new Color("red"),
-      new Color("yellow"),
+      new Color(0x1a1b36),
       "Work Ring"
     );
     this.scene.add(this.loveRing);
