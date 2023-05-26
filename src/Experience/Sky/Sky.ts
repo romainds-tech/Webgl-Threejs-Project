@@ -13,7 +13,7 @@ import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 import Time from "../utils/Time";
 import Camera from "../Camera";
-import { createUISky } from "./displayInterfaceSky";
+import { createUISky, deleteUISky } from "./displayInterfaceSky";
 
 export default class Sky {
   public experience: Experience;
@@ -71,6 +71,7 @@ export default class Sky {
       .getElementById("button_back_island_sky")!
       .addEventListener("click", () => {
         this.destroy();
+        deleteUISky();
         this.experience.island?.loadAllScene();
       });
   }

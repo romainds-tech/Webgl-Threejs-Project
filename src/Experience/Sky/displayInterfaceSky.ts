@@ -11,11 +11,17 @@ export function disableButtonsSky() {
 export function createUISky() {
   Button.getInstance().createButtonWithImage(
     "button_back_island_sky",
-    "button button_just_image",
+    "button button_just_image all_ui_sky",
     "/public/images/island_button.png",
     "button_island_sky",
     "",
     PositionY.BOTTOM,
     PositionX.CENTER
   );
+}
+
+export function deleteUISky() {
+  document.querySelectorAll(".all_ui_sky").forEach((element) => {
+    element.remove();
+  });
 }
