@@ -19,6 +19,9 @@ import {
   disablePredictionSky,
   displayPredicitonSky,
 } from "./displayInterfaceSky";
+import CustomGlbLoader from "../utils/CustomGlbLoader";
+import Model3D from "../utils/Model3d";
+import { allGlbs } from "../../Sources/glb/glb";
 
 export default class Sky {
   public experience: Experience;
@@ -32,6 +35,9 @@ export default class Sky {
   public loveRing: Object3D | null;
   public workRing: Object3D | null;
   public healthRing: Object3D | null;
+
+  private jowelRingLove?: Model3D;
+  private loveGroup?: Group;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -48,13 +54,12 @@ export default class Sky {
     this.workRing = null;
     this.healthRing = null;
 
-    this.addRings();
-    console.log(this.experience.cartomancie?.lovePercent);
-    console.log(this.experience.cartomancie?.workPercent);
-    console.log(this.experience.cartomancie?.healthPercent);
+    this.loveGroup = new Group();
+
     createUISky();
     this.displayTextRing();
     this.allActionOnButton();
+    this.loadJowel();
   }
 
   addDebugFolder(): GUI | null {
@@ -66,8 +71,8 @@ export default class Sky {
 
   private setupCamera() {
     this.camera.instance.zoom = 0.15;
-    this.camera.instance.position.set(-5, 10, -5);
-    this.camera.controls.enabled = false;
+    this.camera.instance.position.set(-5, 15, -5);
+    // this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
   }
 
@@ -138,6 +143,20 @@ export default class Sky {
       });
   }
 
+  private async loadJowel() {
+    this.jowelRingLove = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.RingJowel)
+    );
+    // this.jowelRingLove.loadedModel3D?.rotation.set(-0.9, 0.55, -1.15);
+    this.addRings();
+
+    this.loveGroup!.add(this.jowelRingLove.loadedModel3D!);
+    this.loveGroup!.add(this.loveRing!);
+
+    this.scene.add(this.loveGroup!);
+    this.scene.add(this.workRing!);
+    this.scene.add(this.healthRing!);
+  }
   private addRings(): void {
     this.loveRing = this.createRing(
       10,
@@ -174,9 +193,6 @@ export default class Sky {
       new Color(0x1a1b36),
       "Work Ring"
     );
-    this.scene.add(this.loveRing);
-    this.scene.add(this.workRing);
-    this.scene.add(this.healthRing);
   }
 
   private createRing(
@@ -266,20 +282,28 @@ export default class Sky {
     return ringGroup;
   }
   public update() {
-    this.loveRing!.rotation.x += this.time.delta * 0.0005;
-    this.loveRing!.rotation.z += this.time.delta * 0.0002;
+    if (this.loveGroup && this.loveRing && this.jowelRingLove) {
+      this.loveGroup!.rotation.x += this.time.delta * 0.0005;
+      this.loveGroup!.rotation.z += this.time.delta * 0.0002;
 
-    this.workRing!.rotation.x -= this.time.delta * 0.0002;
-    this.workRing!.rotation.y += this.time.delta * 0.0002;
-    this.workRing!.rotation.z += this.time.delta * 0.0002;
+      this.jowelRingLove!.loadedModel3D!.rotation.z += this.time.delta * 0.0005;
+    }
 
-    this.healthRing!.rotation.x -= this.time.delta * 0.0002;
-    this.healthRing!.rotation.z -= this.time.delta * 0.0002;
+    if (this.workRing) {
+      this.workRing!.rotation.x -= this.time.delta * 0.0002;
+      this.workRing!.rotation.y += this.time.delta * 0.0002;
+      this.workRing!.rotation.z += this.time.delta * 0.0002;
+    }
+
+    if (this.healthRing) {
+      this.healthRing!.rotation.x -= this.time.delta * 0.0002;
+      this.healthRing!.rotation.z -= this.time.delta * 0.0002;
+    }
   }
 
   destroy() {
-    this.scene.remove(this.loveRing!);
-    // this.loveRing = null;
+    this.scene.remove(this.loveGroup!);
+    this.loveGroup = undefined;
     this.scene.remove(this.workRing!);
     // this.workRing = null;
     this.scene.remove(this.healthRing!);
