@@ -9,7 +9,8 @@
 #button_back_cartomancie,
 #button_select_answer_question_item_cartomancie,
 #button_select_paid_item_cartomancie,
-#button_rings_island{
+#button_rings_island,
+#button_return_rings_sky{
     display: none;
 }
 
@@ -25,6 +26,10 @@
     border: 1px solid white;
     border-radius: 16px;
     color : white;
+}
+
+.big_button {
+    width: 90%;
 }
 
 .button_just_image {

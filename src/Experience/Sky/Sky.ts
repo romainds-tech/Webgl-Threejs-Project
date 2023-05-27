@@ -13,7 +13,12 @@ import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 import Time from "../utils/Time";
 import Camera from "../Camera";
-import { createUISky, deleteUISky } from "./displayInterfaceSky";
+import {
+  createUISky,
+  deleteUISky,
+  disablePredictionSky,
+  displayPredicitonSky,
+} from "./displayInterfaceSky";
 
 export default class Sky {
   public experience: Experience;
@@ -48,7 +53,7 @@ export default class Sky {
     console.log(this.experience.cartomancie?.workPercent);
     console.log(this.experience.cartomancie?.healthPercent);
     createUISky();
-
+    this.displayTextRing();
     this.allActionOnButton();
   }
 
@@ -61,12 +66,16 @@ export default class Sky {
 
   private setupCamera() {
     this.camera.instance.zoom = 0.15;
-    this.experience.camera.instance.position.set(-5, 10, -5);
+    this.camera.instance.position.set(-5, 10, -5);
+    this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
   }
 
   private allActionOnButton() {
     this.clickBackOnIslandButton();
+    this.buttonLastPrediction();
+    this.clickGoBackToRings();
+    this.clickOnLastPrediction();
   }
 
   private clickBackOnIslandButton() {
@@ -84,6 +93,49 @@ export default class Sky {
       return (6.283185307179586 * number) / 100;
     }
     return 0;
+  }
+
+  private displayTextRing() {
+    if (this.experience.cartomancie) {
+      if (
+        this.experience.cartomancie.lovePercent &&
+        this.experience.cartomancie.workPercent &&
+        this.experience.cartomancie.healthPercent
+      ) {
+        document.getElementById("id_percent_left_ring")!.innerHTML =
+          this.experience.cartomancie.lovePercent.toString() + "%";
+        document.getElementById("id_percent_center_ring")!.innerHTML =
+          this.experience.cartomancie.workPercent.toString() + "%";
+        document.getElementById("id_percent_right_ring")!.innerHTML =
+          this.experience.cartomancie.healthPercent.toString() + "%";
+      }
+    }
+  }
+
+  private buttonLastPrediction() {
+    if (!this.experience.cartomancie?.textPrediction) {
+      document.getElementById(
+        "button_show_last_prediction_sky"
+      )!.style.display = "none";
+    }
+  }
+
+  private clickGoBackToRings() {
+    document
+      .getElementById("button_return_rings_sky")!
+      .addEventListener("click", () => {
+        disablePredictionSky();
+      });
+  }
+
+  private clickOnLastPrediction() {
+    document
+      .getElementById("button_show_last_prediction_sky")!
+      .addEventListener("click", () => {
+        displayPredicitonSky();
+        document.querySelector("#popup_last_prediction_sky h4")!.innerHTML =
+          this.experience.cartomancie!.textPrediction!;
+      });
   }
 
   private addRings(): void {

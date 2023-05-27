@@ -24,6 +24,12 @@ html {
   transform: translate(0, -50%);
 }
 
+.top_15_position {
+  top : 15%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
 .top_20_position {
   top : 20%;
   left : 5%;
@@ -50,6 +56,12 @@ html {
 
 .top_70_position {
   top : 70%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_80_position {
+  top : 80%;
   left : 5%;
   transform: translate(0, -50%);
 }

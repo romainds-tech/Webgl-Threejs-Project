@@ -104,7 +104,7 @@ export function createUICartomancie() {
   // OVERLAY
   Overlay.getInstance().createOverlay(
     "overlay_start_cartomancie",
-    "overlay_cartomancie all_ui_cartomancie"
+    "overlay overlay_cartomancie all_ui_cartomancie"
   );
 
   //TEXTES
@@ -135,7 +135,7 @@ export function createUICartomancie() {
   Input.getInstance().createInputWithSubtitle(
     "title_prediction_cartomancie",
     "title_prediction_cartomancie all_ui_cartomancie",
-    "Prédiciton du xx/xx/xxxx",
+    "Prédiction du xx/xx/xxxx",
     "subtitle_cartomancie all_ui_cartomancie",
     "CARTOMANCIE",
     PositionY.TOP,
