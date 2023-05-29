@@ -258,43 +258,32 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
-    const params = {
-      color: 0xffffff,
-      transmission: 0.7,
-      opacity: 1,
-      metalness: 0.1,
-      roughness: 0.05,
-      ior: 1.5,
-      specularIntensity: 1,
-      specularColor: 0xffffff,
-      envMapIntensity: 1,
-      lightMapIntensity: 1,
-      exposure: 1
-    };
+
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-    newItem.children.forEach(child => {
-      console.log(child.material)
-      child.material = new MeshPhysicalMaterial( {
-        color: params.color,
-        metalness: params.metalness,
-        roughness: params.roughness,
-        ior: params.ior,
-        // alphaTest: 1,
-        // depthWrite: false,
-        map: child.material.map,
-        metalnessMap: child.material.metalnessMap,
-        normalMap: child.material.normalMap,
-        roughnessMap: child.material.roughnessMap,
-        envMapIntensity: params.envMapIntensity,
-        transmission: params.transmission, // use material.transmission for glass materials
-        // specularIntensity: params.specularIntensity,
-        opacity: params.opacity,
-        // side: DoubleSide,
-        transparent: true
-      } );
-      console.log(child.material)
-    })
+    console.log(newItem)
+    // newItem.children.forEach(child => {
+    //   console.log(child.material)
+    //   child.material = new MeshPhysicalMaterial( {
+    //     color: params.color,
+    //     metalness: params.metalness,
+    //     roughness: params.roughness,
+    //     ior: params.ior,
+    //     // alphaTest: 1,
+    //     depthWrite: false,
+    //     map: child.material.map,
+    //     metalnessMap: child.material.metalnessMap,
+    //     normalMap: child.material.normalMap,
+    //     roughnessMap: child.material.roughnessMap,
+    //     envMapIntensity: params.envMapIntensity,
+    //     transmission: params.transmission, // use material.transmission for glass materials
+    //     // specularIntensity: params.specularIntensity,
+    //     opacity: params.opacity,
+    //     // side: DoubleSide,
+    //     transparent: true
+    //   } );
+    //   console.log(child.material)
+    // })
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -302,10 +291,6 @@ export default class Island {
       this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
-
-
-
-
   }
 
   private selectItem(itemSelected: ItemIsland) {

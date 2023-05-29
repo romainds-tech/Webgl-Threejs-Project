@@ -27,6 +27,7 @@ export interface IModel3D {
   scale: number;
   animation: boolean;
   shadow: boolean;
+  transmission: boolean;
 }
 
 export default class Model3D {
@@ -41,6 +42,7 @@ export default class Model3D {
   scale: number;
   animation: boolean;
   shadow: boolean;
+  transmission: boolean;
   clock?: Clock;
   mixer?: AnimationMixer;
   loadedModel3D?: Group;
@@ -58,6 +60,7 @@ export default class Model3D {
     this.scale = props.scale;
     this.animation = props.animation;
     this.shadow = props.shadow;
+    this.transmission = props.transmission;
   }
 
   destroy() {
