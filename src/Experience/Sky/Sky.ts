@@ -12,10 +12,22 @@ import {
 import Debug from "../utils/Debug";
 import { GUI } from "lil-gui";
 import Time from "../utils/Time";
+import Camera from "../Camera";
+import {
+  createUISky,
+  deleteUISky,
+  disablePredictionSky,
+  displayPredicitonSky,
+} from "./displayInterfaceSky";
+import CustomGlbLoader from "../utils/CustomGlbLoader";
+import Model3D from "../utils/Model3d";
+import { allGlbs } from "../../Sources/glb/glb";
 
 export default class Sky {
   public experience: Experience;
   public scene: Scene;
+  private camera: Camera;
+
   public debug: Debug;
   public debugFolder: GUI | null;
   public time: Time;
@@ -24,9 +36,14 @@ export default class Sky {
   public workRing: Object3D | null;
   public healthRing: Object3D | null;
 
+  private jowelRingLove?: Model3D;
+  private loveGroup?: Group;
+
   constructor() {
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
+    this.camera = this.experience.camera;
+    this.setupCamera();
 
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
@@ -37,7 +54,12 @@ export default class Sky {
     this.workRing = null;
     this.healthRing = null;
 
-    this.addRings();
+    this.loveGroup = new Group();
+
+    createUISky();
+    this.displayTextRing();
+    this.allActionOnButton();
+    this.loadJowel();
   }
 
   addDebugFolder(): GUI | null {
@@ -47,48 +69,133 @@ export default class Sky {
     return null;
   }
 
-  addRings(): void {
+  private setupCamera() {
+    this.camera.instance.zoom = 0.15;
+    this.camera.instance.position.set(-5, 15, -5);
+    // this.camera.controls.enabled = false;
+    this.camera.instance.updateProjectionMatrix();
+  }
+
+  private allActionOnButton() {
+    this.clickBackOnIslandButton();
+    this.buttonLastPrediction();
+    this.clickGoBackToRings();
+    this.clickOnLastPrediction();
+  }
+
+  private clickBackOnIslandButton() {
+    document
+      .getElementById("button_back_island_sky")!
+      .addEventListener("click", () => {
+        this.destroy();
+        deleteUISky();
+        this.experience.island?.loadAllScene();
+      });
+  }
+
+  private calculPercentToArc(number?: number): number {
+    if (number) {
+      return (6.283185307179586 * number) / 100;
+    }
+    return 0;
+  }
+
+  private displayTextRing() {
+    if (this.experience.cartomancie) {
+      if (
+        this.experience.cartomancie.lovePercent &&
+        this.experience.cartomancie.workPercent &&
+        this.experience.cartomancie.healthPercent
+      ) {
+        document.getElementById("id_percent_left_ring")!.innerHTML =
+          this.experience.cartomancie.lovePercent.toString() + "%";
+        document.getElementById("id_percent_center_ring")!.innerHTML =
+          this.experience.cartomancie.workPercent.toString() + "%";
+        document.getElementById("id_percent_right_ring")!.innerHTML =
+          this.experience.cartomancie.healthPercent.toString() + "%";
+      }
+    }
+  }
+
+  private buttonLastPrediction() {
+    if (!this.experience.cartomancie?.textPrediction) {
+      document.getElementById(
+        "button_show_last_prediction_sky"
+      )!.style.display = "none";
+    }
+  }
+
+  private clickGoBackToRings() {
+    document
+      .getElementById("button_return_rings_sky")!
+      .addEventListener("click", () => {
+        disablePredictionSky();
+      });
+  }
+
+  private clickOnLastPrediction() {
+    document
+      .getElementById("button_show_last_prediction_sky")!
+      .addEventListener("click", () => {
+        displayPredicitonSky();
+        document.querySelector("#popup_last_prediction_sky h4")!.innerHTML =
+          this.experience.cartomancie!.textPrediction!;
+      });
+  }
+
+  private async loadJowel() {
+    this.jowelRingLove = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.RingJowel)
+    );
+    // this.jowelRingLove.loadedModel3D?.rotation.set(-0.9, 0.55, -1.15);
+    this.addRings();
+
+    this.loveGroup!.add(this.jowelRingLove.loadedModel3D!);
+    this.loveGroup!.add(this.loveRing!);
+
+    this.scene.add(this.loveGroup!);
+    this.scene.add(this.workRing!);
+    this.scene.add(this.healthRing!);
+  }
+  private addRings(): void {
     this.loveRing = this.createRing(
       10,
       0.7,
-      4.5,
+      this.calculPercentToArc(this.experience.cartomancie?.lovePercent),
       -0.9,
       0.55,
       -1.15,
       new Color(0xfb607f),
-      new Color("green"),
+      new Color(0x1a1b36),
       "Love Ring"
     );
 
     this.workRing = this.createRing(
       7,
       0.7,
-      5,
+      this.calculPercentToArc(this.experience.cartomancie?.workPercent!),
       -1,
       0.2,
       0,
       new Color("cyan"),
-      new Color("yellow"),
+      new Color(0x1a1b36),
       "Work Ring"
     );
 
     this.healthRing = this.createRing(
       4,
       0.7,
-      5,
+      this.calculPercentToArc(this.experience.cartomancie?.healthPercent!),
       -1,
       2.7,
       1.8,
       new Color("red"),
-      new Color("yellow"),
+      new Color(0x1a1b36),
       "Work Ring"
     );
-    this.scene.add(this.loveRing);
-    this.scene.add(this.workRing);
-    this.scene.add(this.healthRing);
   }
 
-  createRing(
+  private createRing(
     radius: number,
     tube: number,
     arc: number,
@@ -174,21 +281,32 @@ export default class Sky {
     }
     return ringGroup;
   }
-  update() {
-    this.loveRing!.rotation.x += this.time.delta * 0.0005;
-    this.loveRing!.rotation.z += this.time.delta * 0.0002;
+  public update() {
+    if (this.loveGroup && this.loveRing && this.jowelRingLove) {
+      this.loveGroup!.rotation.x += this.time.delta * 0.0005;
+      this.loveGroup!.rotation.z += this.time.delta * 0.0002;
 
-    this.workRing!.rotation.x -= this.time.delta * 0.0002;
-    this.workRing!.rotation.y += this.time.delta * 0.0002;
-    this.workRing!.rotation.z += this.time.delta * 0.0002;
+      this.jowelRingLove!.loadedModel3D!.rotation.z += this.time.delta * 0.0005;
+    }
 
-    this.healthRing!.rotation.x -= this.time.delta * 0.0002;
-    this.healthRing!.rotation.z -= this.time.delta * 0.0002;
+    if (this.workRing) {
+      this.workRing!.rotation.x -= this.time.delta * 0.0002;
+      this.workRing!.rotation.y += this.time.delta * 0.0002;
+      this.workRing!.rotation.z += this.time.delta * 0.0002;
+    }
+
+    if (this.healthRing) {
+      this.healthRing!.rotation.x -= this.time.delta * 0.0002;
+      this.healthRing!.rotation.z -= this.time.delta * 0.0002;
+    }
   }
 
   destroy() {
-    this.loveRing = null;
-    this.workRing = null;
-    this.healthRing = null;
+    this.scene.remove(this.loveGroup!);
+    this.loveGroup = undefined;
+    this.scene.remove(this.workRing!);
+    // this.workRing = null;
+    this.scene.remove(this.healthRing!);
+    // this.healthRing = null;
   }
 }

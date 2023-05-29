@@ -8,7 +8,8 @@
 #popup_start_cartomancie,
 #popup_first_arcane_cartomancie,
 #popup_second_arcane_cartomancie,
-#popup_prediction_cartomancie{
+#popup_prediction_cartomancie,
+#popup_last_prediction_sky{
     display: none;
 }
 .div {
@@ -18,7 +19,7 @@
     width: 90%;
     color : white;
     font-family: roboto-font, sans-serif;
-    z-index: 42;
+    z-index: 43;
 }
 
 .div_popup {

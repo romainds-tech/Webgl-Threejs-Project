@@ -8,7 +8,9 @@
 #button_display_prediction_cartomancie,
 #button_back_cartomancie,
 #button_select_answer_question_item_cartomancie,
-#button_select_paid_item_cartomancie{
+#button_select_paid_item_cartomancie,
+#button_rings_island,
+#button_return_rings_sky{
     display: none;
 }
 
@@ -25,31 +27,23 @@
     border-radius: 16px;
     color : white;
 }
-.button_island {
-    /*pointer-events: all;*/
-    background-color: #0000001A;
+
+.big_button {
+    width: 90%;
 }
 
-.button_onboarding {
-    /*pointer-events: all;*/
-    position: absolute;
-    padding : 25px;
-    width: 150px;
-    color : white;
-    background: linear-gradient(#1C154E, #1C154E) padding-box, linear-gradient(to right, #BA9023, #FFFFFF) border-box;
-    border: 4px solid transparent;
-    font-family: roboto-font, sans-serif;
-    border-radius: 18px;
-    z-index: 42;
-
-}
-
-.button_onboarding:hover {
-    color: lightgray;
+.button_just_image {
+    background: transparent;
+    color: transparent;
     border: none;
 }
 
 
+
+.button_island {
+    /*pointer-events: all;*/
+    background-color: #0000001A;
+}
 
 .button_cross_island {
     /*pointer-events: all;*/
@@ -65,9 +59,15 @@
     z-index: 42;
 }
 
+.button_island_permanent{
+    filter: drop-shadow(0 0 10px #ffffffcc);
+    background-color: #00000033;
+    border: 2px solid #ffffff;
+}
 .button_island:hover {
     background-color: red;
 }
+
 
 /*CARTOMANCIE*/
 
@@ -112,4 +112,24 @@
 
 #button_display_prediction_cartomancie {
     width: 250px;
+}
+
+/*ONBOARDING*/
+.button_onboarding {
+    /*pointer-events: all;*/
+    position: absolute;
+    padding : 25px;
+    width: 150px;
+    color : white;
+    background: linear-gradient(#1C154E, #1C154E) padding-box, linear-gradient(to right, #BA9023, #FFFFFF) border-box;
+    border: 4px solid transparent;
+    font-family: roboto-font, sans-serif;
+    border-radius: 18px;
+    z-index: 42;
+
+}
+
+.button_onboarding:hover {
+    color: lightgray;
+    border: none;
 }

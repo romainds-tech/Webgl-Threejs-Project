@@ -16,44 +16,41 @@ import {
   disableInterfaceInformationItem,
   disableInterfaceCreationItem,
   displayInterfaceCreationItem,
+  createUIIsland,
+  displayInterfaceGlobalOnIsland,
+  disableInterfaceGlobalOnIsland,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
-import Popup from "../UI/Popups/Popup";
-import Button from "../UI/Buttons/Button";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
+import Sky from "../Sky/Sky";
 
 export default class Island {
-  public experience: Experience;
-  public debug: Debug;
-  public scene: Scene;
-  public sizes: Sizes;
-  public camera: Camera;
-
-  public item?: Model3D;
-  public textItem?: string;
-  private island?: Model3D;
-
   public numberOfElementToAdd: number;
 
+  private experience: Experience;
+  private debug: Debug;
+  private scene: Scene;
+  private sizes: Sizes;
+  private camera: Camera;
+
   // Map
+  private island?: Model3D;
   // var for trigger event
   private readonly onMouseDown: (event: MouseEvent) => void;
 
   // Map object
-  public mapGroup: Group;
+  private mapGroup: Group;
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
-  //
-  public itemIslandManager: ItemIslandManager;
-  // // public textItemIsland: TextItemIsland;
-  public popupIsland: Popup;
-  public imageItem: Object3D<Event> | null;
-  public buttonIsland: Button;
+
+  private itemIslandManager: ItemIslandManager;
+
+  private imageItem: Object3D<Event> | null;
 
   constructor() {
     // Experience
@@ -82,10 +79,6 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
-    // Ui of item create an modificate
-    this.popupIsland = new Popup();
-    this.buttonIsland = new Button();
-
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -99,8 +92,8 @@ export default class Island {
 
     this.loadIsland();
 
-    this.popupIsland.setPopupIsland();
-    this.buttonIsland.setButtonIsland();
+    createUIIsland();
+    displayInterfaceGlobalOnIsland();
 
     this.actionOnClickButtons();
     this.imageItem = null;
@@ -109,8 +102,10 @@ export default class Island {
   }
 
   public loadAllScene() {
+    this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+    displayInterfaceGlobalOnIsland();
   }
 
   public setupScene() {
@@ -167,7 +162,6 @@ export default class Island {
     // position cursor on screen from center of the screen
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    console.log(this.mouse);
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
     let intersects = this.raycaster.getRaycastObject(
@@ -204,6 +198,7 @@ export default class Island {
           this.numberOfElementToAdd == 0
         ) {
           this.destroy();
+          disableInterfaceGlobalOnIsland();
           this.experience.cartomancie = new Cartomancie();
         }
         // Else we gonna change position of this item
@@ -220,7 +215,7 @@ export default class Island {
           this.mapGroup.add(templateItem);
           this.itemIslandManager.addItem(templateItem, templateItemText);
           this.itemIslandManager.newItemToCreate = null;
-          this.itemIslandManager.newTextToCreate = null;
+          this.itemIslandManager.newTextToCreate = undefined;
         }
       }
       // if i didn't click on a raycastable object i reset the props
@@ -261,12 +256,13 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
-    let newItem = this.item!.loadedModel3D!.clone();
-    let text = this.textItem!;
+    let newItem =
+      this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
-    this.itemIslandManager.newTextToCreate = text;
+    this.itemIslandManager.newTextToCreate =
+      this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
   }
@@ -307,8 +303,18 @@ export default class Island {
     this.clickOnAbandonedModificationItemButton();
     this.clickOnMoveItemButton();
     this.clickOnDeleteItemButton();
+    this.clickOnRingButton();
   }
 
+  private clickOnRingButton() {
+    document
+      .getElementById("button_rings_island")!
+      .addEventListener("click", () => {
+        disableInterfaceGlobalOnIsland();
+        this.destroy();
+        this.experience.sky = new Sky();
+      });
+  }
   private clickOnCrossButtonInformationItem() {
     document
       .getElementById("button_disable_select_item_island")!
@@ -368,9 +374,7 @@ export default class Island {
     );
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
-    console.log(this.island.loadedModel3D!);
     this.scene.add(this.island.loadedModel3D!);
-    console.log(this.island.animationAction, "animation");
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     this.island.animationAction![2].play();
