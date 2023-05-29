@@ -260,19 +260,17 @@ export default class Island {
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     const params = {
       color: 0xffffff,
-      transmission: 1,
+      transmission: 0.7,
       opacity: 1,
-      metalness: 0,
-      roughness: 0,
+      metalness: 0.1,
+      roughness: 0.05,
       ior: 1.5,
-      thickness: 0.01,
       specularIntensity: 1,
       specularColor: 0xffffff,
       envMapIntensity: 1,
-      lightIntensity: 1,
+      lightMapIntensity: 1,
       exposure: 1
     };
-    const gui = new GUI();
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
     newItem.children.forEach(child => {
@@ -282,16 +280,17 @@ export default class Island {
         metalness: params.metalness,
         roughness: params.roughness,
         ior: params.ior,
+        // alphaTest: 1,
+        // depthWrite: false,
         map: child.material.map,
         metalnessMap: child.material.metalnessMap,
         normalMap: child.material.normalMap,
         roughnessMap: child.material.roughnessMap,
         envMapIntensity: params.envMapIntensity,
         transmission: params.transmission, // use material.transmission for glass materials
-        specularIntensity: params.specularIntensity,
-        specularColor: params.specularColor,
+        // specularIntensity: params.specularIntensity,
         opacity: params.opacity,
-        side: DoubleSide,
+        // side: DoubleSide,
         transparent: true
       } );
       console.log(child.material)
