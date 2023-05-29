@@ -111,7 +111,7 @@ export function createUICartomancie() {
   Input.getInstance().createInput(
     "title_start_cartomancie",
     "title_cartomancie all_ui_cartomancie",
-    "Découvrir votre prédiction du jour",
+    "Découvrir votre prédiction" + "<br>" + "du jour",
     PositionY.TOP,
     PositionX.CENTER
   );
@@ -145,7 +145,7 @@ export function createUICartomancie() {
   Input.getInstance().createInputWithSubtitle(
     "title_select_item_cartomancie",
     "title_prediction_cartomancie all_ui_cartomancie",
-    "CHOISISSEZ VOTRE AMULETTE",
+    "Choisissez votre amulette",
     "subtitle_cartomancie all_ui_cartomancie",
     "Vous pourrez ensuite la placer sur votre île",
     PositionY.TOP_10,

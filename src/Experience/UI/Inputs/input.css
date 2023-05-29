@@ -26,7 +26,6 @@
     width: 90%;
     text-align: center;
     z-index: 42;
-    font-family: roboto-font, sans-serif;
 }
 
 
@@ -37,7 +36,7 @@
 }
 
 #div_rings_values div h4 {
-    font-weight: 100;
+    ght: 100;
 }
 
 .color_text_div {
