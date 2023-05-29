@@ -95,7 +95,7 @@ export default class Cartomancie {
       -cameraPosition
     );
     this.camera.instance.zoom = 0.35;
-    this.camera.controls.enabled = true;
+    this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
   }
 
