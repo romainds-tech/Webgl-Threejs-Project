@@ -1,5 +1,14 @@
 import { Experience } from "../Experience";
-import { Group, Object3D, Scene, Vector2, Event, Color } from "three";
+import {
+  Group,
+  Object3D,
+  Scene,
+  Vector2,
+  Event,
+  Color,
+  CylinderGeometry,
+  Mesh,
+} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -23,6 +32,8 @@ import Button from "../UI/Buttons/Button";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+import { data } from "../../shaders/beacon/data";
 
 export default class Island {
   public experience: Experience;
@@ -33,6 +44,7 @@ export default class Island {
 
   public item?: Model3D;
   private island?: Model3D;
+  private cylindre?: Model3D;
 
   public numberOfElementToAdd: number;
 
@@ -47,6 +59,7 @@ export default class Island {
   private isSelected: boolean;
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
+  private beacon?: Mesh;
   //
   public itemIslandManager: ItemIslandManager;
   // // public textItemIsland: TextItemIsland;
@@ -105,6 +118,11 @@ export default class Island {
     this.imageItem = null;
 
     this.checkIfAddItemToCreate();
+
+    //this.beacon will be a cylinderGeometry
+
+    this.beacon = this.setBeacon();
+    // this.scene.add(this.beacon);
   }
 
   public loadAllScene() {
@@ -114,6 +132,15 @@ export default class Island {
 
   public setupScene() {
     this.scene.background = new Color(0x000000);
+  }
+
+  private setBeacon() {
+    return new Mesh(
+      new CylinderGeometry(5, 5, 20, 120, 120, true, 0, 6.3),
+      new NodeToyMaterial({
+        data,
+      })
+    );
   }
 
   public setupCamera() {
@@ -357,11 +384,17 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
+
+    this.cylindre = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Cylindre)
+    );
+
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
-    console.log(this.island.loadedModel3D!);
+
     this.scene.add(this.island.loadedModel3D!);
-    console.log(this.island.animationAction, "animation");
+    this.scene.add(this.cylindre.loadedModel3D!);
+
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     this.island.animationAction![2].play();
@@ -374,6 +407,7 @@ export default class Island {
 
   update() {
     this.island?.mixer?.update(this.experience.time.delta * 0.002);
+    NodeToyMaterial.tick();
   }
 
   destroy() {

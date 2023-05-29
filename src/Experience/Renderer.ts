@@ -40,11 +40,11 @@ export default class Renderer {
       antialias: true, //  todo invert for performance
       // powerPreference: "high-performance", // todo reactivate for performance
     });
-    instance.physicallyCorrectLights = true;
+    instance.useLegacyLight = true;
     instance.gammaFactor = 2.2;
     instance.useLegacyLights = true;
     instance.toneMapping = ReinhardToneMapping;
-    instance.toneMappingExposure = 1.75;
+    instance.toneMappingExposure = 2.4;
     instance.shadowMap.enabled = true;
     instance.shadowMap.type = PCFSoftShadowMap;
     instance.setClearColor("#211d20");

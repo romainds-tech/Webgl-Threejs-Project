@@ -50,16 +50,19 @@ export default class Onboarding extends EventEmitter<EventMap> {
   }
 
   private setUserFromCookie(): User {
-    let cookie = document.cookie;
-    if (cookie) {
-      console.log(cookie);
-      return JSON.parse(cookie);
-    }
-    return {
+    let schema = {
       phoneNumber: "",
       zodiacSign: "",
       hourBirth: "",
     };
+    let cookie = document.cookie;
+    if (cookie) {
+      if (cookie.includes("_ga=")) {
+        return schema;
+      }
+      return JSON.parse(cookie);
+    }
+    return schema;
   }
 
   private setCookie(user: User) {

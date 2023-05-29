@@ -5,17 +5,33 @@ import {
   AnimationClip,
   AnimationMixer,
   Clock,
+  Color,
+  DataTexture,
+  EquirectangularReflectionMapping,
   Euler,
   Mesh,
-  MeshToonMaterial,
+  MeshLambertMaterial,
+  MeshStandardMaterial,
+  Scene,
 } from "three";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { Experience } from "../Experience";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 export default class CustomGlbLoader {
+  public experience: Experience;
+  public scene: Scene;
   private static instance: CustomGlbLoader;
   private static gltfLoader: GLTFLoader;
+  private static rbgeLoader: RGBELoader;
+  private dataTexture: DataTexture;
   constructor() {
+    this.experience = Experience.getInstance();
+    this.scene = this.experience.scene;
     CustomGlbLoader.instance = this;
     CustomGlbLoader.gltfLoader = this.setLoader();
+    CustomGlbLoader.rbgeLoader = this.setRbgeLoader();
+    this.dataTexture = this.setDataTexture("./envMap/hdr.hdr");
   }
 
   public static getInstance(): CustomGlbLoader {
@@ -37,13 +53,27 @@ export default class CustomGlbLoader {
     return gltfLoader;
   }
 
-  private setMaterial(child) {
-    child.material = new MeshToonMaterial({
-      ...child.material,
-      type: "MeshToonMaterial",
-    });
-    console.log(child.material);
+  private setRbgeLoader(): RGBELoader {
+    return new RGBELoader();
   }
+
+  private setDataTexture(path: string) {
+    return CustomGlbLoader.rbgeLoader.load(path, (texture) => {
+      texture.mapping = EquirectangularReflectionMapping;
+      this.scene.environment = texture;
+      return texture;
+    });
+  }
+
+  private setEnvMap(child) {
+    child.material.roughness = 0;
+    child.material.metalness = 1;
+
+    child.material.envMap = this.dataTexture;
+    child.material.needsUpdate = true;
+  }
+
+  private setNodeToyMaterial(child, data) {}
 
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene
@@ -69,15 +99,22 @@ export default class CustomGlbLoader {
           });
         }
 
-        if (model.shadow) {
-          loadedModel.scene.traverse((child) => {
-            if (child instanceof Mesh) {
-              // this.setMaterial(child);
+        loadedModel.scene.traverse((child) => {
+          if (child instanceof Mesh) {
+            if (model.shadow) {
+              this.setEnvMap(child);
               child.castShadow = true;
               child.receiveShadow = true;
+              if (child.material.map) {
+                child.material.map.anisotropy = 16;
+              }
+            } else if (model.nodeToyMaterial) {
+              child.material = new NodeToyMaterial({
+                data: model.nodeToyMaterial,
+              });
             }
-          });
-        }
+          }
+        });
 
         model.loadedModel3D = loadedModel.scene;
         model.addDebug();

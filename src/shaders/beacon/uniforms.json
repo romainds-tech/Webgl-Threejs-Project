@@ -1,0 +1,14 @@
+{
+  "Speed": {
+    "value": 0.2
+  },
+  "Scale": {
+    "value": 4
+  },
+  "Intensity": {
+    "value": 0.2
+  },
+  "Gradient": {
+    "value": "asset:gradients_gradient_003"
+  }
+}
