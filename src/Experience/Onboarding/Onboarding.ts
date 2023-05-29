@@ -12,6 +12,7 @@ import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
+import CookieManager from "../CookieManager";
 
 type EventMap = {
   onboardingFinish: [];
@@ -19,10 +20,10 @@ type EventMap = {
 export default class Onboarding extends EventEmitter<EventMap> {
   public experience: Experience;
   public scene: Scene;
+  private cookieManager: CookieManager;
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle2?: Model3D;
-  private background?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
   private buttonOnboarding?: Button;
@@ -31,9 +32,12 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
   constructor() {
     super();
+    this.cookieManager = CookieManager.getInstance();
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.questions = questions;
+    // this.setupBackgroundImage();
+    this.user = this.cookieManager.getCookie("user");
 
     this.buttonOnboarding = new Button();
     this.buttonOnboarding.setButtonOnboarding();
@@ -41,38 +45,21 @@ export default class Onboarding extends EventEmitter<EventMap> {
     button?.addEventListener("click", () => {
       this.showQuestion();
     });
-    this.loadAllModels();
-    this.setupCamera();
-    // this.setupBackgroundImage();
-    this.user = this.setUserFromCookie();
 
-    this.showQuestion();
+    this.loadAllModels().then(() => {
+      this.setupCamera()
+      this.showQuestion();
+    });
+
+
   }
 
-  private setUserFromCookie(): User {
-    let schema = {
-      phoneNumber: "",
-      zodiacSign: "",
-      hourBirth: "",
-    };
-    let cookie = document.cookie;
-    if (cookie) {
-      if (cookie.includes("_ga=")) {
-        return schema;
-      }
-      return JSON.parse(cookie);
-    }
-    return schema;
-  }
-
-  private setCookie(user: User) {
-    document.cookie = JSON.stringify(user);
-  }
 
   private async loadAllModels() {
     this.temple = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Temple)
     );
+
     this.scene.add(this.temple.loadedModel3D!);
 
     let textureCircle = CustomImageLoader.getInstance().loadImage(
@@ -124,13 +111,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
     });
   }
 
-  private async setupBackgroundImage() {
-    this.background = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Background)
-    );
-    this.scene.add(this.background.loadedModel3D!);
-  }
-
   private showQuestion() {
     document.querySelectorAll(".text")?.forEach((text) => {
       text.remove();
@@ -139,7 +119,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.drag?.destroy();
     this.drag = undefined;
 
-    if (this.currentQuestionIndex >= this.questions!.length) {
+    if ((this.currentQuestionIndex >= this.questions!.length)) {
       this.trigger("onboardingFinish");
       document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
@@ -148,13 +128,23 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     // before show the question, we delete the previous one
 
-    let question = Object.values(this.questions![this.currentQuestionIndex])[0];
+    let question: typeof questions = this.questions![this.currentQuestionIndex];
+
+    // si la question est déjà enregistré dans le user on passe à la suivante
+    if (this.user[question.id] !== "") {
+      console.log("question déjà répondu");
+        this.currentQuestionIndex++;
+        this.showQuestion();
+        return;
+    }
+
+
     // we show the question
     let title = new Text(question.Title, typeText.TITLE);
     let content = new Text(question.Content, typeText.TEXT);
 
     if (question.Type === "input") {
-      let input = document.createElement("input");
+      let input = document.createElement("input")
       input.type = "text";
       input.className = "input center_position top_70_position";
       document.body.appendChild(input);
@@ -162,8 +152,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
-        this.user!.phoneNumber = input.value;
-        this.setCookie(this.user!);
+        switch (question.id) {
+          case "phoneNumber":
+            this.user!.phoneNumber = input.value;
+            break;
+          default:
+            console.error(`Unrecognized question id: ${question.id}`);
+        }
+
+        this.cookieManager.setCookie(this.user!);
       });
 
       // save the answer in the cookies
@@ -182,9 +179,21 @@ export default class Onboarding extends EventEmitter<EventMap> {
         let angleRotation = this.circle1?.loadedModel3D?.rotation.y;
         angleRotation = angleRotation * (180 / Math.PI);
         angleRotation = Math.abs(Math.floor(angleRotation! % 360));
+        let index = Math.abs(Math.floor(angleRotation / angle));
 
-        // let index = Math.abs(Math.floor(angleRotation / angle));
+        switch (question.id) {
+          case "zodiacSign":
+            this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
+            break;
+          case "hourBirth":
+            this.user!.hourBirth = index.toString(); // Or however you determine the birth hour
+            break;
+        }
+
+        this.cookieManager.setCookie(this.user!);
       });
+
+
     }
 
     this.currentQuestionIndex++;

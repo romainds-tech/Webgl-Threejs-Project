@@ -11,7 +11,7 @@ import {
   Euler,
   Mesh,
   MeshLambertMaterial,
-  MeshStandardMaterial,
+  MeshStandardMaterial, PMREMGenerator,
   Scene,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
@@ -31,7 +31,7 @@ export default class CustomGlbLoader {
     CustomGlbLoader.instance = this;
     CustomGlbLoader.gltfLoader = this.setLoader();
     CustomGlbLoader.rbgeLoader = this.setRbgeLoader();
-    this.dataTexture = this.setDataTexture("./envMap/hdr.hdr");
+    this.setDataTexture("./envMap/quarry.hdr");
   }
 
   public static getInstance(): CustomGlbLoader {
@@ -57,23 +57,28 @@ export default class CustomGlbLoader {
     return new RGBELoader();
   }
 
-  private setDataTexture(path: string) {
-    return CustomGlbLoader.rbgeLoader.load(path, (texture) => {
+  private async setDataTexture(path: string) {
+    CustomGlbLoader.rbgeLoader.load(path, (texture) => {
+
       texture.mapping = EquirectangularReflectionMapping;
+
+      this.scene.background = texture;
       this.scene.environment = texture;
-      return texture;
+      this.scene.backgroundIntensity = 0.5;
+
+      this.dataTexture = texture;
+
     });
   }
 
   private setEnvMap(child) {
     child.material.roughness = 0;
-    child.material.metalness = 1;
+    child.material.metalness = 0;
 
     child.material.envMap = this.dataTexture;
     child.material.needsUpdate = true;
   }
 
-  private setNodeToyMaterial(child, data) {}
 
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene

@@ -1,5 +1,6 @@
 import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
+import {data} from "../../shaders/beacon/data";
 
 export const allGlbs = {
   ThreeVertex: {
@@ -216,4 +217,15 @@ export const allGlbs = {
     shadow: false,
     nodeToyMaterial: data,
   },
+
+  IleBakeMoche: {
+    name: "IleBakeMoche",
+    path: "glb/ile_bake_moche.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: false,
+    shadow: true,
+  }
 };

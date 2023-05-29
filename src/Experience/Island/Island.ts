@@ -382,7 +382,7 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Island)
+      new Model3D(allGlbs.IleBakeMoche)
     );
 
     this.cylindre = await CustomGlbLoader.getInstance().loadOne(
@@ -395,9 +395,11 @@ export default class Island {
     this.scene.add(this.island.loadedModel3D!);
     this.scene.add(this.cylindre.loadedModel3D!);
 
-    this.island.animationAction![0].play();
-    this.island.animationAction![1].play();
-    this.island.animationAction![2].play();
+    console.log(this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value);
+
+    // this.island.animationAction![0].play();
+    // this.island.animationAction![1].play();
+    // this.island.animationAction![2].play();
   }
 
   private destroyImageItem() {
@@ -407,6 +409,12 @@ export default class Island {
 
   update() {
     this.island?.mixer?.update(this.experience.time.delta * 0.002);
+
+    // varying the height with sin between -1 and 1
+    if(this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value){
+      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value = Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
+
     NodeToyMaterial.tick();
   }
 
