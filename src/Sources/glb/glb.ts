@@ -1,6 +1,5 @@
 import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
-import { data } from "../../shaders/beacon/data";
 
 export const allGlbs = {
   ThreeVertex: {
