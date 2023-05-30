@@ -11,6 +11,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
+    transmission: false
   },
 
   LowTree: {
@@ -22,6 +23,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
+    transmission: false
   },
   TempleCircle1: {
     name: "TempleCircle1",
@@ -32,6 +34,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
+    transmission: false
   },
   TempleCircle2: {
     name: "TempleCircle2",
@@ -42,6 +45,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
+    transmission: false
   },
   Temple: {
     name: "Temple",
@@ -52,6 +56,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
+    transmission: false
   },
   Herbe: {
     name: "Herbe",
@@ -62,6 +67,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
   CubeVertexGroup: {
     name: "Cube Vertex Group",
@@ -72,6 +78,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
   Robot: {
     name: "Robot",
@@ -82,6 +89,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Robot2Gltf: {
@@ -93,6 +101,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Robot2Glb: {
@@ -104,6 +113,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   JustRobot: {
@@ -115,6 +125,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Lattive: {
@@ -126,6 +137,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Island: {
@@ -137,6 +149,7 @@ export const allGlbs = {
     scale: 1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Cards: {
@@ -148,6 +161,7 @@ export const allGlbs = {
     scale: 1,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Background: {
@@ -159,50 +173,67 @@ export const allGlbs = {
     scale: 2,
     animation: false,
     shadow: true,
+    transmission: false
   },
 
   Card1: {
     name: "Card1",
     path: "glb/cartomancie/carte_1.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-4, 4, -4),
+    position: new Vector3(-2, 4, -2),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Card2: {
     name: "Card2",
     path: "glb/cartomancie/carte_2.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-4, 4, -4),
+    position: new Vector3(-2, 4, -2),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Card3: {
     name: "Card3",
     path: "glb/cartomancie/carte_3.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-4, 4, -4),
+    position: new Vector3(-2, 4, -2),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
     shadow: true,
+    transmission: false
   },
 
   Card4: {
     name: "Card4",
     path: "glb/cartomancie/carte_4.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-4, 4, -4),
+    position: new Vector3(-2, 4, -2),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
     shadow: true,
+    transmission: false
+  },
+
+  Fiole: {
+    name: "Fiole",
+    path: "glb/fiole_geode.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: false,
+    shadow: true,
+    transmission: true
   },
 
   RingJowel: {
@@ -214,5 +245,6 @@ export const allGlbs = {
     scale: 2,
     animation: true,
     shadow: true,
+    transmission: false
   },
 };

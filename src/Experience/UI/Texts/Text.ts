@@ -19,7 +19,7 @@ export default class Text {
         styleClass = "title_text top_10_position";
         break;
       case typeText.TEXT:
-        styleClass = "text top_20_position";
+        styleClass = "text text_style top_20_position";
         break;
       case typeText.TEXT_MAJ:
         styleClass = "text_maj";

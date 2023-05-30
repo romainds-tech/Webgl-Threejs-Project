@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import { Group, Object3D, Scene, Vector2, Event, Color } from "three";
+import {Group, Object3D, Scene, Vector2, Event, Color, MeshPhysicalMaterial, DoubleSide} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -25,6 +25,7 @@ import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
+import {GUI} from "lil-gui";
 
 export default class Island {
   public numberOfElementToAdd: number;
@@ -205,6 +206,7 @@ export default class Island {
         else {
           if (checkItem) {
             this.selectItem(checkItem);
+
           }
         }
 
@@ -256,8 +258,32 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
+
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
+    console.log(newItem)
+    // newItem.children.forEach(child => {
+    //   console.log(child.material)
+    //   child.material = new MeshPhysicalMaterial( {
+    //     color: params.color,
+    //     metalness: params.metalness,
+    //     roughness: params.roughness,
+    //     ior: params.ior,
+    //     // alphaTest: 1,
+    //     depthWrite: false,
+    //     map: child.material.map,
+    //     metalnessMap: child.material.metalnessMap,
+    //     normalMap: child.material.normalMap,
+    //     roughnessMap: child.material.roughnessMap,
+    //     envMapIntensity: params.envMapIntensity,
+    //     transmission: params.transmission, // use material.transmission for glass materials
+    //     // specularIntensity: params.specularIntensity,
+    //     opacity: params.opacity,
+    //     // side: DoubleSide,
+    //     transparent: true
+    //   } );
+    //   console.log(child.material)
+    // })
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -282,14 +308,16 @@ export default class Island {
     this.displayEditMode(true);
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
+    // this.camera.controls.enabled = false;
+    // this.experience.camera.instance.updateProjectionMatrix();
   }
 
   setImageItem() {
-    let sizeImageItem = 0.05;
+    let sizeImageItem = 1.5;
     if (this.imageItem) {
       this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
 
-      this.imageItem.position.set(0, 3, 0);
+      this.imageItem.position.set(0, 1, 0);
       this.scene.add(this.imageItem);
     }
   }
@@ -350,6 +378,8 @@ export default class Island {
         console.log("deplacer button");
         this.canRaycast = true;
         this.destroyImageItem();
+        this.camera.controls.enabled = true;
+        this.experience.camera.instance.updateProjectionMatrix();
       });
   }
 

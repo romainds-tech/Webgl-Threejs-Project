@@ -21,15 +21,15 @@ export default class Popup {
     position: PositionY
   ) {
     const divContainer = document.createElement("div");
-    const titleH2 = document.createElement("h4");
+    const titleH4 = document.createElement("h4");
 
     divContainer.id = idNameDivContainer;
     divContainer.className = classStyleNameDivContainer + " " + position;
 
-    titleH2.innerHTML = textDiv;
-    titleH2.className = classStyleNameText;
+    titleH4.innerHTML = textDiv;
+    titleH4.className = classStyleNameText;
 
     document.body.appendChild(divContainer);
-    divContainer.appendChild(titleH2);
+    divContainer.appendChild(titleH4);
   }
 }

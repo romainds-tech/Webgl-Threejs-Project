@@ -159,8 +159,6 @@ export default class Cartomancie {
     this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].modelMajorArcane)
     );
-    console.log(this.firstArcaneImageItem);
-
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
 
@@ -257,7 +255,7 @@ export default class Cartomancie {
       this.textPrediction = predictions[this.predictionNumber].textPrediction;
 
       if (this.itemPrediction) {
-        this.itemPrediction.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
+        this.itemPrediction.loadedModel3D!.scale.set(0.1, 0.1, 0.1);
       }
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
@@ -280,7 +278,7 @@ export default class Cartomancie {
   }
 
   private setupItem(x: number, y: number, z: number) {
-    let sizeImageItem = 0.08;
+    let sizeImageItem = 1.5;
     if (this.item) {
       if (this.item.loadedModel3D) {
         this.item.loadedModel3D.scale.set(
@@ -313,7 +311,6 @@ export default class Cartomancie {
   }
 
   private destroyCard() {
-    console.log(this.cards);
     this.scene.remove(this.cards?.loadedModel3D!);
     this.cards?.destroy();
     // this.cards = undefined;
