@@ -141,8 +141,8 @@ export default class PostProcessing {
   setBloomPass() {
     const params = {
       exposure: 0.3,
-      bloomStrength: 1.0,
-      bloomThreshold: 0.15,
+      bloomStrength: 3,
+      bloomThreshold: 0.3,
       bloomRadius: 0,
       scene: "Scene with Glow",
     };
@@ -174,7 +174,7 @@ export default class PostProcessing {
           bloomPass.threshold = value;
         });
 
-      bloomFolder.add(params, "bloomStrength", 0.0, 50.0).onChange((value) => {
+      bloomFolder.add(params, "bloomStrength", 0.0, 10.0).onChange((value) => {
         bloomPass.strength = value;
       });
 
