@@ -131,7 +131,7 @@ export default class Island {
   }
 
   public setupScene() {
-    this.scene.background = new Color(0x000000);
+    // this.scene.background = new Color(0x000000);
   }
 
   private setBeacon() {
@@ -146,7 +146,7 @@ export default class Island {
   public setupCamera() {
     this.camera.controls.enabled = true;
     this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -5);
+    this.experience.camera.instance.position.set(-5, 5, -20);
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -397,9 +397,9 @@ export default class Island {
 
     console.log(this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value);
 
-    // this.island.animationAction![0].play();
-    // this.island.animationAction![1].play();
-    // this.island.animationAction![2].play();
+    this.island.animationAction![0].play();
+    this.island.animationAction![1].play();
+    this.island.animationAction![2].play();
   }
 
   private destroyImageItem() {

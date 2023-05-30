@@ -31,7 +31,7 @@ export default class CustomGlbLoader {
     CustomGlbLoader.instance = this;
     CustomGlbLoader.gltfLoader = this.setLoader();
     CustomGlbLoader.rbgeLoader = this.setRbgeLoader();
-    this.setDataTexture("./envMap/quarry.hdr");
+    this.setDataTexture("./envMap/hdr.hdr");
   }
 
   public static getInstance(): CustomGlbLoader {
@@ -58,11 +58,12 @@ export default class CustomGlbLoader {
   }
 
   private async setDataTexture(path: string) {
-    CustomGlbLoader.rbgeLoader.load(path, (texture) => {
-
-      texture.mapping = EquirectangularReflectionMapping;
+    await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
 
       this.scene.background = texture;
+
+      //texture.mapping = EquirectangularReflectionMapping;
+
       this.scene.environment = texture;
       this.scene.backgroundIntensity = 0.5;
 
@@ -73,7 +74,7 @@ export default class CustomGlbLoader {
 
   private setEnvMap(child) {
     child.material.roughness = 0;
-    child.material.metalness = 0;
+    child.material.metalness = 0.5;
 
     child.material.envMap = this.dataTexture;
     child.material.needsUpdate = true;
@@ -107,6 +108,7 @@ export default class CustomGlbLoader {
         loadedModel.scene.traverse((child) => {
           if (child instanceof Mesh) {
             if (model.shadow) {
+              child.material.depthWrite = true;
               this.setEnvMap(child);
               child.castShadow = true;
               child.receiveShadow = true;
