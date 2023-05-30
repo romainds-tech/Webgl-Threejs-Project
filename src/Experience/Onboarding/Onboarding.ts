@@ -45,11 +45,29 @@ export default class Onboarding extends EventEmitter<EventMap> {
     button?.addEventListener("click", () => {
       this.showQuestion();
     });
+    this.loadAllModels();
+    this.setupCamera();
+    // this.setupBackgroundImage();
+    // this.user = this.setUserFromCookie();
 
-    this.loadAllModels().then(() => {
-      this.setupCamera();
-      this.showQuestion();
-    });
+    this.showQuestion();
+  }
+
+  private setUserFromCookie(): User {
+    let cookie = document.cookie;
+    if (cookie) {
+      console.log(cookie);
+      return JSON.parse(cookie);
+    }
+    return {
+      phoneNumber: "",
+      zodiacSign: "",
+      hourBirth: "",
+    };
+  }
+
+  private setCookie(user: User) {
+    document.cookie = JSON.stringify(user);
   }
 
   private async loadAllModels() {
@@ -148,14 +166,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
-        // switch (question.id) {
-        //   case "phoneNumber":
-        //     this.user!.phoneNumber = input.value;
-        //     break;
-        //   default:
-        //     console.error(`Unrecognized question id: ${question.id}`);
-        // }
-        // this.cookieManager.setCookie(this.user!);
+        // this.user!.phoneNumber = input.value;
+        // this.setCookie(this.user!);
       });
 
       // save the answer in the cookies

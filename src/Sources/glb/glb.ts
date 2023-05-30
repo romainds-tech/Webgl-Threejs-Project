@@ -237,29 +237,6 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Cylindre: {
-    name: "Cylindre",
-    path: "glb/cylindre.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(0, 5, 0),
-    rotation: new Vector3(0, 0, 0),
-    scale: 1,
-    animation: false,
-    shadow: false,
-    nodeToyMaterial: data,
-  },
-
-  IleBakeMoche: {
-    name: "IleBakeMoche",
-    path: "glb/island_bake.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, 0, 0),
-    scale: 1,
-    animation: true,
-    shadow: true,
-  },
-
   Fiole: {
     name: "Fiole",
     path: "glb/fiole_geode.gltf",

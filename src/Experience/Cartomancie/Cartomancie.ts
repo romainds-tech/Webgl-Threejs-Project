@@ -110,20 +110,7 @@ export default class Cartomancie {
     document
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
-        // const plane = new Mesh(
-        //   new PlaneGeometry(3, 3),
-        //   new NodeToyMaterial({
-        //     data: flameData,
-        //   })
-        // );
-        //
-        // plane.material.side = DoubleSide;
-        //
-        // console.log(plane.material);
-        //
-        // this.scene.add(plane);
-        // this.loadScene();
-        this.loadCards();
+        this.loadScene();
         disabledInterfaceStartCartomancie();
       });
   }
@@ -196,15 +183,15 @@ export default class Cartomancie {
       clipMixer.clampWhenFinished = true;
       this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
-        setTimeout(() => {
-          document.querySelector(
-            "#popup_first_arcane_cartomancie .text_arcane"
-          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-          this.destroyCard();
-          displayInterfaceFirstArcaneCartomancie();
-          this.setOverlayArcane();
-          this.loadMajorArcane();
-        }, 500);
+        // setTimeout(() => {
+        //   document.querySelector(
+        //     "#popup_first_arcane_cartomancie .text_arcane"
+        //   )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+        //   this.destroyCard();
+        //   displayInterfaceFirstArcaneCartomancie();
+        //   this.setOverlayArcane();
+        //   this.loadMajorArcane();
+        // }, 500);
       });
     }
   }
