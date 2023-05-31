@@ -1,5 +1,5 @@
 import { Experience } from "../Experience";
-import {Group, Object3D, Scene, Vector2, Event, Color, MeshPhysicalMaterial, DoubleSide} from "three";
+import {Group, Object3D, Scene, Vector2, Event, Color, MeshPhysicalMaterial, CylinderGeometry, Mesh, DoubleSide} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -7,7 +7,6 @@ import { mapMainIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
-
 import {
   displayInterfaceInformationItem,
   disablePopupIterfaceModificateItem,
@@ -24,10 +23,21 @@ import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
-import Sky from "../Sky/Sky";
-import {GUI} from "lil-gui";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+import { data } from "../../shaders/beacon/data";
 
 export default class Island {
+  public experience: Experience;
+  public debug: Debug;
+  public scene: Scene;
+  public sizes: Sizes;
+  public camera: Camera;
+
+  public item?: Model3D;
+  private island?: Model3D;
+  private cylindre?: Model3D;
+
+
   public numberOfElementToAdd: number;
 
   private experience: Experience;
@@ -48,10 +58,19 @@ export default class Island {
   private isSelected: boolean;
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
+  private beacon?: Mesh;
+  //
+  public itemIslandManager: ItemIslandManager;
+  // // public textItemIsland: TextItemIsland;
+  public popupIsland: Popup;
+  public imageItem: Object3D<Event> | null;
+  public buttonIsland: Button;
+
 
   private itemIslandManager: ItemIslandManager;
 
   private imageItem: Object3D<Event> | null;
+
 
   constructor() {
     // Experience
@@ -100,6 +119,11 @@ export default class Island {
     this.imageItem = null;
 
     this.checkIfAddItemToCreate();
+
+    //this.beacon will be a cylinderGeometry
+
+    this.beacon = this.setBeacon();
+    // this.scene.add(this.beacon);
   }
 
   public loadAllScene() {
@@ -110,13 +134,22 @@ export default class Island {
   }
 
   public setupScene() {
-    this.scene.background = new Color(0x000000);
+    // this.scene.background = new Color(0x000000);
+  }
+
+  private setBeacon() {
+    return new Mesh(
+      new CylinderGeometry(5, 5, 20, 120, 120, true, 0, 6.3),
+      new NodeToyMaterial({
+        data,
+      })
+    );
   }
 
   public setupCamera() {
     this.camera.controls.enabled = true;
     this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -5);
+    this.experience.camera.instance.position.set(-5, 5, -20);
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -400,10 +433,21 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Island)
+      new Model3D(allGlbs.IleBakeMoche)
     );
+
+    this.cylindre = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Cylindre)
+    );
+
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
+
+    this.scene.add(this.island.loadedModel3D!);
+    this.scene.add(this.cylindre.loadedModel3D!);
+
+    console.log(this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value);
+
     this.scene.add(this.island.loadedModel3D!);
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
@@ -417,6 +461,13 @@ export default class Island {
 
   update() {
     this.island?.mixer?.update(this.experience.time.delta * 0.002);
+
+    // varying the height with sin between -1 and 1
+    if(this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value){
+      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value = Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
+
+    NodeToyMaterial.tick();
   }
 
   destroy() {

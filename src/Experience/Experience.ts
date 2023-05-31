@@ -50,6 +50,7 @@ export class Experience {
     });
 
     this.onBoarding.on("onboardingFinish", () => {
+      console.log("onboardingFinish");
       this.onBoarding.destroy();
       this.island = new Island(0);
     });

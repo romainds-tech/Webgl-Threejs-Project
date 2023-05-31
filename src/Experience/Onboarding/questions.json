@@ -1,20 +1,12 @@
 [
   {
-    "connexion": {
-      "Title": "Connexion",
-      "Content": "Saissisez votre numéro de téléphone",
-      "Type": "input"
-    }
-  },
-  {
-    "inscription": {
+    "id" : "phoneNumber",
       "Title": "Inscription",
       "Content": "Saissisez votre numéro de téléphone",
       "Type": "input"
-    }
   },
   {
-    "signastro": {
+    "id": "zodiacSign",
       "Title": "Choix du signe astrologique",
       "Content": "",
       "Type": "wheel",
@@ -32,10 +24,10 @@
         "Verseau",
         "Poisson"
       ]
-    }
+
   },
   {
-    "hourbirth": {
+    "id":"hourBirth",
       "Title": "Choix de l'heure de naissance",
       "Content": "",
       "Type": "wheel",
@@ -65,6 +57,6 @@
         "22h",
         "23h"
       ]
-    }
+
   }
 ]

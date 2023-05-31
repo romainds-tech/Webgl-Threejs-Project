@@ -34,14 +34,14 @@ export default class Light {
 
     this.sunLight.intensity = 5.3;
     this.sunLight!.castShadow = true;
-    this.sunLight!.shadow.mapSize.set(2048, 2048);
-    this.sunLight!.shadow.normalBias = 0.035;
+    this.sunLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
+    this.sunLight!.shadow.normalBias = -0.0001;
     this.sunLight!.position.set(5, 6.235, 7.5);
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
     // this.sunLight.position.multiplyScalar(30);
     this.scene.add(this.sunLight);
 
-    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 1);
+    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 1.2);
     // this.hemisphereLight.castShadow = true;
     this.scene.add(this.hemisphereLight);
 

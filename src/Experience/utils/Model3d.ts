@@ -27,6 +27,7 @@ export interface IModel3D {
   scale: number;
   animation: boolean;
   shadow: boolean;
+  nodeToyMaterial?: any;
   transmission: boolean;
 }
 
@@ -47,6 +48,7 @@ export default class Model3D {
   mixer?: AnimationMixer;
   loadedModel3D?: Group;
   animationAction?: AnimationAction[];
+  nodeToyMaterial?: any;
 
   constructor(props: IModel3D) {
     this.experience = Experience.getInstance();
@@ -60,6 +62,7 @@ export default class Model3D {
     this.scale = props.scale;
     this.animation = props.animation;
     this.shadow = props.shadow;
+    this.nodeToyMaterial = props.nodeToyMaterial;
     this.transmission = props.transmission;
   }
 
