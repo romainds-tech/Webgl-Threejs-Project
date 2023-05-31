@@ -7,8 +7,6 @@ import {
   Event,
   Color,
   MeshPhysicalMaterial,
-  CylinderGeometry,
-  Mesh,
   DoubleSide,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
@@ -37,9 +35,6 @@ import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 import { GUI } from "lil-gui";
-import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import { data } from "../../shaders/beacon/data";
-import { flameData } from "../../shaders/Flame";
 
 export default class Island {
   public experience: Experience;
@@ -138,7 +133,6 @@ export default class Island {
     this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
-    this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
   }
@@ -290,7 +284,7 @@ export default class Island {
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-    console.log(newItem);
+    console.log(newItem)
     // newItem.children.forEach(child => {
     //   console.log(child.material)
     //   child.material = new MeshPhysicalMaterial( {
