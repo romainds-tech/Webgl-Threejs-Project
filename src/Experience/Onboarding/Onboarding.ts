@@ -208,7 +208,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.scene.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
-    this.circle1 = undefined;
+    // this.circle1 = undefined;
 
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();

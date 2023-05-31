@@ -18,6 +18,7 @@ import { mapMainIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
+
 import {
   displayInterfaceInformationItem,
   disablePopupIterfaceModificateItem,
@@ -34,6 +35,8 @@ import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
+import Sky from "../Sky/Sky";
+import { GUI } from "lil-gui";
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { data } from "../../shaders/beacon/data";
 
@@ -141,7 +144,7 @@ export default class Island {
   public setupCamera() {
     this.camera.controls.enabled = true;
     this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -20);
+    this.experience.camera.instance.position.set(-5, 5, -5);
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -279,6 +282,7 @@ export default class Island {
     this.destroyImageItem();
     this.checkIfAddItemToCreate();
     disablePopupIterfaceModificateItem();
+    console.log(this.mapGroup);
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
@@ -314,6 +318,10 @@ export default class Island {
       this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
+    // localStorage.setItem(
+    //   "item[" + (this.mapGroup.children.length - 1).toString() + "]",
+    //   JSON.stringify(this.mapGroup.children[this.mapGroup.children.length - 1])
+    // );
   }
 
   private selectItem(itemSelected: ItemIsland) {
@@ -423,7 +431,7 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.IleBakeMoche)
+      new Model3D(allGlbs.Island)
     );
 
     this.cylindre = await CustomGlbLoader.getInstance().loadOne(
