@@ -9,6 +9,7 @@ import Debug from "./utils/Debug";
 import Light from "./Light/Light";
 import Onboarding from "./Onboarding/Onboarding";
 import Cartomancie from "./Cartomancie/Cartomancie";
+import Sky from "./Sky/Sky";
 
 export class Experience {
   private static instance: Experience;
@@ -22,7 +23,7 @@ export class Experience {
   public island?: Island;
   public cartomancie?: Cartomancie;
   public light: Light;
-  // public sky: Sky;
+  public sky?: Sky;
   public debug: Debug;
   public onBoarding: Onboarding;
 
@@ -73,10 +74,14 @@ export class Experience {
     this.camera.update();
     this.renderer.update();
     this.onBoarding.update();
-    // this.sky.update();
+
     this.island?.update();
     if (this.cartomancie) {
       this.cartomancie.update();
+    }
+
+    if (this.sky) {
+      this.sky.update();
     }
   }
 

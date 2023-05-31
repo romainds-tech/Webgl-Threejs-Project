@@ -11,17 +11,36 @@
 #title_first_arcane_cartomancie,
 #title_second_arcane_cartomancie,
 #title_prediction_cartomancie,
-#title_select_item_cartomancie{
+#title_select_item_cartomancie,
+#title_sky{
     color: white;
 }
 
+#title_last_prediction_sky{
+    display: none;
+    color: white;
+}
 
 .input_div {
     position: absolute;
     width: 90%;
-    color: #1C154E;
     text-align: center;
     z-index: 42;
+}
+
+
+#div_rings_values {
+    display: flex;
+    color: white;
+    justify-content: space-around;
+}
+
+#div_rings_values div h4 {
+    ght: 100;
+}
+
+.color_text_div {
+    color: #1C154E;
 }
 .title_cartomancie {
     position: absolute;
@@ -30,8 +49,6 @@
     text-align: center;
     z-index: 42;
 }
-
-
 
 .subtitle_cartomancie {
     margin-top: 10px

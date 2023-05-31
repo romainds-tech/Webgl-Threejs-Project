@@ -1,15 +1,27 @@
-#overlay_start_cartomancie {
+#overlay_start_cartomancie,
+#overlay_prediciton_sky
+{
     display: none;
 }
 
 /*TODO : renommer et fusion les classe*/
 
-.overlay_cartomancie {
+.overlay {
     position: absolute;
     top: 0;
     height: 100%;
     width: 100%;
     z-index: 2;
+
+}
+.overlay_cartomancie {
     background-color: white;
     opacity: 0.6;
+}
+
+.overlay_sky {
+    background-image: url("/public/images/bg_sky.jpg");
+    background-size: cover;
+    opacity: 1;
+    filter: blur(16px);
 }

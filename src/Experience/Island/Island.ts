@@ -1,14 +1,5 @@
 import { Experience } from "../Experience";
-import {
-  Group,
-  Object3D,
-  Scene,
-  Vector2,
-  Event,
-  Color,
-  CylinderGeometry,
-  Mesh,
-} from "three";
+import {Group, Object3D, Scene, Vector2, Event, Color, MeshPhysicalMaterial, CylinderGeometry, Mesh, DoubleSide} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
@@ -16,7 +7,6 @@ import { mapMainIslandData, loadMap } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
-
 import {
   displayInterfaceInformationItem,
   disablePopupIterfaceModificateItem,
@@ -25,10 +15,11 @@ import {
   disableInterfaceInformationItem,
   disableInterfaceCreationItem,
   displayInterfaceCreationItem,
+  createUIIsland,
+  displayInterfaceGlobalOnIsland,
+  disableInterfaceGlobalOnIsland,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
-import Popup from "../UI/Popups/Popup";
-import Button from "../UI/Buttons/Button";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
@@ -46,14 +37,22 @@ export default class Island {
   private island?: Model3D;
   private cylindre?: Model3D;
 
+
   public numberOfElementToAdd: number;
 
+  private experience: Experience;
+  private debug: Debug;
+  private scene: Scene;
+  private sizes: Sizes;
+  private camera: Camera;
+
   // Map
+  private island?: Model3D;
   // var for trigger event
   private readonly onMouseDown: (event: MouseEvent) => void;
 
   // Map object
-  public mapGroup: Group;
+  private mapGroup: Group;
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
@@ -66,6 +65,12 @@ export default class Island {
   public popupIsland: Popup;
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
+
+
+  private itemIslandManager: ItemIslandManager;
+
+  private imageItem: Object3D<Event> | null;
+
 
   constructor() {
     // Experience
@@ -94,10 +99,6 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
-    // Ui of item create an modificate
-    this.popupIsland = new Popup();
-    this.buttonIsland = new Button();
-
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -111,8 +112,8 @@ export default class Island {
 
     this.loadIsland();
 
-    this.popupIsland.setPopupIsland();
-    this.buttonIsland.setButtonIsland();
+    createUIIsland();
+    displayInterfaceGlobalOnIsland();
 
     this.actionOnClickButtons();
     this.imageItem = null;
@@ -126,8 +127,10 @@ export default class Island {
   }
 
   public loadAllScene() {
+    this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+    displayInterfaceGlobalOnIsland();
   }
 
   public setupScene() {
@@ -193,7 +196,6 @@ export default class Island {
     // position cursor on screen from center of the screen
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    console.log(this.mouse);
 
     // Checking if the mouse projection is targeting a valid block in the clickableObjs array
     let intersects = this.raycaster.getRaycastObject(
@@ -230,21 +232,25 @@ export default class Island {
           this.numberOfElementToAdd == 0
         ) {
           this.destroy();
+          disableInterfaceGlobalOnIsland();
           this.experience.cartomancie = new Cartomancie();
         }
         // Else we gonna change position of this item
         else {
           if (checkItem) {
             this.selectItem(checkItem);
+
           }
         }
 
         // add object in array of object
         let templateItem = this.itemIslandManager.newItemToCreate;
-        if (templateItem) {
+        let templateItemText = this.itemIslandManager.newTextToCreate;
+        if (templateItem && templateItemText) {
           this.mapGroup.add(templateItem);
-          this.itemIslandManager.addItem(templateItem);
+          this.itemIslandManager.addItem(templateItem, templateItemText);
           this.itemIslandManager.newItemToCreate = null;
+          this.itemIslandManager.newTextToCreate = undefined;
         }
       }
       // if i didn't click on a raycastable object i reset the props
@@ -285,16 +291,47 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
-    let newItem = this.item!.loadedModel3D!.clone();
+
+    let newItem =
+      this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
+    console.log(newItem)
+    // newItem.children.forEach(child => {
+    //   console.log(child.material)
+    //   child.material = new MeshPhysicalMaterial( {
+    //     color: params.color,
+    //     metalness: params.metalness,
+    //     roughness: params.roughness,
+    //     ior: params.ior,
+    //     // alphaTest: 1,
+    //     depthWrite: false,
+    //     map: child.material.map,
+    //     metalnessMap: child.material.metalnessMap,
+    //     normalMap: child.material.normalMap,
+    //     roughnessMap: child.material.roughnessMap,
+    //     envMapIntensity: params.envMapIntensity,
+    //     transmission: params.transmission, // use material.transmission for glass materials
+    //     // specularIntensity: params.specularIntensity,
+    //     opacity: params.opacity,
+    //     // side: DoubleSide,
+    //     transparent: true
+    //   } );
+    //   console.log(child.material)
+    // })
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
+    this.itemIslandManager.newTextToCreate =
+      this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
   }
 
   private selectItem(itemSelected: ItemIsland) {
     this.itemIslandManager.selectedItem = itemSelected.object;
+    this.itemIslandManager.selectItemPrediction = itemSelected.text;
+    document.querySelector("#popup_select_item_island h4")!.innerHTML =
+      this.itemIslandManager.selectItemPrediction!;
+
     this.itemIslandManager.selectedItem!.position.y = 1;
     this.isSelected = true;
     this.canRaycast = false;
@@ -304,14 +341,16 @@ export default class Island {
     this.displayEditMode(true);
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
+    // this.camera.controls.enabled = false;
+    // this.experience.camera.instance.updateProjectionMatrix();
   }
 
   setImageItem() {
-    let sizeImageItem = 0.05;
+    let sizeImageItem = 1.5;
     if (this.imageItem) {
       this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
 
-      this.imageItem.position.set(0, 3, 0);
+      this.imageItem.position.set(0, 1, 0);
       this.scene.add(this.imageItem);
     }
   }
@@ -325,8 +364,18 @@ export default class Island {
     this.clickOnAbandonedModificationItemButton();
     this.clickOnMoveItemButton();
     this.clickOnDeleteItemButton();
+    this.clickOnRingButton();
   }
 
+  private clickOnRingButton() {
+    document
+      .getElementById("button_rings_island")!
+      .addEventListener("click", () => {
+        disableInterfaceGlobalOnIsland();
+        this.destroy();
+        this.experience.sky = new Sky();
+      });
+  }
   private clickOnCrossButtonInformationItem() {
     document
       .getElementById("button_disable_select_item_island")!
@@ -362,6 +411,8 @@ export default class Island {
         console.log("deplacer button");
         this.canRaycast = true;
         this.destroyImageItem();
+        this.camera.controls.enabled = true;
+        this.experience.camera.instance.updateProjectionMatrix();
       });
   }
 
@@ -397,6 +448,7 @@ export default class Island {
 
     console.log(this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value);
 
+    this.scene.add(this.island.loadedModel3D!);
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     this.island.animationAction![2].play();

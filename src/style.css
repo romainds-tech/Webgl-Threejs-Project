@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "amarente";
+  src: url("../public/fonts/amarante-regular.ttf");
+}
+
+@font-face {
+  font-family: "abeezee";
+  src: url("../public/fonts/abeezee_regular.ttf");
+}
+
+@font-face {
+  font-family: "actor";
+  src: url("../public/fonts/actor_regular.ttf");
+}
+
+
 *{
   margin: 0;
   padding: 0;
@@ -7,6 +23,25 @@ html {
   overflow: hidden;
 }
 
+button {
+  font-family: actor, sans-serif;
+  font-size: 12px;
+  text-transform : uppercase;
+  font-weight: 100;
+  letter-spacing: 0.2rem;
+}
+
+h2, .title_text {
+  font-family: amarente, sans-serif;
+
+}
+
+h4, .text_style  {
+  font-family: abeezee, sans-serif;
+  font-size: 13px;
+  font-weight: 100;
+  line-height: 1.5;
+}
 .top_position {
   top : 5%;
   left : 5%;
@@ -20,6 +55,12 @@ html {
 
 .top_10_position {
   top : 10%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
+.top_15_position {
+  top : 15%;
   left : 5%;
   transform: translate(0, -50%);
 }
@@ -54,6 +95,12 @@ html {
   transform: translate(0, -50%);
 }
 
+.top_80_position {
+  top : 80%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
 .bottom_position {
   left : 5%;
   bottom : 5%;
@@ -79,7 +126,6 @@ html {
 
 .title_text{
   font-size: 2em;
-  font-weight: bold;
   color: white;
   text-shadow: 0 0 10px black;
 }
