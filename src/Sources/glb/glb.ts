@@ -153,18 +153,6 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Cards: {
-    name: "Cards",
-    path: "glb/cards_v1.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(-4, 0, 2),
-    rotation: new Vector3(0, 0, 0),
-    scale: 1,
-    animation: true,
-    shadow: true,
-    transmission: false,
-  },
-
   Background: {
     name: "Background",
     path: "glb/bg.gltf",
@@ -220,6 +208,30 @@ export const allGlbs = {
     position: new Vector3(-2, 4, -2),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  SceneCard: {
+    name: "Scene card",
+    path: "glb/cartomancie/scene_carte.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 0, 2),
+    rotation: new Vector3(0, Math.PI / 2, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Cards: {
+    name: "Cards",
+    path: "glb/cartomancie/carte_animation.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, -0.4, 2),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
     animation: true,
     shadow: true,
     transmission: false,
