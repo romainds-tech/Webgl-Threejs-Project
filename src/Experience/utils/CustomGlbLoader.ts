@@ -8,7 +8,9 @@ import {
   DataTexture,
   Euler,
   Mesh,
-  Scene, sRGBEncoding,
+  MeshLambertMaterial,
+  MeshStandardMaterial, PMREMGenerator,
+  Scene,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { Experience } from "../Experience";
@@ -118,6 +120,31 @@ export default class CustomGlbLoader {
             }
           }
         });
+
+        if (model.transmission) {
+          loadedModel.scene.traverse((child) => {
+            if (child instanceof Mesh) {
+              console.log(child)
+                child.material = new MeshPhysicalMaterial({
+                  color: 0xffffff,
+                  metalness: 0.7,
+                  roughness: 0.05,
+                  ior: 1.5,
+                  depthWrite: false,
+                  map: child.material.map,
+                  metalnessMap: child.material.metalnessMap,
+                  normalMap: child.material.normalMap,
+                  roughnessMap: child.material.roughnessMap,
+                  envMapIntensity: 1,
+                  transmission: 0.7, // use material.transmission for glass materials
+                  opacity: 1,
+                  // side: DoubleSide,
+                  transparent: true
+                });
+
+            }
+            })
+        }
 
         model.loadedModel3D = loadedModel.scene;
         model.addDebug();

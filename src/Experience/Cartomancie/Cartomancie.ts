@@ -5,12 +5,12 @@ import {
   LoopOnce,
   Mesh,
   MeshBasicMaterial,
-  MeshStandardMaterial,
-  Object3D,
+  // MeshStandardMaterial,
+  // Object3D,
   PlaneGeometry,
   Scene,
-  ShaderMaterial,
-  TextureLoader,
+  // ShaderMaterial,
+  // TextureLoader,
 } from "three";
 import Debug from "../utils/Debug";
 import Time from "../utils/Time";
@@ -18,12 +18,11 @@ import { GUI } from "lil-gui";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
-import cardVertexShader from "../../shaders/card/vertex.glsl";
-import cardFragmentShader from "../../shaders/card/fragment.glsl";
-import { gsap } from "gsap";
+// import cardVertexShader from "../../shaders/card/vertex.glsl";
+// import cardFragmentShader from "../../shaders/card/fragment.glsl";
+// import { gsap } from "gsap";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
-import Popup from "../UI/Popups/Popup";
 import {
   disabledInterfaceStartCartomancie,
   displayInterfaceStartCartomancie,
@@ -35,38 +34,37 @@ import {
   disabledInterfacePredictionCartomancie,
   displayInterfaceSelectItemCartomancie,
   disabledInterfaceSelectItemCartomancie,
+  createUICartomancie,
+  deleteAllUI,
 } from "./displayInterfaceCartomancie";
-import Button from "../UI/Buttons/Button";
-import Input from "../UI/Inputs/Input";
-import Overlay from "../UI/Overlays/Overlay";
-import Island from "../Island/Island";
 import { predictions } from "./predictions";
 
 export default class Cartomancie {
-  public experience: Experience;
-  public scene: Scene;
+  public textPrediction?: string;
+  public itemPrediction?: Model3D;
+  public lovePercent?: number;
+  public workPercent?: number;
+  public healthPercent?: number;
+
+  private experience: Experience;
+  private scene: Scene;
   public camera: Camera;
-  public sizes: Sizes;
-  public island?: Island;
+  private sizes: Sizes;
 
-  public debug: Debug;
-  public debugFolder: GUI | null;
+  private debug: Debug;
+  private debugFolder: GUI | null;
 
-  public time: Time;
+  private time: Time;
 
-  public overlay?: Mesh;
-  public cards?: Model3D;
-  public item?: Model3D;
-  public mixer?: AnimationMixer;
+  private overlay?: Mesh;
+  private cards?: Model3D;
+  private item?: Model3D;
+  private mixer?: AnimationMixer;
 
-  public popup: Popup;
-  public button: Button;
-  public input: Input;
-  public overlayUI: Overlay;
-  public firstArcaneImageItem?: Model3D;
-  public secondArcaneImageItem?: Model3D;
+  private firstArcaneImageItem?: Model3D;
+  private secondArcaneImageItem?: Model3D;
 
-  public predictionNumber: number;
+  private predictionNumber: number;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -83,25 +81,13 @@ export default class Cartomancie {
 
     this.loadModelsItemIsland();
 
-    // this.loadCarte();
-    this.popup = new Popup();
-    this.popup.setPopupCartomancie();
-
-    this.button = new Button();
-    this.button.setButtonCartomancie();
-
-    this.input = new Input();
-    this.input.setInputCartomancie();
-
-    this.overlayUI = new Overlay();
-    this.overlayUI.setOverlayCartomancie();
-
+    createUICartomancie();
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
   }
 
-  setupCamera() {
+  private setupCamera() {
     let cameraPosition = 10;
     this.camera.instance.position.set(
       -cameraPosition,
@@ -109,14 +95,14 @@ export default class Cartomancie {
       -cameraPosition
     );
     this.camera.instance.zoom = 0.35;
-    this.camera.controls.enabled = true;
+    this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
   }
 
-  setupPrediction() {
+  private setupPrediction() {
     return Math.floor(Math.random() * predictions.length);
   }
-  startPrediction() {
+  private startPrediction() {
     document
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
@@ -124,7 +110,7 @@ export default class Cartomancie {
         disabledInterfaceStartCartomancie();
       });
   }
-  addDebugFolder(): GUI | null {
+  private addDebugFolder(): GUI | null {
     if (this.debug.active) {
       return this.debug.ui!.addFolder("Cartomancie");
     }
@@ -145,16 +131,16 @@ export default class Cartomancie {
 
   private playAnimations(): void {
     if (this.cards?.animationAction) {
-      this.mixer = new AnimationMixer(this.cards.loadedModel3D!);
+      this.mixer = this.cards.mixer;
 
-      const clipMixer = this.mixer.clipAction(
+      const clipMixer = this.mixer!.clipAction(
         this.cards.animationAction[0].getClip()
       );
-      console.log(clipMixer);
+
       clipMixer.play();
       clipMixer.setLoop(LoopOnce, 1);
       clipMixer.clampWhenFinished = true;
-      this.mixer.addEventListener("finished", () => {
+      this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
         setTimeout(() => {
           document.querySelector(
@@ -173,8 +159,6 @@ export default class Cartomancie {
     this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].modelMajorArcane)
     );
-    console.log(this.firstArcaneImageItem);
-
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
 
@@ -186,7 +170,7 @@ export default class Cartomancie {
     this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
 
-  displayButton() {
+  private displayButton() {
     this.displaySecondArcane();
     this.displayPrediction();
     this.displayChooseItem();
@@ -194,7 +178,7 @@ export default class Cartomancie {
     this.selectAnswerQuestionForItem();
     this.selectPaidItem();
   }
-  displaySecondArcane() {
+  private displaySecondArcane() {
     document
       .getElementById("button_first_arcane_cartomancie")!
       .addEventListener("click", () => {
@@ -208,7 +192,7 @@ export default class Cartomancie {
       });
   }
 
-  displayPrediction() {
+  private displayPrediction() {
     document
       .getElementById("button_second_arcane_cartomancie")!
       .addEventListener("click", () => {
@@ -221,7 +205,7 @@ export default class Cartomancie {
       });
   }
 
-  displayChooseItem() {
+  private displayChooseItem() {
     document
       .getElementById("button_display_prediction_cartomancie")!
       .addEventListener("click", () => {
@@ -232,7 +216,7 @@ export default class Cartomancie {
       });
   }
 
-  displayBackSelectItem() {
+  private displayBackSelectItem() {
     document
       .getElementById("button_back_cartomancie")!
       .addEventListener("click", () => {
@@ -242,29 +226,37 @@ export default class Cartomancie {
       });
   }
 
-  selectAnswerQuestionForItem() {
+  private selectAnswerQuestionForItem() {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(this.item!);
+        this.setupIsland();
+        this.setupSky();
+        deleteAllUI();
       });
   }
 
-  selectPaidItem() {
+  private selectPaidItem() {
     document
       .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland(this.item!);
+        this.setupIsland();
+        this.setupSky();
+        deleteAllUI();
       });
   }
 
-  setupIsland(item: Model3D) {
+  private setupIsland() {
     disabledInterfaceSelectItemCartomancie();
     if (this.experience.island) {
       this.experience.island.numberOfElementToAdd = 1;
       this.experience.island.checkIfAddItemToCreate();
-      this.experience.island.item = item;
-      this.experience.island.item?.loadedModel3D!.scale.set(0.01, 0.01, 0.01);
+      this.itemPrediction = this.item;
+      this.textPrediction = predictions[this.predictionNumber].textPrediction;
+
+      if (this.itemPrediction) {
+        this.itemPrediction.loadedModel3D!.scale.set(0.1, 0.1, 0.1);
+      }
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
     }
@@ -273,14 +265,20 @@ export default class Cartomancie {
     this.destroyAll();
   }
 
+  private setupSky() {
+    this.lovePercent = predictions[this.predictionNumber].love;
+    this.workPercent = predictions[this.predictionNumber].work;
+    this.healthPercent = predictions[this.predictionNumber].health;
+  }
+
   private async loadModelsItemIsland() {
     this.item = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].item)
     );
   }
 
-  setupItem(x: number, y: number, z: number) {
-    let sizeImageItem = 0.08;
+  private setupItem(x: number, y: number, z: number) {
+    let sizeImageItem = 1.5;
     if (this.item) {
       if (this.item.loadedModel3D) {
         this.item.loadedModel3D.scale.set(
@@ -295,7 +293,7 @@ export default class Cartomancie {
     }
   }
 
-  setOverlayArcane() {
+  private setOverlayArcane() {
     const geometry = new PlaneGeometry(this.sizes.width, this.sizes.height);
     const material = new MeshBasicMaterial({
       color: 0x1b2b2c,
@@ -307,26 +305,25 @@ export default class Cartomancie {
     this.scene.add(this.overlay);
   }
 
-  update() {
-    this.mixer?.update(this.experience.time.delta * 0.001);
+  public update() {
+    this.mixer?.update(this.time.delta * 0.01);
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 
-  destroyCard() {
-    console.log(this.cards);
+  private destroyCard() {
     this.scene.remove(this.cards?.loadedModel3D!);
     this.cards?.destroy();
     // this.cards = undefined;
   }
 
-  destroyFirstArcane() {
+  private destroyFirstArcane() {
     if (this.firstArcaneImageItem) {
       this.scene.remove(this.firstArcaneImageItem.loadedModel3D!);
       this.firstArcaneImageItem.loadedModel3D!.remove();
       this.firstArcaneImageItem = undefined;
     }
   }
-  destroySecondArcane() {
+  private destroySecondArcane() {
     if (this.secondArcaneImageItem) {
       this.scene.remove(this.secondArcaneImageItem.loadedModel3D!);
       this.secondArcaneImageItem.loadedModel3D!.remove();
@@ -334,13 +331,13 @@ export default class Cartomancie {
     }
   }
 
-  removeItemFromScene() {
+  private removeItemFromScene() {
     if (this.item) {
       this.scene.remove(this.item.loadedModel3D!);
     }
   }
 
-  destroyAll() {
+  public destroyAll() {
     if (this.overlay) {
       this.scene.remove(this.overlay);
       this.overlay.remove();

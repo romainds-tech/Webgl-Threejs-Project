@@ -28,6 +28,7 @@ export interface IModel3D {
   animation: boolean;
   shadow: boolean;
   nodeToyMaterial?: any;
+  transmission: boolean;
 }
 
 export default class Model3D {
@@ -42,6 +43,7 @@ export default class Model3D {
   scale: number;
   animation: boolean;
   shadow: boolean;
+  transmission: boolean;
   clock?: Clock;
   mixer?: AnimationMixer;
   loadedModel3D?: Group;
@@ -61,6 +63,7 @@ export default class Model3D {
     this.animation = props.animation;
     this.shadow = props.shadow;
     this.nodeToyMaterial = props.nodeToyMaterial;
+    this.transmission = props.transmission;
   }
 
   destroy() {

@@ -1,55 +1,72 @@
 import { PositionX, PositionY } from "../Enums/Position";
-import { sub } from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
-
 export default class Input {
-  constructor() {}
-
-  setInputCartomancie() {
-    this.createInput(
-      "title_start_cartomancie",
-      "title_cartomancie",
-      "Découvrir votre prédiction du jour",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInput(
-      "title_first_arcane_cartomancie",
-      "title_cartomancie",
-      "L’arcane majeur",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInput(
-      "title_second_arcane_cartomancie",
-      "title_cartomancie",
-      "L’arcane mineur",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInputWithSubtitle(
-      "title_prediction_cartomancie",
-      "title_prediction_cartomancie",
-      "Prédiciton du xx/xx/xxxx",
-      "subtitle_cartomancie",
-      "CARTOMANCIE",
-      PositionY.TOP,
-      PositionX.CENTER
-    );
-
-    this.createInputWithSubtitle(
-      "title_select_item_cartomancie",
-      "title_prediction_cartomancie",
-      "CHOISISSEZ VOTRE AMULETTE",
-      "subtitle_cartomancie",
-      "Vous pourrez ensuite la placer sur votre île",
-      PositionY.TOP_10,
-      PositionX.CENTER
-    );
+  private static instance: Input;
+  constructor() {
+    Input.instance = this;
   }
-  createInput(
+
+  public static getInstance(): Input {
+    if (!Input.instance) {
+      Input.instance = new Input();
+    }
+    return Input.instance;
+  }
+
+  public createInputRings(
+    idInput: string,
+    classStyleDivName: string,
+    textLeft: string,
+    percentLeft: string,
+    idPercentLeft: string,
+    textCenter: string,
+    percentCenter: string,
+    idPercentCenter: string,
+    textRight: string,
+    percentRight: string,
+    idPercentRight: string,
+    positionY: PositionY,
+    positionX: PositionX
+  ) {
+    const divContent = document.createElement("div");
+    const divLeft = document.createElement("div");
+    const divCenter = document.createElement("div");
+    const divRight = document.createElement("div");
+    divContent.id = idInput;
+    divContent.className =
+      classStyleDivName + " " + positionY + " " + positionX;
+
+    const inputTextLeft = document.createElement("h4");
+    inputTextLeft.innerHTML = textLeft;
+    const inputPercentLeft = document.createElement("h2");
+    inputPercentLeft.innerHTML = percentLeft;
+    inputPercentLeft.id = idPercentLeft;
+
+    const inputTextCenter = document.createElement("h4");
+    inputTextCenter.innerHTML = textCenter;
+    const inputPercentCenter = document.createElement("h2");
+    inputPercentCenter.innerHTML = percentCenter;
+    inputPercentCenter.id = idPercentCenter;
+
+    const inputTextRight = document.createElement("h4");
+    inputTextRight.innerHTML = textRight;
+    const inputPercentRight = document.createElement("h2");
+    inputPercentRight.innerHTML = percentRight;
+    inputPercentRight.id = idPercentRight;
+
+    divLeft.appendChild(inputTextLeft);
+    divLeft.appendChild(inputPercentLeft);
+    divCenter.appendChild(inputTextCenter);
+    divCenter.appendChild(inputPercentCenter);
+    divRight.appendChild(inputTextRight);
+    divRight.appendChild(inputPercentRight);
+
+    divContent.appendChild(divLeft);
+    divContent.appendChild(divCenter);
+    divContent.appendChild(divRight);
+    document.body.appendChild(divContent);
+  }
+
+  public createInput(
     idInput: string,
     classStyleNameInput: string,
     textInput: string,
@@ -64,7 +81,7 @@ export default class Input {
     document.body.appendChild(input);
   }
 
-  createInputWithSubtitle(
+  public createInputWithSubtitle(
     idInput: string,
     classStyleNameInput: string,
     textInput: string,
@@ -76,7 +93,8 @@ export default class Input {
     const div = document.createElement("div");
     const input = document.createElement("h2");
     div.id = idInput;
-    div.className = "input_div" + " " + positionY + " " + positionX;
+    div.className =
+      "input_div color_text_div" + " " + positionY + " " + positionX;
     input.className = classStyleNameInput;
     input.innerHTML = textInput;
 
