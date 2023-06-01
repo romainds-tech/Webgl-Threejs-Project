@@ -5,9 +5,8 @@ import {
   Scene,
   Vector2,
   Event,
-  Color,
   CylinderGeometry,
-  Mesh,
+  Mesh, CubeTextureLoader, DoubleSide, MeshBasicMaterial, BoxGeometry, BackSide,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -74,6 +73,7 @@ export default class Island {
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
+    this.setBackGround();
     this.setupCamera();
 
     // Mouse position
@@ -399,7 +399,7 @@ export default class Island {
 
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
-    this.island.animationAction![2].play();
+    // this.island.animationAction![2].play();
   }
 
   private destroyImageItem() {
@@ -425,4 +425,35 @@ export default class Island {
     this.scene.remove(this.mapGroup);
     this.mapGroup.remove();
   }
+
+  private setBackGround() {
+    // load a cubeMap texture
+   new CubeTextureLoader()
+        .setPath('envMap/hdr/')
+        .load([
+          '+X.png',
+          '-X.png',
+          'Y+.png',
+          'Y-.png',
+          '+Z.png',
+          '-Z.png'
+        ], (l) => {
+
+          this.scene.background = l;
+
+          let cubeMaterial = new MeshBasicMaterial({
+            envMap: l,
+            side: BackSide
+          });
+
+          // this.scene.add(new Mesh(new BoxGeometry(500, 500, 500, ), cubeMaterial))
+
+        });
+
+    // create boxGeometry on mesh with a material using the cubeMap texture
+
+
+  }
+
+
 }

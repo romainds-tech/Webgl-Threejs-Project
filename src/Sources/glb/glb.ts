@@ -220,7 +220,7 @@ export const allGlbs = {
 
   IleBakeMoche: {
     name: "IleBakeMoche",
-    path: "glb/ile_bake_moche2.gltf",
+    path: "glb/island_bake.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),

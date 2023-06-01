@@ -4,15 +4,11 @@ import Model3D from "./Model3d";
 import {
   AnimationClip,
   AnimationMixer,
-  Clock,
-  Color,
+  Clock, CubeTextureLoader,
   DataTexture,
-  EquirectangularReflectionMapping,
   Euler,
   Mesh,
-  MeshLambertMaterial,
-  MeshStandardMaterial, PMREMGenerator,
-  Scene,
+  Scene, sRGBEncoding,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { Experience } from "../Experience";
@@ -58,15 +54,15 @@ export default class CustomGlbLoader {
   }
 
   private async setDataTexture(path: string) {
+
+
     await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
 
-      this.scene.background = texture;
+      // texture.mapping = EquirectangularReflectionMapping;
 
-      //texture.mapping = EquirectangularReflectionMapping;
-
-      this.scene.environment = texture;
-      this.scene.backgroundIntensity = 0.5;
-
+      // this.scene.background = texture;
+      // this.scene.environment = texture;
+      // this.scene.backgroundIntensity = 1;
       this.dataTexture = texture;
 
     });

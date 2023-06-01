@@ -1,5 +1,5 @@
 import Sizes from "./utils/Sizes";
-import { AxesHelper, OrthographicCamera, Scene } from "three";
+import {AxesHelper, OrthographicCamera, PerspectiveCamera, Scene} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
@@ -12,7 +12,7 @@ export default class Camera {
   public scene: Scene;
   public canvas: HTMLCanvasElement | undefined;
   public controls: OrbitControls;
-  public instance: OrthographicCamera;
+  public instance: OrthographicCamera | PerspectiveCamera;
   public debug: Debug;
   public debugFolder?: GUI;
 
@@ -21,7 +21,8 @@ export default class Camera {
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
-    this.instance = this.setInstance();
+    // this.instance = this.setInstance();
+    this.instance = this.setInstancePerspective();
     this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
   }
@@ -30,12 +31,12 @@ export default class Camera {
     const aspect = this.sizes.width / this.sizes.height;
     const frustumSize = 10;
     cameraInstance = new OrthographicCamera(
-      (frustumSize * aspect) / -2,
-      (frustumSize * aspect) / 2,
-      frustumSize / 2,
-      frustumSize / -2,
-      1,
-      100
+      (frustumSize * aspect) / -4,
+      (frustumSize * aspect) / 4,
+      frustumSize / 4,
+      frustumSize / -4,
+      0.1,
+      300
     );
 
     cameraInstance.zoom = 0.35;
@@ -43,6 +44,19 @@ export default class Camera {
 
     // cameraInstance.position.set(1, 2, 30);
     cameraInstance.position.set(-5, 5, -5);
+    this.scene.add(cameraInstance);
+    return cameraInstance;
+  }
+
+  private setInstancePerspective(): PerspectiveCamera {
+    let cameraInstance: PerspectiveCamera;
+    cameraInstance = new PerspectiveCamera(
+      10,
+      this.sizes.width / this.sizes.height,
+      0.1,
+      1000
+    );
+    cameraInstance.position.set(0, 0, 3);
     this.scene.add(cameraInstance);
     return cameraInstance;
   }
