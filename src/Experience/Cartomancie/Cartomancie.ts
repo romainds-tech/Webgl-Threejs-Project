@@ -110,8 +110,20 @@ export default class Cartomancie {
     document
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
-        this.loadScene();
-        // this.loadCards();
+        // const plane = new Mesh(
+        //   new PlaneGeometry(3, 3),
+        //   new NodeToyMaterial({
+        //     data: flameData,
+        //   })
+        // );
+        //
+        // plane.material.side = DoubleSide;
+        //
+        // console.log(plane.material);
+        //
+        // this.scene.add(plane);
+        // this.loadScene();
+        this.loadCards();
         disabledInterfaceStartCartomancie();
       });
   }
@@ -125,37 +137,39 @@ export default class Cartomancie {
   private async loadScene() {
     // if (this.sceneCard)
     this.sceneCard = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.SceneCard)
+      new Model3D(allGlbs.flame)
     );
 
-    console.log(this.sceneCard.loadedModel3D);
-    this.sceneCard.loadedModel3D!.children[1].material =
-      new MeshPhysicalMaterial({
-        color: 0xffffff,
-        metalness: 0.7,
-        roughness: 0.05,
-        ior: 1.5,
-        depthWrite: false,
-        map: this.sceneCard.loadedModel3D!.children[1].material.map,
-        metalnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
-        normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
-        roughnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
-        envMapIntensity: 1,
-        transmission: 0.7, // use material.transmission for glass materials
-        opacity: 1,
-        // side: DoubleSide,
-        transparent: true,
-      });
+    console.log(this.sceneCard);
 
-    this.sceneCard.loadedModel3D!.children[6].material = new NodeToyMaterial({
+    console.log(this.sceneCard.loadedModel3D);
+    // this.sceneCard.loadedModel3D!.children[1].material =
+    //   new MeshPhysicalMaterial({
+    //     color: 0xffffff,
+    //     metalness: 0.7,
+    //     roughness: 0.05,
+    //     ior: 1.5,
+    //     depthWrite: false,
+    //     map: this.sceneCard.loadedModel3D!.children[1].material.map,
+    //     metalnessMap:
+    //       this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
+    //     normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
+    //     roughnessMap:
+    //       this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
+    //     envMapIntensity: 1,
+    //     transmission: 0.7, // use material.transmission for glass materials
+    //     opacity: 1,
+    //     // side: DoubleSide,
+    //     transparent: true,
+    //   });
+
+    this.sceneCard.loadedModel3D!.children[0].material = new NodeToyMaterial({
       data: flameData,
     });
-    console.log(this.sceneCard.loadedModel3D!.children[6].material);
-    // this.sceneCard.loadedModel3D?.children[6].layers.toggle(1);
+    // console.log(this.sceneCard.loadedModel3D!.children[0].material);
+    this.sceneCard.loadedModel3D?.children[0].layers.toggle(1);
     this.scene.add(this.sceneCard.loadedModel3D!);
-    this.loadCards();
+    // this.loadCards();
   }
   private async loadCards() {
     if (this.cards == undefined) {
@@ -181,16 +195,16 @@ export default class Cartomancie {
       clipMixer.setLoop(LoopOnce, 1);
       clipMixer.clampWhenFinished = true;
       this.mixer!.addEventListener("finished", () => {
-        //   console.log("card finished");
-        //   setTimeout(() => {
-        //     document.querySelector(
-        //       "#popup_first_arcane_cartomancie .text_arcane"
-        //     )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-        //     this.destroyCard();
-        //     displayInterfaceFirstArcaneCartomancie();
-        //     this.setOverlayArcane();
-        //     this.loadMajorArcane();
-        //   }, 500);
+        console.log("card finished");
+        setTimeout(() => {
+          document.querySelector(
+            "#popup_first_arcane_cartomancie .text_arcane"
+          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+          this.destroyCard();
+          displayInterfaceFirstArcaneCartomancie();
+          this.setOverlayArcane();
+          this.loadMajorArcane();
+        }, 500);
       });
     }
   }
@@ -346,7 +360,7 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.01);
+    this.mixer?.update(this.time.delta * 0.001);
     NodeToyMaterial.tick();
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }

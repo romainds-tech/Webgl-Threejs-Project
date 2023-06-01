@@ -10,6 +10,9 @@ import {
   Euler,
   Mesh,
   MeshLambertMaterial,
+  MeshStandardMaterial,
+  PMREMGenerator,
+  Scene,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PMREMGenerator,
@@ -60,11 +63,14 @@ export default class CustomGlbLoader {
 
   private async setDataTexture(path: string) {
     await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
-      // texture.mapping = EquirectangularReflectionMapping;
+      this.scene.background = texture;
 
-      // this.scene.background = texture;
-      // this.scene.environment = texture;
-      // this.scene.backgroundIntensity = 1;
+      //texture.mapping = EquirectangularReflectionMapping;
+
+      this.scene.environment = texture;
+      console.log(this.scene.environment);
+      this.scene.backgroundIntensity = 0;
+
       this.dataTexture = texture;
     });
   }

@@ -20,7 +20,7 @@ type EventMap = {
 export default class Onboarding extends EventEmitter<EventMap> {
   public experience: Experience;
   public scene: Scene;
-  private cookieManager: CookieManager;
+  // private cookieManager: CookieManager;
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle2?: Model3D;
@@ -32,12 +32,12 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
   constructor() {
     super();
-    this.cookieManager = CookieManager.getInstance();
+    // this.cookieManager = CookieManager.getInstance();
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.questions = questions;
     // this.setupBackgroundImage();
-    this.user = this.cookieManager.getCookie("user");
+    // this.user = this.cookieManager.getCookie("user");
 
     this.buttonOnboarding = new Button();
     this.buttonOnboarding.setButtonOnboarding();
@@ -47,13 +47,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     });
 
     this.loadAllModels().then(() => {
-      this.setupCamera()
+      this.setupCamera();
       this.showQuestion();
     });
-
-
   }
-
 
   private async loadAllModels() {
     this.temple = await CustomGlbLoader.getInstance().loadOne(
@@ -119,7 +116,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.drag?.destroy();
     this.drag = undefined;
 
-    if ((this.currentQuestionIndex >= this.questions!.length)) {
+    if (this.currentQuestionIndex >= this.questions!.length) {
       this.trigger("onboardingFinish");
       document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
@@ -131,20 +128,19 @@ export default class Onboarding extends EventEmitter<EventMap> {
     let question: typeof questions = this.questions![this.currentQuestionIndex];
 
     // si la question est déjà enregistré dans le user on passe à la suivante
-    if (this.user[question.id] !== "") {
-      console.log("question déjà répondu");
-        this.currentQuestionIndex++;
-        this.showQuestion();
-        return;
-    }
-
+    // if (this.user[question.id] !== "") {
+    //   console.log("question déjà répondu");
+    //   this.currentQuestionIndex++;
+    //   this.showQuestion();
+    //   return;
+    // }
 
     // we show the question
     let title = new Text(question.Title, typeText.TITLE);
     let content = new Text(question.Content, typeText.TEXT);
 
     if (question.Type === "input") {
-      let input = document.createElement("input")
+      let input = document.createElement("input");
       input.type = "text";
       input.className = "input center_position top_70_position";
       document.body.appendChild(input);
@@ -152,15 +148,14 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
-        switch (question.id) {
-          case "phoneNumber":
-            this.user!.phoneNumber = input.value;
-            break;
-          default:
-            console.error(`Unrecognized question id: ${question.id}`);
-        }
-
-        this.cookieManager.setCookie(this.user!);
+        // switch (question.id) {
+        //   case "phoneNumber":
+        //     this.user!.phoneNumber = input.value;
+        //     break;
+        //   default:
+        //     console.error(`Unrecognized question id: ${question.id}`);
+        // }
+        // this.cookieManager.setCookie(this.user!);
       });
 
       // save the answer in the cookies
@@ -190,10 +185,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
             break;
         }
 
-        this.cookieManager.setCookie(this.user!);
+        // this.cookieManager.setCookie(this.user!);
       });
-
-
     }
 
     this.currentQuestionIndex++;

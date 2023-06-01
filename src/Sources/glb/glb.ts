@@ -283,4 +283,16 @@ export const allGlbs = {
     shadow: true,
     transmission: false,
   },
+
+  flame: {
+    name: "flame",
+    path: "glb/FLAMME.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 2,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
 };

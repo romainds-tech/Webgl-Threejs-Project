@@ -5,11 +5,11 @@ import {
   Scene,
   Vector2,
   Event,
+  Color,
+  MeshPhysicalMaterial,
   CylinderGeometry,
   Mesh,
-  CubeTextureLoader,
-  MeshBasicMaterial,
-  BackSide,
+  DoubleSide,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -39,6 +39,7 @@ import Sky from "../Sky/Sky";
 import { GUI } from "lil-gui";
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { data } from "../../shaders/beacon/data";
+import { flameData } from "../../shaders/Flame";
 
 export default class Island {
   public experience: Experience;
@@ -137,6 +138,7 @@ export default class Island {
     this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+    this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
   }
@@ -463,12 +465,12 @@ export default class Island {
     this.island?.mixer?.update(this.experience.time.delta * 0.002);
 
     // varying the height with sin between -1 and 1
-    if (
-      this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
-    ) {
-      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
-    }
+    // if (
+    //   this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
+    // ) {
+    //   this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
+    //     Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    // }
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
@@ -492,6 +494,22 @@ export default class Island {
 
     this.scene.remove(this.mapGroup);
     this.mapGroup.remove();
+
+    this.scene.remove(this.cylindre?.loadedModel3D!);
+    this.cylindre?.loadedModel3D!.remove();
+  }
+
+  private setBackGround() {
+    // load a cubeMap texture
+    new CubeTextureLoader()
+      .setPath("envMap/hdr/")
+      .load(
+        ["+X.png", "-X.png", "Y+.png", "Y-.png", "+Z.png", "-Z.png"],
+        (l) => {
+          this.scene.background = l;
+          this.scene.backgroundIntensity = 2;
+        }
+      );
   }
 
   private setBackGround() {
