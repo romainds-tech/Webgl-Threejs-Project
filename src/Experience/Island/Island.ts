@@ -1,40 +1,33 @@
-import { Experience } from "../Experience";
-import {
-  Group,
-  Object3D,
-  Scene,
-  Vector2,
-  Event,
-  Color,
-  MeshPhysicalMaterial,
-  DoubleSide,
-} from "three";
+import {Experience} from "../Experience";
+import {CylinderGeometry, Event, Group, Mesh, Object3D, Scene, Vector2,} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
-import { allGlbs } from "../../Sources/glb/glb";
+import {allGlbs} from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-import { mapMainIslandData, loadMap } from "./map";
+import {loadMap, mapMainIslandData} from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
 
 import {
-  displayInterfaceInformationItem,
-  disablePopupIterfaceModificateItem,
-  onClickOnDisabledModificationButton,
-  displayPopupIterfaceModificateItem,
-  disableInterfaceInformationItem,
-  disableInterfaceCreationItem,
-  displayInterfaceCreationItem,
   createUIIsland,
-  displayInterfaceGlobalOnIsland,
+  disableInterfaceCreationItem,
   disableInterfaceGlobalOnIsland,
+  disableInterfaceInformationItem,
+  disablePopupIterfaceModificateItem,
+  displayInterfaceCreationItem,
+  displayInterfaceGlobalOnIsland,
+  displayInterfaceInformationItem,
+  displayPopupIterfaceModificateItem,
+  onClickOnDisabledModificationButton,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
-import { GUI } from "lil-gui";
+import {NodeToyMaterial} from "@nodetoy/three-nodetoy";
+import {data} from "../../shaders/beacon/data";
+import ClickAndDrag, {Event, EventClickDrag} from "../UI/Interactions/ClickAndDrag";
 
 export default class Island {
   public experience: Experience;
@@ -278,35 +271,14 @@ export default class Island {
     this.destroyImageItem();
     this.checkIfAddItemToCreate();
     disablePopupIterfaceModificateItem();
-    console.log(this.mapGroup);
+    this.camera.controls.enabled = true;
+    this.experience.camera.instance.updateProjectionMatrix();
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-    console.log(newItem)
-    // newItem.children.forEach(child => {
-    //   console.log(child.material)
-    //   child.material = new MeshPhysicalMaterial( {
-    //     color: params.color,
-    //     metalness: params.metalness,
-    //     roughness: params.roughness,
-    //     ior: params.ior,
-    //     // alphaTest: 1,
-    //     depthWrite: false,
-    //     map: child.material.map,
-    //     metalnessMap: child.material.metalnessMap,
-    //     normalMap: child.material.normalMap,
-    //     roughnessMap: child.material.roughnessMap,
-    //     envMapIntensity: params.envMapIntensity,
-    //     transmission: params.transmission, // use material.transmission for glass materials
-    //     // specularIntensity: params.specularIntensity,
-    //     opacity: params.opacity,
-    //     // side: DoubleSide,
-    //     transparent: true
-    //   } );
-    //   console.log(child.material)
-    // })
+
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -335,8 +307,8 @@ export default class Island {
     this.displayEditMode(true);
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
-    // this.camera.controls.enabled = false;
-    // this.experience.camera.instance.updateProjectionMatrix();
+    this.camera.controls.enabled = false;
+    this.experience.camera.instance.updateProjectionMatrix();
   }
 
   setImageItem() {
@@ -345,6 +317,13 @@ export default class Island {
       this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
 
       this.imageItem.position.set(0, 1, 0);
+
+      new ClickAndDrag(
+          this.imageItem!,
+          EventClickDrag.ROTATION,
+          false
+      );
+
       this.scene.add(this.imageItem);
     }
   }

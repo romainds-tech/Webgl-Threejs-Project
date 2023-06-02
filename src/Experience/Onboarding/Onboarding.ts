@@ -3,7 +3,7 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag, { Event } from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, {Event, EventClickDrag} from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
 import gsap from "gsap";
 import { Scene } from "three";
@@ -176,7 +176,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (question.Type === "wheel") {
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
-        Event.ROTATION,
+          EventClickDrag.ROTATION,
           true
       );
       // cut the circle in parts

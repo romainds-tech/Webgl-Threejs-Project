@@ -1,9 +1,7 @@
 import { Experience } from "../Experience";
 import {
   AnimationAction,
-  AnimationClip,
   AnimationMixer,
-  CylinderGeometry,
   DoubleSide,
   LoopOnce,
   Mesh,
@@ -12,7 +10,6 @@ import {
   PlaneGeometry,
   Scene,
   SpotLight,
-  SpotLightHelper,
   // ShaderMaterial,
   // TextureLoader,
 } from "three";
@@ -41,8 +38,8 @@ import { predictions } from "./predictions";
 import { flameData } from "../../shaders/Flame";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
-import ClickAndDrag, {Event} from "../UI/Interactions/ClickAndDrag";
+// import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
+import ClickAndDrag, {EventClickDrag} from "../UI/Interactions/ClickAndDrag";
 
 export default class Cartomancie {
   public textPrediction?: string;
@@ -239,9 +236,6 @@ export default class Cartomancie {
     }
   }
 
-  private moveModel(model: Model3D) {
-    model.loadedModel3D?.addEventListener("")
-  }
   private showOneTimeAnimation(animation: AnimationAction) {
     const clipMixer = this.mixer!.clipAction(
         animation.getClip()
@@ -257,9 +251,9 @@ export default class Cartomancie {
       new Model3D(predictions[this.predictionNumber].modelMajorArcane)
     );
 
-    const drag = new ClickAndDrag(
+    new ClickAndDrag(
         this.firstArcaneImageItem!.loadedModel3D!,
-        Event.ROTATION,
+        EventClickDrag.ROTATION,
         false
     );
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
@@ -270,6 +264,11 @@ export default class Cartomancie {
       new Model3D(predictions[this.predictionNumber].modelMinorArcane)
     );
 
+    new ClickAndDrag(
+        this.secondArcaneImageItem!.loadedModel3D!,
+        EventClickDrag.ROTATION,
+        false
+    );
     this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
 
@@ -391,6 +390,12 @@ export default class Cartomancie {
         );
 
         this.item.loadedModel3D.position.set(x, y, z);
+
+        new ClickAndDrag(
+            this.item!.loadedModel3D!,
+            EventClickDrag.ROTATION,
+            false
+        );
         this.scene.add(this.item.loadedModel3D!);
       }
     }
@@ -409,14 +414,12 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.01);
+    this.mixer?.update(this.time.delta * 0.001);
     NodeToyMaterial.tick();
     if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
       this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
         Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }
-
-    // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 
   private destroyCard() {

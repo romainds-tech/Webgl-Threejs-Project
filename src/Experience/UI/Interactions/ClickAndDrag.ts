@@ -7,7 +7,7 @@
 import { Object3D } from "three";
 import { EventEmitter } from "../../utils/EventEmitter";
 
-export enum Event {
+export enum EventClickDrag {
   ROTATION,
   TRANSLATION,
   SCALE,
@@ -18,13 +18,13 @@ type EventMap = {
 };
 
 export default class ClickAndDrag extends EventEmitter<EventMap> {
-  private event: Event;
+  private event: EventClickDrag;
   private model: Object3D;
   private isOnboarding: boolean
   private previousTouchX: number = 0;
   private previousTouchY: number = 0;
 
-  constructor(model: Object3D, event: Event, isOnboarding: boolean) {
+  constructor(model: Object3D, event: EventClickDrag, isOnboarding: boolean) {
     super();
     this.model = model;
     this.event = event;
@@ -36,7 +36,7 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
   init() {
     // Check event Enum and add the right listener
     switch (this.event) {
-      case Event.ROTATION:
+      case EventClickDrag.ROTATION:
         this.detectClickAndDragMobile();
         this.detectClickAndDragMouse();
     }
