@@ -1,15 +1,16 @@
 import { Experience } from "../Experience";
 import {
   AnimationMixer,
+  CylinderGeometry,
   DoubleSide,
   LoopOnce,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
-  // MeshStandardMaterial,
-  // Object3D,
   PlaneGeometry,
   Scene,
+  SpotLight,
+  SpotLightHelper,
   // ShaderMaterial,
   // TextureLoader,
 } from "three";
@@ -19,15 +20,11 @@ import { GUI } from "lil-gui";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
-// import cardVertexShader from "../../shaders/card/vertex.glsl";
-// import cardFragmentShader from "../../shaders/card/fragment.glsl";
-// import { gsap } from "gsap";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
 import {
   disabledInterfaceStartCartomancie,
   displayInterfaceStartCartomancie,
-  displayInterfaceFirstArcaneCartomancie,
   disabledInterfaceFirstArcaneCartomancie,
   displayInterfaceSecondArcaneCartomancie,
   disabledInterfaceSecondArcaneCartomancie,
@@ -39,8 +36,9 @@ import {
   deleteAllUI,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
-import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { flameData } from "../../shaders/Flame";
+// @ts-ignore
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 export default class Cartomancie {
   public textPrediction?: string;
@@ -62,6 +60,8 @@ export default class Cartomancie {
   private overlay?: Mesh;
   private cards?: Model3D;
   private sceneCard?: Model3D;
+  private flame?: Model3D;
+  private secondFlame?: Model3D;
   private item?: Model3D;
   private mixer?: AnimationMixer;
 
@@ -69,6 +69,7 @@ export default class Cartomancie {
   private secondArcaneImageItem?: Model3D;
 
   private predictionNumber: number;
+  private spotLight?: SpotLight;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -89,16 +90,12 @@ export default class Cartomancie {
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
+    this.createCyclinder();
   }
 
   private setupCamera() {
-    let cameraPosition = 10;
-    this.camera.instance.position.set(
-      -cameraPosition,
-      cameraPosition,
-      -cameraPosition
-    );
-    this.camera.instance.zoom = 0.35;
+    this.camera.instance.position.set(-45, 19, 10);
+    this.camera.instance.zoom = 0.25;
     this.camera.controls.enabled = true;
     this.camera.instance.updateProjectionMatrix();
   }
@@ -111,7 +108,7 @@ export default class Cartomancie {
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
         this.loadScene();
-        // this.loadCards();
+        this.loadCards();
         disabledInterfaceStartCartomancie();
       });
   }
@@ -122,43 +119,163 @@ export default class Cartomancie {
     return null;
   }
 
+  loadLightCartomancie(): void {
+    this.spotLight = new SpotLight(0xffffff, 60, 100, Math.PI * 0.05, 0.25, 1);
+
+    this.spotLight.shadow.camera.near = 500;
+    this.spotLight.shadow.camera.far = 4000;
+    this.spotLight.shadow.camera.fov = 30;
+
+    this.spotLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
+    this.spotLight!.shadow.normalBias = -0.0001;
+
+    this.spotLight!.position.set(24, 26, 13);
+    // this.sunLight.color.setHSL(0.1, 1, 0.95);
+    // this.sunLight.position.multiplyScalar(30);
+
+    this.scene.add(this.spotLight);
+
+    const spotLightHelper = new SpotLightHelper(this.spotLight, 1);
+    this.scene.add(spotLightHelper);
+
+    // Debug
+    if (this.debug.active) {
+      const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
+      lightFolder!
+        .add(this.spotLight!, "intensity")
+        .name("spotLightIntensity")
+        .min(0)
+        .max(100)
+        .step(0.1);
+
+      lightFolder
+        .add(this.spotLight!, "distance")
+        .name("distance")
+        .min(-100)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.spotLight!, "penumbra")
+        .name("penumbra")
+        .min(-100)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.spotLight!.position, "x")
+        .name("spotLightX")
+        .min(-100)
+        .max(100)
+        .step(1);
+      lightFolder
+        .add(this.spotLight!.position, "y")
+        .name("spotLightY")
+        .min(-100)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.spotLight!.position, "z")
+        .name("spotLightZ")
+        .min(-100)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.spotLight!, "angle")
+        .name("angle")
+        .min(-10)
+        .max(10)
+        .step(Math.PI * 0.1);
+
+      lightFolder.addColor(this.spotLight!, "color");
+    }
+  }
+
+  createCyclinder() {
+    const mesh = new Mesh(
+      new CylinderGeometry(2, 2, 10, 32),
+      new MeshBasicMaterial({ transparent: true, opacity: 0 })
+    );
+    mesh.position.set(-19, 0, -6);
+    this.scene.add(mesh);
+
+    console.log(mesh.position);
+    this.loadLightCartomancie();
+    this.spotLight!.target = mesh;
+  }
   private async loadScene() {
     // if (this.sceneCard)
     this.sceneCard = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.flame)
+      new Model3D(allGlbs.SceneCard)
     );
+
+    // this.flame = await CustomGlbLoader.getInstance().loadOne(
+    //   new Model3D(allGlbs.flame)
+    // );
+
+    this.sceneCard.loadedModel3D!.children[1].material =
+      new MeshPhysicalMaterial({
+        color: 0xffffff,
+        metalness: 0.7,
+        roughness: 0.05,
+        ior: 1.5,
+        depthWrite: true,
+        map: this.sceneCard.loadedModel3D!.children[1].material.map,
+        metalnessMap:
+          this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
+        normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
+        roughnessMap:
+          this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
+        envMapIntensity: 1,
+        transmission: 0.7, // use material.transmission for glass materials
+        opacity: 1,
+        side: DoubleSide,
+        transparent: false,
+      });
 
     console.log(this.sceneCard);
 
-    console.log(this.sceneCard.loadedModel3D);
-    // this.sceneCard.loadedModel3D!.children[1].material =
-    //   new MeshPhysicalMaterial({
-    //     color: 0xffffff,
-    //     metalness: 0.7,
-    //     roughness: 0.05,
-    //     ior: 1.5,
-    //     depthWrite: false,
-    //     map: this.sceneCard.loadedModel3D!.children[1].material.map,
-    //     metalnessMap:
-    //       this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
-    //     normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
-    //     roughnessMap:
-    //       this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
-    //     envMapIntensity: 1,
-    //     transmission: 0.7, // use material.transmission for glass materials
-    //     opacity: 1,
-    //     // side: DoubleSide,
-    //     transparent: true,
-    //   });
-
-    this.sceneCard.loadedModel3D!.children[0].material = new NodeToyMaterial({
+    const flameMaterial = new NodeToyMaterial({
       data: flameData,
     });
-    // console.log(this.sceneCard.loadedModel3D!.children[0].material);
-    this.sceneCard.loadedModel3D?.children[0].layers.toggle(1);
+
+    this.flame = await this.createFlame(this.flame!, flameMaterial, 4, 5, -2.7);
+    this.secondFlame = await this.createFlame(
+      this.secondFlame!,
+      flameMaterial,
+      -14.5,
+      2.5,
+      6.4
+    );
+    flameMaterial.needsUpdate = true;
+
     this.scene.add(this.sceneCard.loadedModel3D!);
+
     // this.loadCards();
   }
+
+  private async createFlame(
+    model: Model3D,
+    material: NodeToyMaterial,
+    x: number,
+    y: number,
+    z: number
+  ) {
+    model = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.flame)
+    );
+
+    model.loadedModel3D!.children[0].material = material;
+    model.loadedModel3D?.position.set(x, y, z);
+    model.loadedModel3D?.children[0].layers.toggle(1);
+
+    this.scene.add(model.loadedModel3D!);
+
+    return model;
+  }
+
   private async loadCards() {
     if (this.cards == undefined) {
       this.cards = await CustomGlbLoader.getInstance().loadOne(
@@ -350,6 +467,11 @@ export default class Cartomancie {
   public update() {
     this.mixer?.update(this.time.delta * 0.01);
     NodeToyMaterial.tick();
+    if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
+      this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
+        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
+
     // this.cubeVertex?.mixer?.update(this.experience.time.delta);
   }
 

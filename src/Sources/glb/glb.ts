@@ -213,9 +213,33 @@ export const allGlbs = {
     transmission: false,
   },
 
+  Cylindre: {
+    name: "Cylindre",
+    path: "glb/cylindre.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 5, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: false,
+    shadow: false,
+    nodeToyMaterial: data,
+  },
+
+  IleBakeMoche: {
+    name: "IleBakeMoche",
+    path: "glb/ile_bake_moche2.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
   SceneCard: {
     name: "Scene card",
-    path: "glb/cartomancie/scene_carte.gltf",
+    path: "glb/cartomancie/scene_card.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-4, 0, 2),
     rotation: new Vector3(0, Math.PI / 2, 0),
@@ -227,10 +251,10 @@ export const allGlbs = {
 
   Cards: {
     name: "Cards",
-    path: "glb/cartomancie/carte_animation.gltf",
+    path: "glb/cartomancie/cards_animations.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-4, -0.4, 2),
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, Math.PI, 0),
     scale: 1,
     animation: true,
     shadow: true,
@@ -267,7 +291,7 @@ export const allGlbs = {
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),
-    scale: 2,
+    scale: 1,
     animation: true,
     shadow: true,
     transmission: false,
