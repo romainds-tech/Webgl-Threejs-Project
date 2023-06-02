@@ -1,5 +1,7 @@
 import { Experience } from "../Experience";
 import {
+  AnimationAction,
+  AnimationClip,
   AnimationMixer,
   CylinderGeometry,
   DoubleSide,
@@ -33,12 +35,14 @@ import {
   displayInterfaceSelectItemCartomancie,
   disabledInterfaceSelectItemCartomancie,
   createUICartomancie,
-  deleteAllUI,
+  deleteAllUI, displayInterfaceFirstArcaneCartomancie,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
 import { flameData } from "../../shaders/Flame";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
+import ClickAndDrag, {Event} from "../UI/Interactions/ClickAndDrag";
 
 export default class Cartomancie {
   public textPrediction?: string;
@@ -90,13 +94,20 @@ export default class Cartomancie {
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
-    this.createCyclinder();
+
+    this.setupLight()
+  }
+
+  private setupLight() {
+    this.experience.light.loadLightCartomancie();
+    this.experience.light.sunLight!.intensity = 0
+    this.experience.light.hemisphereLight!.intensity = 0.6
   }
 
   private setupCamera() {
     this.camera.instance.position.set(-45, 19, 10);
     this.camera.instance.zoom = 0.25;
-    this.camera.controls.enabled = true;
+    this.camera.controls.enabled = false
     this.camera.instance.updateProjectionMatrix();
   }
 
@@ -119,92 +130,6 @@ export default class Cartomancie {
     return null;
   }
 
-  loadLightCartomancie(): void {
-    this.spotLight = new SpotLight(0xffffff, 60, 100, Math.PI * 0.05, 0.25, 1);
-
-    this.spotLight.shadow.camera.near = 500;
-    this.spotLight.shadow.camera.far = 4000;
-    this.spotLight.shadow.camera.fov = 30;
-
-    this.spotLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
-    this.spotLight!.shadow.normalBias = -0.0001;
-
-    this.spotLight!.position.set(24, 26, 13);
-    // this.sunLight.color.setHSL(0.1, 1, 0.95);
-    // this.sunLight.position.multiplyScalar(30);
-
-    this.scene.add(this.spotLight);
-
-    const spotLightHelper = new SpotLightHelper(this.spotLight, 1);
-    this.scene.add(spotLightHelper);
-
-    // Debug
-    if (this.debug.active) {
-      const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
-      lightFolder!
-        .add(this.spotLight!, "intensity")
-        .name("spotLightIntensity")
-        .min(0)
-        .max(100)
-        .step(0.1);
-
-      lightFolder
-        .add(this.spotLight!, "distance")
-        .name("distance")
-        .min(-100)
-        .max(100)
-        .step(1);
-
-      lightFolder
-        .add(this.spotLight!, "penumbra")
-        .name("penumbra")
-        .min(-100)
-        .max(100)
-        .step(1);
-
-      lightFolder
-        .add(this.spotLight!.position, "x")
-        .name("spotLightX")
-        .min(-100)
-        .max(100)
-        .step(1);
-      lightFolder
-        .add(this.spotLight!.position, "y")
-        .name("spotLightY")
-        .min(-100)
-        .max(100)
-        .step(1);
-
-      lightFolder
-        .add(this.spotLight!.position, "z")
-        .name("spotLightZ")
-        .min(-100)
-        .max(100)
-        .step(1);
-
-      lightFolder
-        .add(this.spotLight!, "angle")
-        .name("angle")
-        .min(-10)
-        .max(10)
-        .step(Math.PI * 0.1);
-
-      lightFolder.addColor(this.spotLight!, "color");
-    }
-  }
-
-  createCyclinder() {
-    const mesh = new Mesh(
-      new CylinderGeometry(2, 2, 10, 32),
-      new MeshBasicMaterial({ transparent: true, opacity: 0 })
-    );
-    mesh.position.set(-19, 0, -6);
-    this.scene.add(mesh);
-
-    console.log(mesh.position);
-    this.loadLightCartomancie();
-    this.spotLight!.target = mesh;
-  }
   private async loadScene() {
     // if (this.sceneCard)
     this.sceneCard = await CustomGlbLoader.getInstance().loadOne(
@@ -292,31 +217,50 @@ export default class Cartomancie {
     if (this.cards?.animationAction) {
       this.mixer = this.cards.mixer;
 
-      const clipMixer = this.mixer!.clipAction(
-        this.cards.animationAction[0].getClip()
-      );
+      setTimeout(() => {
+        this.showOneTimeAnimation(this.cards!.animationAction![0])
+      }, 1000);
 
-      clipMixer.play();
-      clipMixer.setLoop(LoopOnce, 1);
-      clipMixer.clampWhenFinished = true;
+      this.showOneTimeAnimation(this.cards.animationAction[1])
+
       this.mixer!.addEventListener("finished", () => {
-        //   console.log("card finished");
-        //   setTimeout(() => {
-        //     document.querySelector(
-        //       "#popup_first_arcane_cartomancie .text_arcane"
-        //     )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-        //     this.destroyCard();
-        //     displayInterfaceFirstArcaneCartomancie();
-        //     this.setOverlayArcane();
-        //     this.loadMajorArcane();
-        //   }, 500);
+          console.log("card finished");
+          setTimeout(() => {
+            document.querySelector(
+              "#popup_first_arcane_cartomancie .text_arcane"
+            )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+            this.destroyCard();
+            displayInterfaceFirstArcaneCartomancie();
+            this.setOverlayArcane();
+            this.loadMajorArcane();
+
+          }, 700);
       });
     }
+  }
+
+  private moveModel(model: Model3D) {
+    model.loadedModel3D?.addEventListener("")
+  }
+  private showOneTimeAnimation(animation: AnimationAction) {
+    const clipMixer = this.mixer!.clipAction(
+        animation.getClip()
+    );
+
+    clipMixer.play();
+    clipMixer.setLoop(LoopOnce, 1);
+    clipMixer.clampWhenFinished = true;
   }
 
   private async loadMajorArcane() {
     this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].modelMajorArcane)
+    );
+
+    const drag = new ClickAndDrag(
+        this.firstArcaneImageItem!.loadedModel3D!,
+        Event.ROTATION,
+        false
     );
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
@@ -476,9 +420,12 @@ export default class Cartomancie {
   }
 
   private destroyCard() {
-    this.scene.remove(this.cards?.loadedModel3D!);
+    this.scene.remove(this.cards?.loadedModel3D!, this.sceneCard?.loadedModel3D!, this.flame?.loadedModel3D!, this.secondFlame?.loadedModel3D!);
     this.cards?.destroy();
-    // this.cards = undefined;
+    this.sceneCard?.destroy();
+    this.flame?.destroy();
+    this.secondFlame?.destroy();
+    this.experience.light.destroyLightCartomancie()
   }
 
   private destroyFirstArcane() {

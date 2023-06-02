@@ -20,12 +20,15 @@ type EventMap = {
 export default class ClickAndDrag extends EventEmitter<EventMap> {
   private event: Event;
   private model: Object3D;
-  private previousTouch: number = 0;
+  private isOnboarding: boolean
+  private previousTouchX: number = 0;
+  private previousTouchY: number = 0;
 
-  constructor(model: Object3D, event: Event) {
+  constructor(model: Object3D, event: Event, isOnboarding: boolean) {
     super();
     this.model = model;
     this.event = event;
+    this.isOnboarding = isOnboarding
 
     this.init();
   }
@@ -50,32 +53,48 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
     document.addEventListener("touchmove", (event: TouchEvent) => {
       if (event.touches.length === 1) {
         this.addRotationListenerMobile(event);
-        this.previousTouch = event.touches[0].clientY;
+        this.previousTouchY = event.touches[0].clientY;
+        this.previousTouchX = event.touches[0].clientX;
       }
     });
   }
 
   private addRotationListenerMouse(event: MouseEvent) {
-    if (event.pageX > window.innerWidth / 2) {
-      event.movementY > 0
-        ? this.rotateModelYNegatif()
-        : this.rotateModelYPositif();
+    console.log(event.pageX)
+    if (this.isOnboarding) {
+      if (event.pageX > window.innerWidth / 2) {
+        event.movementY > 0
+            ? this.rotateModelYNegatif()
+            : this.rotateModelYPositif();
+      } else {
+        event.movementY > 0
+            ? this.rotateModelYPositif()
+            : this.rotateModelYNegatif();
+      }
     } else {
-      event.movementY > 0
-        ? this.rotateModelYPositif()
-        : this.rotateModelYNegatif();
+      event.movementX > 0
+          ? this.rotateModelYPositif()
+          : this.rotateModelYNegatif();
     }
+
   }
   private addRotationListenerMobile(event: TouchEvent) {
-    if (event.touches[0].clientX > window.innerWidth / 2) {
-      event.touches[0].clientY > this.previousTouch
-        ? this.rotateModelYNegatif()
-        : this.rotateModelYPositif();
+    if (this.isOnboarding) {
+      if (event.touches[0].clientX > window.innerWidth / 2) {
+        event.touches[0].clientY > this.previousTouchY
+            ? this.rotateModelYNegatif()
+            : this.rotateModelYPositif();
+      } else {
+        event.touches[0].clientY > this.previousTouchY
+            ? this.rotateModelYPositif()
+            : this.rotateModelYNegatif();
+      }
     } else {
-      event.touches[0].clientY > this.previousTouch
-        ? this.rotateModelYPositif()
-        : this.rotateModelYNegatif();
+      event.touches[0].clientX > this.previousTouchX
+          ? this.rotateModelYPositif()
+          : this.rotateModelYNegatif();
     }
+
   }
 
   private rotateModelYPositif(step: number = 0.02) {

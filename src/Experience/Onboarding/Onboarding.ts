@@ -176,7 +176,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (question.Type === "wheel") {
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
-        Event.ROTATION
+        Event.ROTATION,
+          true
       );
       // cut the circle in parts
       let nbOptions = question.Options!.length - 1;
@@ -188,14 +189,14 @@ export default class Onboarding extends EventEmitter<EventMap> {
         angleRotation = Math.abs(Math.floor(angleRotation! % 360));
         let index = Math.abs(Math.floor(angleRotation / angle));
 
-        switch (question.id) {
-          case "zodiacSign":
-            this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
-            break;
-          case "hourBirth":
-            this.user!.hourBirth = index.toString(); // Or however you determine the birth hour
-            break;
-        }
+        // switch (question.id) {
+        //   case "zodiacSign":
+        //     this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
+        //     break;
+        //   case "hourBirth":
+        //     this.user!.hourBirth = index.toString(); // Or however you determine the birth hour
+        //     break;
+        // }
 
         // this.cookieManager.setCookie(this.user!);
       });
