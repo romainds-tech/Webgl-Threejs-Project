@@ -3,7 +3,10 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag, {Event, EventClickDrag} from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, {
+  Event,
+  EventClickDrag,
+} from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
 import gsap from "gsap";
 import { Scene } from "three";
@@ -50,7 +53,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
     // this.setupBackgroundImage();
     // this.user = this.setUserFromCookie();
 
-<<<<<<< HEAD
     this.showQuestion();
   }
 
@@ -69,16 +71,13 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
   private setCookie(user: User) {
     document.cookie = JSON.stringify(user);
-  }
 
-=======
     this.loadAllModels().then(() => {
       this.setupCamera();
       this.showQuestion();
     });
   }
 
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   private async loadAllModels() {
     this.temple = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Temple)
@@ -175,19 +174,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
-<<<<<<< HEAD
-        // this.user!.phoneNumber = input.value;
-        // this.setCookie(this.user!);
-=======
-        // switch (question.id) {
-        //   case "phoneNumber":
-        //     this.user!.phoneNumber = input.value;
-        //     break;
-        //   default:
-        //     console.error(`Unrecognized question id: ${question.id}`);
-        // }
-        // this.cookieManager.setCookie(this.user!);
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
       });
 
       // save the answer in the cookies
@@ -196,8 +182,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (question.Type === "wheel") {
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
-          EventClickDrag.ROTATION,
-          true
+        EventClickDrag.ROTATION,
+        true
       );
       // cut the circle in parts
       let nbOptions = question.Options!.length - 1;
@@ -234,11 +220,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.scene.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
-    // this.circle1 = undefined;
-<<<<<<< HEAD
-=======
-    // this.circle1 = undefined;
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
+    // this.circle1 = undefined;F
 
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();

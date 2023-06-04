@@ -9,7 +9,6 @@ import {
   MeshPhysicalMaterial,
   PlaneGeometry,
   Scene,
-  SpotLight,
   // ShaderMaterial,
   // TextureLoader,
 } from "three";
@@ -32,23 +31,16 @@ import {
   displayInterfaceSelectItemCartomancie,
   disabledInterfaceSelectItemCartomancie,
   createUICartomancie,
-<<<<<<< HEAD
   deleteAllUI,
   displayInterfaceFirstArcaneCartomancie,
-=======
-  deleteAllUI, displayInterfaceFirstArcaneCartomancie,
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
 import { flameData } from "../../shaders/Flame";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 // import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
-<<<<<<< HEAD
+
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
-=======
-import ClickAndDrag, {EventClickDrag} from "../UI/Interactions/ClickAndDrag";
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
 export default class Cartomancie {
   public textPrediction?: string;
@@ -79,7 +71,6 @@ export default class Cartomancie {
   private secondArcaneImageItem?: Model3D;
 
   private predictionNumber: number;
-  private spotLight?: SpotLight;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -101,32 +92,21 @@ export default class Cartomancie {
     this.startPrediction();
     this.displayButton();
 
-<<<<<<< HEAD
     this.setupLight();
-=======
-    this.setupLight()
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
   private setupLight() {
     this.experience.light.loadLightCartomancie();
-<<<<<<< HEAD
     this.experience.light.sunLight!.intensity = 0;
     this.experience.light.hemisphereLight!.intensity = 0.6;
-=======
-    this.experience.light.sunLight!.intensity = 0
-    this.experience.light.hemisphereLight!.intensity = 0.6
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
   private setupCamera() {
     this.camera.instance.position.set(-45, 19, 10);
     this.camera.instance.zoom = 0.25;
-<<<<<<< HEAD
+
     this.camera.controls.enabled = true;
-=======
-    this.camera.controls.enabled = false
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
+
     this.camera.instance.updateProjectionMatrix();
   }
 
@@ -237,7 +217,6 @@ export default class Cartomancie {
       this.mixer = this.cards.mixer;
 
       setTimeout(() => {
-<<<<<<< HEAD
         this.showOneTimeAnimation(this.cards!.animationAction![0]);
       }, 1000);
 
@@ -245,47 +224,21 @@ export default class Cartomancie {
 
       this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
-        // setTimeout(() => {
-        //   document.querySelector(
-        //     "#popup_first_arcane_cartomancie .text_arcane"
-        //   )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-        //   this.destroyCard();
-        //   displayInterfaceFirstArcaneCartomancie();
-        //   this.setOverlayArcane();
-        //   this.loadMajorArcane();
-        //
-        // }, 700);
-=======
-        this.showOneTimeAnimation(this.cards!.animationAction![0])
-      }, 1000);
-
-      this.showOneTimeAnimation(this.cards.animationAction[1])
-
-      this.mixer!.addEventListener("finished", () => {
-          console.log("card finished");
-          setTimeout(() => {
-            document.querySelector(
-              "#popup_first_arcane_cartomancie .text_arcane"
-            )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-            this.destroyCard();
-            displayInterfaceFirstArcaneCartomancie();
-            this.setOverlayArcane();
-            this.loadMajorArcane();
-
-          }, 700);
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
+        setTimeout(() => {
+          document.querySelector(
+            "#popup_first_arcane_cartomancie .text_arcane"
+          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+          this.destroyCard();
+          displayInterfaceFirstArcaneCartomancie();
+          this.setOverlayArcane();
+          this.loadMajorArcane();
+        }, 700);
       });
     }
   }
 
   private showOneTimeAnimation(animation: AnimationAction) {
-<<<<<<< HEAD
     const clipMixer = this.mixer!.clipAction(animation.getClip());
-=======
-    const clipMixer = this.mixer!.clipAction(
-        animation.getClip()
-    );
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
     clipMixer.play();
     clipMixer.setLoop(LoopOnce, 1);
@@ -298,15 +251,9 @@ export default class Cartomancie {
     );
 
     new ClickAndDrag(
-<<<<<<< HEAD
       this.firstArcaneImageItem!.loadedModel3D!,
       EventClickDrag.ROTATION,
       false
-=======
-        this.firstArcaneImageItem!.loadedModel3D!,
-        EventClickDrag.ROTATION,
-        false
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
     );
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
@@ -317,15 +264,9 @@ export default class Cartomancie {
     );
 
     new ClickAndDrag(
-<<<<<<< HEAD
       this.secondArcaneImageItem!.loadedModel3D!,
       EventClickDrag.ROTATION,
       false
-=======
-        this.secondArcaneImageItem!.loadedModel3D!,
-        EventClickDrag.ROTATION,
-        false
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
     );
     this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
@@ -450,15 +391,9 @@ export default class Cartomancie {
         this.item.loadedModel3D.position.set(x, y, z);
 
         new ClickAndDrag(
-<<<<<<< HEAD
           this.item!.loadedModel3D!,
           EventClickDrag.ROTATION,
           false
-=======
-            this.item!.loadedModel3D!,
-            EventClickDrag.ROTATION,
-            false
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
         );
         this.scene.add(this.item.loadedModel3D!);
       }
@@ -487,25 +422,18 @@ export default class Cartomancie {
   }
 
   private destroyCard() {
-<<<<<<< HEAD
     this.scene.remove(
       this.cards?.loadedModel3D!,
       this.sceneCard?.loadedModel3D!,
       this.flame?.loadedModel3D!,
       this.secondFlame?.loadedModel3D!
     );
-=======
-    this.scene.remove(this.cards?.loadedModel3D!, this.sceneCard?.loadedModel3D!, this.flame?.loadedModel3D!, this.secondFlame?.loadedModel3D!);
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
     this.cards?.destroy();
     this.sceneCard?.destroy();
     this.flame?.destroy();
     this.secondFlame?.destroy();
-<<<<<<< HEAD
+
     this.experience.light.destroyLightCartomancie();
-=======
-    this.experience.light.destroyLightCartomancie()
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
   private destroyFirstArcane() {

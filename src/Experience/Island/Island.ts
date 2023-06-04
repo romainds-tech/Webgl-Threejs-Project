@@ -1,27 +1,10 @@
-<<<<<<< HEAD
-import { Experience } from "../Experience";
-import {
-  CubeTextureLoader,
-  CylinderGeometry,
-  Event,
-  Group,
-  Mesh,
-  Object3D,
-  Scene,
-  Vector2,
-} from "three";
-=======
+
 import {Experience} from "../Experience";
-import {CylinderGeometry, Event, Group, Mesh, Object3D, Scene, Vector2,} from "three";
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
+import {Event, Group, Mesh, Object3D, Scene, Vector2,} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import {allGlbs} from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-<<<<<<< HEAD
-import { loadMap, mapMainIslandData } from "./map";
-=======
 import {loadMap, mapMainIslandData} from "./map";
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
@@ -44,15 +27,8 @@ import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 // @ts-ignore
-<<<<<<< HEAD
-import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import { data } from "../../shaders/beacon/data";
-import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
-=======
 import {NodeToyMaterial} from "@nodetoy/three-nodetoy";
-import {data} from "../../shaders/beacon/data";
 import ClickAndDrag, {EventClickDrag} from "../UI/Interactions/ClickAndDrag";
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
 export default class Island {
   public experience: Experience;
@@ -80,11 +56,7 @@ export default class Island {
 
   // Map object
   private mapGroup: Group;
-<<<<<<< HEAD
   private islandGroup: Group;
-=======
-  private islandGroup: Group
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
@@ -130,11 +102,7 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
-<<<<<<< HEAD
     this.islandGroup = new Group();
-=======
-    this.islandGroup = new Group()
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
     // Get all map and apply methods
     this.mapGroupInfo();
@@ -156,14 +124,6 @@ export default class Island {
     this.imageItem = null;
 
     this.checkIfAddItemToCreate();
-<<<<<<< HEAD
-=======
-
-    //this.beacon will be a cylinderGeometry
-
-    // this.beacon = this.setBeacon();
-    // this.scene.add(this.beacon);
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
   public loadAllScene() {
@@ -316,11 +276,7 @@ export default class Island {
     this.destroyImageItem();
     this.checkIfAddItemToCreate();
     disablePopupIterfaceModificateItem();
-<<<<<<< HEAD
     this.moveIslandGroup(0, 1);
-=======
-    this.moveIslandGroup(0, 1)
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
     this.camera.controls.enabled = true;
     this.experience.camera.instance.updateProjectionMatrix();
   }
@@ -328,10 +284,6 @@ export default class Island {
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-<<<<<<< HEAD
-=======
-
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -359,11 +311,7 @@ export default class Island {
     this.setImageItem();
     this.displayEditMode(true);
 
-<<<<<<< HEAD
     this.moveIslandGroup(-5, 0.5);
-=======
-    this.moveIslandGroup(-5, 0.5)
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
     this.camera.controls.enabled = false;
@@ -371,7 +319,6 @@ export default class Island {
   }
 
   private moveIslandGroup(y: number, scale: number) {
-<<<<<<< HEAD
     gsap.to(this.islandGroup.position, { duration: 1, y: y });
     gsap.to(this.islandGroup.scale, {
       duration: 1,
@@ -379,16 +326,11 @@ export default class Island {
       y: scale,
       z: scale,
     });
-=======
-    gsap.to(this.islandGroup.position, {duration: 1, y: y})
-    gsap.to(this.islandGroup.scale, {duration: 1, x: scale, y: scale, z: scale})
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
   setImageItem() {
     let sizeImageItem = 1.5;
     if (this.imageItem) {
-<<<<<<< HEAD
       gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 2, z: 0 });
       gsap.to(this.imageItem.scale, {
         duration: 1,
@@ -398,16 +340,6 @@ export default class Island {
       });
 
       new ClickAndDrag(this.imageItem, EventClickDrag.ROTATION, false);
-=======
-      gsap.to(this.imageItem.position, {duration:1, x:0, y: 2, z: 0})
-      gsap.to(this.imageItem.scale, {duration:1, x:sizeImageItem, y: sizeImageItem, z: sizeImageItem})
-
-      new ClickAndDrag(
-          this.imageItem,
-          EventClickDrag.ROTATION,
-          false
-      );
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
       this.scene.add(this.imageItem);
     }
@@ -443,11 +375,7 @@ export default class Island {
         this.resetPositionOfSelectedObject();
         this.canRaycast = true;
         this.checkIfAddItemToCreate();
-<<<<<<< HEAD
         this.moveIslandGroup(0, 1);
-=======
-        this.moveIslandGroup(0, 1)
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
         this.destroyImageItem();
       });
   }
@@ -475,11 +403,7 @@ export default class Island {
         this.canRaycast = true;
         this.destroyImageItem();
         this.camera.controls.enabled = true;
-<<<<<<< HEAD
         this.moveIslandGroup(0, 1);
-=======
-        this.moveIslandGroup(0, 1)
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
         this.experience.camera.instance.updateProjectionMatrix();
       });
   }
@@ -516,17 +440,10 @@ export default class Island {
     this.island.animationAction![1].play();
     this.island.animationAction![2].play();
 
-<<<<<<< HEAD
     this.islandGroup.add(this.mapGroup);
     this.islandGroup.add(this.island.loadedModel3D!);
 
     this.scene.add(this.islandGroup);
-=======
-    this.islandGroup.add(this.mapGroup)
-    this.islandGroup.add(this.island.loadedModel3D!)
-
-    this.scene.add(this.islandGroup)
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 
 
@@ -546,7 +463,6 @@ export default class Island {
     //   this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
     //     Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     // }
-<<<<<<< HEAD
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
@@ -558,8 +474,6 @@ export default class Island {
     this.experience.light.sunLight!.position.y += 7;
     this.experience.light.sunLight!.position.z += 13;
     this.experience.light.sunLight!.position.x += 1;
-=======
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
     NodeToyMaterial.tick();
   }
@@ -570,7 +484,6 @@ export default class Island {
 
     this.scene.remove(this.cylindre?.loadedModel3D!);
     this.cylindre?.loadedModel3D!.remove();
-<<<<<<< HEAD
   }
 
   private setBackGround() {
@@ -584,7 +497,5 @@ export default class Island {
           this.scene.backgroundIntensity = 2;
         }
       );
-=======
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   }
 }

@@ -67,13 +67,9 @@ export default class CustomGlbLoader {
 
       //texture.mapping = EquirectangularReflectionMapping;
 
-<<<<<<< HEAD
       // this.scene.environment = texture;
       // console.log(this.scene.environment);
-=======
-      this.scene.environment = texture;
-      console.log(this.scene.environment);
->>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
+
       this.scene.backgroundIntensity = 0;
 
       this.dataTexture = texture;
