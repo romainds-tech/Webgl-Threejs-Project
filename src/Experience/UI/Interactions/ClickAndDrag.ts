@@ -73,8 +73,8 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
       }
     } else {
       event.movementX > 0
-          ? this.rotateModelYPositif()
-          : this.rotateModelYNegatif();
+          ? this.rotateModelYPositif(0.15)
+          : this.rotateModelYNegatif(0.15);
     }
 
   }
@@ -91,8 +91,8 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
       }
     } else {
       event.touches[0].clientX > this.previousTouchX
-          ? this.rotateModelYPositif()
-          : this.rotateModelYNegatif();
+          ? this.rotateModelYPositif(0.05)
+          : this.rotateModelYNegatif(0.05);
     }
 
   }

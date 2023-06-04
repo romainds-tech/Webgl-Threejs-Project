@@ -414,7 +414,7 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.001);
+    this.mixer?.update(this.time.delta * 0.01);
     NodeToyMaterial.tick();
     if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
       this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =

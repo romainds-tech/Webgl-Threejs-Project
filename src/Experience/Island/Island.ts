@@ -7,7 +7,7 @@ import {loadMap, mapMainIslandData} from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
-
+import gsap from "gsap";
 import {
   createUIIsland,
   disableInterfaceCreationItem,
@@ -25,9 +25,10 @@ import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
+// @ts-ignore
 import {NodeToyMaterial} from "@nodetoy/three-nodetoy";
 import {data} from "../../shaders/beacon/data";
-import ClickAndDrag, {Event, EventClickDrag} from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, {EventClickDrag} from "../UI/Interactions/ClickAndDrag";
 
 export default class Island {
   public experience: Experience;
@@ -170,6 +171,7 @@ export default class Island {
     this.mapGroup.position.set(3, -0.15, 3);
   }
 
+
   //change the value of all the scene
 
   // get the mouse positipn, if we click on a gray cube : add Item on this cube
@@ -305,21 +307,30 @@ export default class Island {
     this.imageItem = itemSelected.object!.clone();
     this.setImageItem();
     this.displayEditMode(true);
+
+    this.moveIsland(-5, 0.5)
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
     this.camera.controls.enabled = false;
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
+  private moveIsland(y: number, scale: number) {
+    gsap.to(this.mapGroup.position, {duration: 1, y: this.mapGroup.position.y + y})
+    gsap.to(this.island!.loadedModel3D!.position, {duration: 1, y: this.island!.loadedModel3D!.position.y + y})
+
+    gsap.to(this.mapGroup.scale, {duration: 1, x: scale, y: scale, z: scale})
+    gsap.to(this.island!.loadedModel3D!.scale, {duration: 1, x: scale, y: scale, z: scale})
+  }
+
   setImageItem() {
     let sizeImageItem = 1.5;
     if (this.imageItem) {
-      this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
-
-      this.imageItem.position.set(0, 1, 0);
+      gsap.to(this.imageItem.position, {duration:1, x:0, y: 1, z: 0})
+      gsap.to(this.imageItem.scale, {duration:1, x:sizeImageItem, y: sizeImageItem, z: sizeImageItem})
 
       new ClickAndDrag(
-          this.imageItem!,
+          this.imageItem,
           EventClickDrag.ROTATION,
           false
       );
@@ -417,17 +428,12 @@ export default class Island {
     this.island.loadedModel3D!.receiveShadow = true;
 
     this.scene.add(this.island.loadedModel3D!);
-    this.scene.add(this.cylindre.loadedModel3D!);
-
-    console.log(
-      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
-    );
-
-    this.scene.add(this.island.loadedModel3D!);
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     // this.island.animationAction![2].play();
   }
+
+
 
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
