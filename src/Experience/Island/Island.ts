@@ -5,9 +5,11 @@ import {
   Scene,
   Vector2,
   Event,
-  Color,
   CylinderGeometry,
   Mesh,
+  CubeTextureLoader,
+  MeshBasicMaterial,
+  BackSide,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -46,7 +48,6 @@ export default class Island {
   private island?: Model3D;
   private cylindre?: Model3D;
 
-
   public numberOfElementToAdd: number;
 
   private experience: Experience;
@@ -75,11 +76,9 @@ export default class Island {
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
 
-
   private itemIslandManager: ItemIslandManager;
 
   private imageItem: Object3D<Event> | null;
-
 
   constructor() {
     // Experience
@@ -129,31 +128,14 @@ export default class Island {
     this.imageItem = null;
 
     this.checkIfAddItemToCreate();
-
-    //this.beacon will be a cylinderGeometry
-
-    this.beacon = this.setBeacon();
-    // this.scene.add(this.beacon);
   }
 
   public loadAllScene() {
     this.setupCamera();
     this.scene.add(this.island?.loadedModel3D!);
     this.scene.add(this.mapGroup);
+
     displayInterfaceGlobalOnIsland();
-  }
-
-  public setupScene() {
-    // this.scene.background = new Color(0x000000);
-  }
-
-  private setBeacon() {
-    return new Mesh(
-      new CylinderGeometry(5, 5, 20, 120, 120, true, 0, 6.3),
-      new NodeToyMaterial({
-        data,
-      })
-    );
   }
 
   public setupCamera() {
@@ -249,7 +231,6 @@ export default class Island {
         else {
           if (checkItem) {
             this.selectItem(checkItem);
-
           }
         }
 
@@ -301,10 +282,9 @@ export default class Island {
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
-
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-    console.log(newItem)
+    console.log(newItem);
     // newItem.children.forEach(child => {
     //   console.log(child.material)
     //   child.material = new MeshPhysicalMaterial( {
@@ -456,7 +436,9 @@ export default class Island {
     this.scene.add(this.island.loadedModel3D!);
     this.scene.add(this.cylindre.loadedModel3D!);
 
-    console.log(this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value);
+    console.log(
+      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
+    );
 
     this.scene.add(this.island.loadedModel3D!);
     this.island.animationAction![0].play();
@@ -473,9 +455,23 @@ export default class Island {
     this.island?.mixer?.update(this.experience.time.delta * 0.002);
 
     // varying the height with sin between -1 and 1
-    if(this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value){
-      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value = Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    if (
+      this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
+    ) {
+      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
+        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }
+
+    // fix light to follow the same movement as the camera but not the same position
+    // camera : this.camera.instance
+    // light : this.experience.light.sunLight
+
+    this.experience.light.sunLight.position.copy(
+      this.experience.camera.instance.position
+    );
+    this.experience.light.sunLight.position.y += 7;
+    this.experience.light.sunLight.position.z += 13;
+    this.experience.light.sunLight.position.x += 1;
 
     NodeToyMaterial.tick();
   }
@@ -483,6 +479,8 @@ export default class Island {
   destroy() {
     this.scene.remove(this.island?.loadedModel3D!);
     this.island?.loadedModel3D?.remove();
+    this.scene.remove(this.cylindre?.loadedModel3D!);
+    this.cylindre?.loadedModel3D?.remove();
 
     this.scene.remove(this.mapGroup);
     this.mapGroup.remove();
@@ -490,32 +488,14 @@ export default class Island {
 
   private setBackGround() {
     // load a cubeMap texture
-   new CubeTextureLoader()
-        .setPath('envMap/hdr/')
-        .load([
-          '+X.png',
-          '-X.png',
-          'Y+.png',
-          'Y-.png',
-          '+Z.png',
-          '-Z.png'
-        ], (l) => {
-
+    new CubeTextureLoader()
+      .setPath("envMap/hdr/")
+      .load(
+        ["+X.png", "-X.png", "Y+.png", "Y-.png", "+Z.png", "-Z.png"],
+        (l) => {
           this.scene.background = l;
-
-          let cubeMaterial = new MeshBasicMaterial({
-            envMap: l,
-            side: BackSide
-          });
-
-          // this.scene.add(new Mesh(new BoxGeometry(500, 500, 500, ), cubeMaterial))
-
-        });
-
-    // create boxGeometry on mesh with a material using the cubeMap texture
-
-
+          this.scene.backgroundIntensity = 2;
+        }
+      );
   }
-
-
 }

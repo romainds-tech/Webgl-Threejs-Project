@@ -1,5 +1,11 @@
 import Sizes from "./utils/Sizes";
-import {AxesHelper, OrthographicCamera, PerspectiveCamera, Scene} from "three";
+import {
+  AxesHelper,
+  Group,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Scene,
+} from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
@@ -51,7 +57,7 @@ export default class Camera {
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
     cameraInstance = new PerspectiveCamera(
-      10,
+      70,
       this.sizes.width / this.sizes.height,
       0.1,
       1000

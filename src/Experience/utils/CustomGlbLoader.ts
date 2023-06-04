@@ -4,12 +4,15 @@ import Model3D from "./Model3d";
 import {
   AnimationClip,
   AnimationMixer,
-  Clock, CubeTextureLoader,
+  Clock,
+  CubeTextureLoader,
   DataTexture,
   Euler,
   Mesh,
   MeshLambertMaterial,
-  MeshStandardMaterial, PMREMGenerator,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  PMREMGenerator,
   Scene,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
@@ -56,17 +59,13 @@ export default class CustomGlbLoader {
   }
 
   private async setDataTexture(path: string) {
-
-
     await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
-
       // texture.mapping = EquirectangularReflectionMapping;
 
       // this.scene.background = texture;
       // this.scene.environment = texture;
       // this.scene.backgroundIntensity = 1;
       this.dataTexture = texture;
-
     });
   }
 
@@ -77,7 +76,6 @@ export default class CustomGlbLoader {
     child.material.envMap = this.dataTexture;
     child.material.needsUpdate = true;
   }
-
 
   loadOne(model: Model3D): Promise<Model3D> {
     // todo : don't forget to add the model to the scene
@@ -106,7 +104,6 @@ export default class CustomGlbLoader {
         loadedModel.scene.traverse((child) => {
           if (child instanceof Mesh) {
             if (model.shadow) {
-              child.material.depthWrite = true;
               this.setEnvMap(child);
               child.castShadow = true;
               child.receiveShadow = true;
@@ -118,32 +115,34 @@ export default class CustomGlbLoader {
                 data: model.nodeToyMaterial,
               });
             }
+
+            child.material.depthTest = true;
+            child.material.depthWrite = true;
           }
         });
 
         if (model.transmission) {
           loadedModel.scene.traverse((child) => {
             if (child instanceof Mesh) {
-              console.log(child)
-                child.material = new MeshPhysicalMaterial({
-                  color: 0xffffff,
-                  metalness: 0.7,
-                  roughness: 0.05,
-                  ior: 1.5,
-                  depthWrite: false,
-                  map: child.material.map,
-                  metalnessMap: child.material.metalnessMap,
-                  normalMap: child.material.normalMap,
-                  roughnessMap: child.material.roughnessMap,
-                  envMapIntensity: 1,
-                  transmission: 0.7, // use material.transmission for glass materials
-                  opacity: 1,
-                  // side: DoubleSide,
-                  transparent: true
-                });
-
+              console.log(child);
+              child.material = new MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0.7,
+                roughness: 0.05,
+                ior: 1.5,
+                depthWrite: false,
+                map: child.material.map,
+                metalnessMap: child.material.metalnessMap,
+                normalMap: child.material.normalMap,
+                roughnessMap: child.material.roughnessMap,
+                envMapIntensity: 1,
+                transmission: 0.7, // use material.transmission for glass materials
+                opacity: 1,
+                // side: DoubleSide,
+                transparent: true,
+              });
             }
-            })
+          });
         }
 
         model.loadedModel3D = loadedModel.scene;
