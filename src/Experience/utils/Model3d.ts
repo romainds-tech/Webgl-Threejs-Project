@@ -28,7 +28,7 @@ export interface IModel3D {
   animation: boolean;
   shadow: boolean;
   nodeToyMaterial?: any;
-  transmission: boolean;
+  transmission?: boolean;
 }
 
 export default class Model3D {

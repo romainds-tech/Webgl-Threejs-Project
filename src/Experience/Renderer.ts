@@ -40,16 +40,18 @@ export default class Renderer {
       antialias: true, //  todo invert for performance
       // powerPreference: "high-performance", // todo reactivate for performance
     });
-    instance.useLegacyLight = true;
+    instance.autoClear = false;
+    instance.clear();
     instance.gammaFactor = 2.2;
     instance.useLegacyLights = true;
     instance.toneMapping = ReinhardToneMapping;
-    instance.toneMappingExposure = 2.4;
+    instance.toneMappingExposure = 3.7;
     instance.shadowMap.enabled = true;
     instance.shadowMap.type = PCFSoftShadowMap;
     instance.setClearColor("#211d20");
     instance.setSize(this.sizes.width, this.sizes.height);
     instance.setPixelRatio(this.sizes.pixelRatio);
+
 
     return instance;
   }
@@ -82,7 +84,6 @@ export default class Renderer {
       return rendererFolder;
     }
     return;
-    // add tone mapping debug
   }
 
   public update() {

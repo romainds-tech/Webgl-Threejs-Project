@@ -1,6 +1,6 @@
 import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
-import {data} from "../../shaders/beacon/data";
+import { data } from "../../shaders/beacon/data";
 
 export const allGlbs = {
   ThreeVertex: {
@@ -12,7 +12,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   LowTree: {
@@ -24,7 +24,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   TempleCircle1: {
     name: "TempleCircle1",
@@ -35,7 +35,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   TempleCircle2: {
     name: "TempleCircle2",
@@ -46,7 +46,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   Temple: {
     name: "Temple",
@@ -57,7 +57,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   Herbe: {
     name: "Herbe",
@@ -68,7 +68,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   CubeVertexGroup: {
     name: "Cube Vertex Group",
@@ -79,7 +79,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
   Robot: {
     name: "Robot",
@@ -90,7 +90,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Robot2Gltf: {
@@ -102,7 +102,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Robot2Glb: {
@@ -114,7 +114,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   JustRobot: {
@@ -126,7 +126,7 @@ export const allGlbs = {
     scale: 0.01,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Lattive: {
@@ -138,7 +138,7 @@ export const allGlbs = {
     scale: 0.1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Island: {
@@ -150,7 +150,7 @@ export const allGlbs = {
     scale: 1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Cards: {
@@ -162,7 +162,7 @@ export const allGlbs = {
     scale: 1,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Background: {
@@ -174,7 +174,7 @@ export const allGlbs = {
     scale: 2,
     animation: false,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Card1: {
@@ -186,7 +186,7 @@ export const allGlbs = {
     scale: 2.7,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Card2: {
@@ -198,7 +198,7 @@ export const allGlbs = {
     scale: 2.7,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Card3: {
@@ -210,7 +210,7 @@ export const allGlbs = {
     scale: 2.7,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Card4: {
@@ -222,7 +222,7 @@ export const allGlbs = {
     scale: 2.7,
     animation: true,
     shadow: true,
-    transmission: false
+    transmission: false,
   },
 
   Cylindre: {
@@ -239,7 +239,7 @@ export const allGlbs = {
 
   IleBakeMoche: {
     name: "IleBakeMoche",
-    path: "glb/ile_bake_moche2.gltf",
+    path: "glb/island_bake.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),
@@ -257,7 +257,7 @@ export const allGlbs = {
     scale: 1,
     animation: false,
     shadow: true,
-    transmission: true
+    transmission: true,
   },
 
   RingJowel: {
@@ -269,6 +269,6 @@ export const allGlbs = {
     scale: 2,
     animation: true,
     shadow: true,
-    transmission: false
-  }
+    transmission: false,
+  },
 };

@@ -32,16 +32,23 @@ export default class Light {
   loadLightIsland(): void {
     this.sunLight = new DirectionalLight(0xf4e8bc, 5.3);
 
-    this.sunLight.intensity = 5.3;
+    this.sunLight.intensity = 86.9;
     this.sunLight!.castShadow = true;
     this.sunLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
     this.sunLight!.shadow.normalBias = -0.0001;
-    this.sunLight!.position.set(5, 6.235, 7.5);
+    this.sunLight!.position.set(7, 13, 1);
+
+    // increase shadow surface
+    this.sunLight.shadow.camera.top = 100;
+    this.sunLight.shadow.camera.bottom = -100;
+    this.sunLight.shadow.camera.left = -100;
+    this.sunLight.shadow.camera.right = 100;
+
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
     // this.sunLight.position.multiplyScalar(30);
     this.scene.add(this.sunLight);
 
-    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 1.2);
+    this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 6);
     // this.hemisphereLight.castShadow = true;
     this.scene.add(this.hemisphereLight);
 

@@ -15,7 +15,7 @@ export default class CookieManager {
     getCookie(name: string): User  {
         let cookie = document.cookie
 
-        if (cookie) {
+        if (cookie && !cookie.includes("_ga")) {
             return JSON.parse(cookie);
         }
         return {
