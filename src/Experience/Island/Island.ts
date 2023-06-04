@@ -327,7 +327,7 @@ export default class Island {
   setImageItem() {
     let sizeImageItem = 1.5;
     if (this.imageItem) {
-      gsap.to(this.imageItem.position, {duration:1, x:0, y: 1, z: 0})
+      gsap.to(this.imageItem.position, {duration:1, x:0, y: 2, z: 0})
       gsap.to(this.imageItem.scale, {duration:1, x:sizeImageItem, y: sizeImageItem, z: sizeImageItem})
 
       new ClickAndDrag(

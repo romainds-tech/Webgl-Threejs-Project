@@ -86,7 +86,7 @@ export function createUIIsland() {
     "div div_popup",
     "description du grigri + date d’obtention ",
     "island_title",
-    PositionY.TOP_70
+    PositionY.TOP_65
   );
 
   // BUTTONS
