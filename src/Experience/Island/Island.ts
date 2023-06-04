@@ -56,6 +56,7 @@ export default class Island {
 
   // Map object
   private mapGroup: Group;
+  private islandGroup: Group
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
@@ -101,6 +102,8 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
+    this.islandGroup = new Group()
+
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -125,8 +128,8 @@ export default class Island {
 
   public loadAllScene() {
     this.setupCamera();
-    this.scene.add(this.island?.loadedModel3D!);
-    this.scene.add(this.mapGroup);
+    this.scene.add(this.islandGroup);
+    // this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
   }
@@ -273,6 +276,7 @@ export default class Island {
     this.destroyImageItem();
     this.checkIfAddItemToCreate();
     disablePopupIterfaceModificateItem();
+    this.moveIslandGroup(0, 1)
     this.camera.controls.enabled = true;
     this.experience.camera.instance.updateProjectionMatrix();
   }
@@ -308,19 +312,16 @@ export default class Island {
     this.setImageItem();
     this.displayEditMode(true);
 
-    this.moveIsland(-5, 0.5)
+    this.moveIslandGroup(-5, 0.5)
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
     this.camera.controls.enabled = false;
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
-  private moveIsland(y: number, scale: number) {
-    gsap.to(this.mapGroup.position, {duration: 1, y: this.mapGroup.position.y + y})
-    gsap.to(this.island!.loadedModel3D!.position, {duration: 1, y: this.island!.loadedModel3D!.position.y + y})
-
-    gsap.to(this.mapGroup.scale, {duration: 1, x: scale, y: scale, z: scale})
-    gsap.to(this.island!.loadedModel3D!.scale, {duration: 1, x: scale, y: scale, z: scale})
+  private moveIslandGroup(y: number, scale: number) {
+    gsap.to(this.islandGroup.position, {duration: 1, y: y})
+    gsap.to(this.islandGroup.scale, {duration: 1, x: scale, y: scale, z: scale})
   }
 
   setImageItem() {
@@ -369,6 +370,7 @@ export default class Island {
         this.resetPositionOfSelectedObject();
         this.canRaycast = true;
         this.checkIfAddItemToCreate();
+        this.moveIslandGroup(0, 1)
         this.destroyImageItem();
       });
   }
@@ -396,6 +398,7 @@ export default class Island {
         this.canRaycast = true;
         this.destroyImageItem();
         this.camera.controls.enabled = true;
+        this.moveIslandGroup(0, 1)
         this.experience.camera.instance.updateProjectionMatrix();
       });
   }
@@ -427,10 +430,15 @@ export default class Island {
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
 
-    this.scene.add(this.island.loadedModel3D!);
+    // this.scene.add(this.island.loadedModel3D!);
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
-    // this.island.animationAction![2].play();
+    this.island.animationAction![2].play();
+
+    this.islandGroup.add(this.mapGroup)
+    this.islandGroup.add(this.island.loadedModel3D!)
+
+    this.scene.add(this.islandGroup)
   }
 
 
@@ -466,13 +474,8 @@ export default class Island {
   }
 
   destroy() {
-    this.scene.remove(this.island?.loadedModel3D!);
-    this.island?.loadedModel3D?.remove();
-    this.scene.remove(this.cylindre?.loadedModel3D!);
-    this.cylindre?.loadedModel3D?.remove();
-
-    this.scene.remove(this.mapGroup);
-    this.mapGroup.remove();
+    this.scene.remove(this.islandGroup);
+    this.islandGroup.remove();
 
     this.scene.remove(this.cylindre?.loadedModel3D!);
     this.cylindre?.loadedModel3D!.remove();
