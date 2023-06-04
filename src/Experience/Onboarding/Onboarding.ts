@@ -50,6 +50,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     // this.setupBackgroundImage();
     // this.user = this.setUserFromCookie();
 
+<<<<<<< HEAD
     this.showQuestion();
   }
 
@@ -70,6 +71,14 @@ export default class Onboarding extends EventEmitter<EventMap> {
     document.cookie = JSON.stringify(user);
   }
 
+=======
+    this.loadAllModels().then(() => {
+      this.setupCamera();
+      this.showQuestion();
+    });
+  }
+
+>>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
   private async loadAllModels() {
     this.temple = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Temple)
@@ -166,8 +175,19 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
+<<<<<<< HEAD
         // this.user!.phoneNumber = input.value;
         // this.setCookie(this.user!);
+=======
+        // switch (question.id) {
+        //   case "phoneNumber":
+        //     this.user!.phoneNumber = input.value;
+        //     break;
+        //   default:
+        //     console.error(`Unrecognized question id: ${question.id}`);
+        // }
+        // this.cookieManager.setCookie(this.user!);
+>>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
       });
 
       // save the answer in the cookies
@@ -215,6 +235,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
     // this.circle1 = undefined;
+<<<<<<< HEAD
+=======
+    // this.circle1 = undefined;
+>>>>>>> 4ad27b49412903d37209038d8dd85c0703b0cc3e
 
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();

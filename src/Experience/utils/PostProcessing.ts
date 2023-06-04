@@ -141,7 +141,7 @@ export default class PostProcessing {
   setBloomPass() {
     const params = {
       exposure: 0.3,
-      bloomStrength: 30,
+      bloomStrength: 1.0,
       bloomThreshold: 0.15,
       bloomRadius: 0,
       scene: "Scene with Glow",
