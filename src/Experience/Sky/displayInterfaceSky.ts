@@ -80,10 +80,10 @@ export function createUISky() {
 
   Popup.getInstance().createPopupTextOnly(
     "popup_last_prediction_sky",
-    "div div_arcane div_prediction all_ui_sky",
+    "div div_arcane all_ui_sky",
     "predicition",
     "text_arcane height_arcane",
-    PositionY.TOP_55
+    PositionY.TOP_50
   );
 
   // const divContainer = document.createElement("div");
