@@ -93,6 +93,7 @@ export default class Island {
   constructor() {
     // Experience
     this.experience = Experience.getInstance();
+
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
@@ -529,6 +530,8 @@ export default class Island {
 
     this.scene.remove(this.cylindre?.loadedModel3D!);
     this.cylindre?.loadedModel3D!.remove();
+
+    this.scene.background = null;
   }
 
   private setBackGround() {

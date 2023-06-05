@@ -70,6 +70,7 @@ export default class CustomGlbLoader {
 
       // this.scene.environment = texture;
       console.log(this.scene.environment);
+      console.log(this.scene.background);
 
       this.scene.backgroundIntensity = 0;
 

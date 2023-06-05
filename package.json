@@ -19,7 +19,8 @@
     "@types/greensock": "^1.15.32",
     "@types/three": "^0.150.0",
     "gsap": "^3.11.5",
-    "three": "^0.151.2",
+    "postprocessing": "^6.31.0",
+    "three": "^0.151.3",
     "vite-plugin-glsl": "^1.1.2"
   }
 }
