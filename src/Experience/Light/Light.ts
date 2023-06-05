@@ -107,6 +107,27 @@ export default class Light {
         .max(10)
         .step(0.1);
 
+      lightFolder
+        .add(this.hemisphereLight!.position, "x")
+        .name("hemisphere pos X")
+        .min(0)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.hemisphereLight!.position, "y")
+        .name("hemisphere pos y")
+        .min(0)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.hemisphereLight!.position, "z")
+        .name("hemisphere pos z")
+        .min(0)
+        .max(100)
+        .step(1);
+
       lightFolder.addColor(this.hemisphereLight!, "color");
     }
   }

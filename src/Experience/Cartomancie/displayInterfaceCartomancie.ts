@@ -138,7 +138,7 @@ export function createUICartomancie() {
     "Prédiction du xx/xx/xxxx",
     "subtitle_cartomancie all_ui_cartomancie",
     "CARTOMANCIE",
-    PositionY.TOP,
+    PositionY.TOP_15,
     PositionX.CENTER
   );
 
@@ -183,10 +183,10 @@ export function createUICartomancie() {
 
   Popup.getInstance().createPopupTextOnly(
     "popup_prediction_cartomancie",
-    "div div_arcane div_prediction all_ui_cartomancie",
+    "div div_arcane all_ui_cartomancie",
     "",
     "text_arcane height_arcane",
-    PositionY.TOP_55
+    PositionY.TOP_50
   );
 
   // BUTTONS
@@ -219,7 +219,7 @@ export function createUICartomancie() {
     "button_display_prediction_cartomancie",
     "button button_prediction all_ui_cartomancie",
     "DÉCOUVRIR MON AMULETTE",
-    PositionY.BOTTOM,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
