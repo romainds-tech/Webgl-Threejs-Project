@@ -98,7 +98,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.experience.camera.instance.zoom = 0.7;
     this.experience.camera.instance.updateProjectionMatrix();
-    this.experience.camera.controls.enabled = true;
+    this.experience.camera.controls.enabled = false;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
   }
@@ -229,6 +229,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
     this.circle1 = undefined;
+
+    this.scene.remove(this.circle1Bis?.loadedModel3D!);
+    this.circle1Bis?.loadedModel3D?.remove();
+    this.circle1Bis = undefined;
 
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();

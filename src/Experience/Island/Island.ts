@@ -43,6 +43,8 @@ import Sky from "../Sky/Sky";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { data } from "../../shaders/beacon/data";
+import { GUI } from "lil-gui";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 
 export default class Island {
   public experience: Experience;
@@ -99,7 +101,8 @@ export default class Island {
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
     this.setBackGround();
-    this.setupCamera();
+    // this.setupCamera();
+    this.movementCamera();
     this.setupLight();
 
     // Mouse position
@@ -145,6 +148,8 @@ export default class Island {
   public loadAllScene() {
     this.setupCamera();
     this.scene.add(this.islandGroup);
+    this.setupLight();
+    this.setBackGround();
     // this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
@@ -152,7 +157,6 @@ export default class Island {
 
   public setupCamera() {
     this.experience.camera.instance.zoom = 0.2;
-    // this.experience.camera.instance.updateProjectionMatrix();
     this.camera.controls.enabled = true;
 
     this.experience.camera.instance.position.set(-5, 17, 17);
@@ -176,6 +180,37 @@ export default class Island {
       this.displayEditMode(false);
       disableInterfaceCreationItem();
     }
+  }
+
+  private movementCamera() {
+    this.experience.camera.instance.zoom = 3.15;
+    this.camera.controls.enabled = true;
+
+    this.experience.camera.instance.position.set(8, -12, 17);
+    this.experience.camera.instance.updateProjectionMatrix();
+    gsap
+      .timeline({ repeat: 0, delay: 2 })
+      .to(this.camera.instance.position, {
+        duration: 1,
+        x: 12,
+        y: 5,
+        ease: "none",
+      })
+      .to(this.camera.instance.position, {
+        duration: 2.2,
+        x: -5,
+        y: 17,
+        ease: "none",
+      });
+
+    gsap.to(this.camera.instance, {
+      duration: 3.2,
+      zoom: 0.2,
+      ease: "expo.inOut",
+      onUpdate: () => {
+        this.camera.instance.updateProjectionMatrix();
+      },
+    });
   }
 
   private displayEditMode(isEdit: boolean) {
@@ -370,9 +405,9 @@ export default class Island {
   }
 
   setImageItem() {
-    let sizeImageItem = 1.5;
+    let sizeImageItem = 2.5;
     if (this.imageItem) {
-      gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 2, z: 0 });
+      gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 8, z: 0 });
       gsap.to(this.imageItem.scale, {
         duration: 1,
         x: sizeImageItem,
@@ -403,8 +438,39 @@ export default class Island {
       .getElementById("button_rings_island")!
       .addEventListener("click", () => {
         disableInterfaceGlobalOnIsland();
-        this.destroy();
-        this.experience.sky = new Sky();
+        // this.destroy();
+        console.log("anneaux");
+        console.log(this.camera.instance);
+        // gsap.to(this.camera.instance.position, {
+        //   duration: 2,
+        //   x: 12,
+        //   y: 5,
+        //   ease: "expo.inOut",
+        // })
+
+        // gsap.to(this.camera.instance.position, {
+        //   delay: 0.5,
+        //   duration: 1,
+        //   x: 8,
+        //   y: -12,
+        //   ease: "expo.inOut",
+        // });
+        // gsap.to(this.camera.instance, {
+        //   delay: 0.5,
+        //   duration: 3,
+        //   zoom: 3.15,
+        //   onUpdate: () => {
+        //     this.camera.instance.updateProjectionMatrix();
+        //   },
+        // });
+
+        // gsap.to(this.islandGroup.scale, {
+        //   duration: 1,
+        //   x: scale,
+        //   y: scale,
+        //   z: scale,
+        // });
+        // this.experience.sky = new Sky();
       });
   }
   private clickOnCrossButtonInformationItem() {
@@ -481,14 +547,16 @@ export default class Island {
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
 
-    this.scene.add(this.island.loadedModel3D!);
     this.scene.add(this.cylindre.loadedModel3D!);
 
-    console.log(
-      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
-    );
+    // console.log(
+    //   this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
+    // );
 
-    this.scene.add(this.island.loadedModel3D!);
+    this.islandGroup.add(this.mapGroup);
+    this.islandGroup.add(this.island.loadedModel3D!);
+    this.scene.add(this.islandGroup);
+
     this.island.animationAction![0].play();
     this.island.animationAction![1].play();
     // this.island.animationAction![2].play();
