@@ -67,7 +67,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene.add(this.temple.loadedModel3D!);
 
     let textureCircle = CustomImageLoader.getInstance().loadImage(
-      "textures/circle/glyphes.png"
+      "textures/circle/glyphes_4.png"
     );
     this.circle1 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle1)
@@ -216,7 +216,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
         .value
     ) {
       this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
-        Math.sin(this.experience.time.elapsed * 0.002) * 0.5 + 0.5;
+        Math.sin(this.experience.time.elapsed * 0.0005) * 0.5 + 0.5;
     }
     NodeToyMaterial.tick();
   }

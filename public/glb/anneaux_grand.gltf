@@ -36,7 +36,7 @@
 		{
 			"alphaMode":"BLEND",
 			"doubleSided":true,
-			"name":"Circle.002_Baked",
+			"name":"Circle_2",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
