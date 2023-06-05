@@ -1,36 +1,41 @@
-import {User} from "./utils/Types";
+import { User } from "./utils/Types";
 
 export default class CookieManager {
+  private static instance: CookieManager;
 
-    private static instance: CookieManager;
+  private constructor() {}
 
-    private constructor() {
+  setCookie(user: User) {
+    // set user cookie in User type json
+    document.cookie = `user=${JSON.stringify(user)}`;
+  }
+
+  getCookie(name: string): User {
+    let cookie: string = document.cookie || "";
+
+    // get user cookie in User type json
+
+    if (cookie && cookie.includes(name)) {
+      cookie = cookie
+        .split("; ")
+        .find((row) => row.startsWith(`${name}=`))!
+        .split("=")[1];
+      return JSON.parse(cookie);
     }
 
-    setCookie(user: User) {
-        // set user cookie in User type json
-        document.cookie = JSON.stringify(user);
+    // console.log("USER", user);
+
+    return {
+      phoneNumber: "",
+      zodiacSign: "",
+      hourBirth: "",
+    };
+  }
+
+  public static getInstance(): CookieManager {
+    if (!CookieManager.instance) {
+      CookieManager.instance = new CookieManager();
     }
-
-    getCookie(name: string): User  {
-        let cookie = document.cookie
-
-        if (cookie && !cookie.includes("_ga")) {
-            return JSON.parse(cookie);
-        }
-        return {
-            phoneNumber: "",
-            zodiacSign: "",
-            hourBirth: "",
-        };
-    }
-
-    public static getInstance(): CookieManager {
-        if (!CookieManager.instance) {
-            CookieManager.instance = new CookieManager();
-        }
-        return CookieManager.instance;
-    }
-
-
+    return CookieManager.instance;
+  }
 }

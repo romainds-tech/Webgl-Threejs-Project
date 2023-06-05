@@ -13,6 +13,7 @@ import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 type EventMap = {
   onboardingFinish: [];
@@ -23,6 +24,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private cookieManager: CookieManager;
   private temple?: Model3D;
   private circle1?: Model3D;
+  private circle1Bis?: Model3D;
   private circle2?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
@@ -47,13 +49,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
     });
 
     this.loadAllModels().then(() => {
-      this.setupCamera()
+      this.setupLight();
+      this.setupCamera();
       this.showQuestion();
     });
-
-
   }
 
+  private setupLight() {
+    this.experience.light.sunLight!.intensity = 0;
+  }
 
   private async loadAllModels() {
     this.temple = await CustomGlbLoader.getInstance().loadOne(
@@ -69,9 +73,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
       new Model3D(allGlbs.TempleCircle1)
     );
 
+    //apply texture to circle
     this.circle1.loadedModel3D!.children[0].material.map = textureCircle;
-    console.log(this.circle1.loadedModel3D!.children[0]);
     this.scene.add(this.circle1.loadedModel3D!);
+
+    this.circle1Bis = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.TempleCircle1Bis)
+    );
+
+    this.scene.add(this.circle1Bis.loadedModel3D!);
 
     this.circle2 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle2)
@@ -119,7 +129,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.drag?.destroy();
     this.drag = undefined;
 
-    if ((this.currentQuestionIndex >= this.questions!.length)) {
+    if (this.currentQuestionIndex >= this.questions!.length) {
       this.trigger("onboardingFinish");
       document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
@@ -133,18 +143,17 @@ export default class Onboarding extends EventEmitter<EventMap> {
     // si la question est déjà enregistré dans le user on passe à la suivante
     if (this.user[question.id] !== "") {
       console.log("question déjà répondu");
-        this.currentQuestionIndex++;
-        this.showQuestion();
-        return;
+      this.currentQuestionIndex++;
+      this.showQuestion();
+      return;
     }
-
 
     // we show the question
     let title = new Text(question.Title, typeText.TITLE);
     let content = new Text(question.Content, typeText.TEXT);
 
     if (question.Type === "input") {
-      let input = document.createElement("input")
+      let input = document.createElement("input");
       input.type = "text";
       input.className = "input center_position top_70_position";
       document.body.appendChild(input);
@@ -192,14 +201,21 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
         this.cookieManager.setCookie(this.user!);
       });
-
-
     }
 
     this.currentQuestionIndex++;
   }
 
-  update() {}
+  update() {
+    if (
+      this.circle1Bis?.loadedModel3D?.children[0].material.uniforms.Aparition
+        .value
+    ) {
+      this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
+        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
+    NodeToyMaterial.tick();
+  }
 
   destroy() {
     this.scene.remove(this.temple?.loadedModel3D!);

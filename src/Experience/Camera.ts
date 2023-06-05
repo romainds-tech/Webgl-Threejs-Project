@@ -57,7 +57,7 @@ export default class Camera {
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
     cameraInstance = new PerspectiveCamera(
-      70,
+      30,
       this.sizes.width / this.sizes.height,
       0.1,
       1000

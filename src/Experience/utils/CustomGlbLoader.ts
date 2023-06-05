@@ -14,6 +14,7 @@ import {
   MeshStandardMaterial,
   PMREMGenerator,
   Scene,
+  Texture,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { Experience } from "../Experience";
