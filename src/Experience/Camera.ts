@@ -57,7 +57,7 @@ export default class Camera {
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
     cameraInstance = new PerspectiveCamera(
-      70,
+      30,
       this.sizes.width / this.sizes.height,
       0.1,
       1000
@@ -81,14 +81,21 @@ export default class Camera {
 
       console.log(this.instance);
 
-      if (this.instance instanceof OrthographicCamera) {
-        cameraName
-          .add(this.instance, "zoom", 0, 5)
-          .name("Zoom")
-          .onChange(() => {
-            this.instance.updateProjectionMatrix();
-          });
-      }
+      cameraName
+        .add(this.instance, "zoom", 0, 5)
+        .name("Zoom")
+        .onChange(() => {
+          console.log(this.instance.zoom);
+          this.instance.updateProjectionMatrix();
+        });
+
+      // cameraName
+      //   .add(this.instance, "fov", 0, 5)
+      //   .name("Zoom")
+      //   .onChange(() => {
+      //     console.log(this.instance);
+      //     this.instance.updateProjectionMatrix();
+      //   });
 
       cameraName.add(this.instance.position, "x").name("Position X");
       cameraName.add(this.instance.position, "y").name("Position Y");

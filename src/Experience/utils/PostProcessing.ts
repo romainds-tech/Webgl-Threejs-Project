@@ -23,6 +23,8 @@ import Debug from "./Debug";
 import { GUI } from "lil-gui";
 
 export default class PostProcessing {
+  public finalPass?: ShaderPass;
+
   private experience: Experience;
   private scene: Scene;
   private sizes: Sizes;
@@ -35,6 +37,8 @@ export default class PostProcessing {
   private BLOOM_SCENE: number;
 
   private materials: {};
+
+  private bloomPass?: UnrealBloomPass;
 
   private bloomLayer: Layers;
   private renderTarget?: WebGLRenderTarget;
@@ -147,20 +151,20 @@ export default class PostProcessing {
       scene: "Scene with Glow",
     };
 
-    const bloomPass = new UnrealBloomPass(
+    this.bloomPass = new UnrealBloomPass(
       new Vector2(this.sizes.width, this.sizes.height),
       1.5,
       0.4,
       0.3
     );
-    bloomPass.threshold = params.bloomThreshold;
-    bloomPass.strength = params.bloomStrength;
-    bloomPass.radius = params.bloomRadius;
+    this.bloomPass.threshold = params.bloomThreshold;
+    this.bloomPass.strength = params.bloomStrength;
+    this.bloomPass.radius = params.bloomRadius;
 
     this.bloomComposer = new EffectComposer(this.renderer.instance);
     this.bloomComposer.renderToScreen = false;
     this.bloomComposer.addPass(this.renderPass!);
-    this.bloomComposer.addPass(bloomPass);
+    this.bloomComposer.addPass(this.bloomPass);
 
     if (this.debug.active) {
       const bloomFolder = this.debugFolder!.addFolder("Bloom");
@@ -168,27 +172,29 @@ export default class PostProcessing {
       bloomFolder
         .add(params, "bloomThreshold")
         .min(0.15)
-        .max(1)
+        .max(2)
         .step(0.01)
         .onChange((value) => {
-          bloomPass.threshold = value;
+          this.bloomPass!.threshold = value;
         });
 
       bloomFolder.add(params, "bloomStrength", 0.0, 50.0).onChange((value) => {
-        bloomPass.strength = value;
+        this.bloomPass!.strength = value;
       });
 
       bloomFolder
         .add(params, "bloomRadius", 0.0, 1.0)
         .step(0.01)
         .onChange((value) => {
-          bloomPass.radius = value;
+          this.bloomPass!.radius = value;
         });
+
+      bloomFolder.add(this.bloomPass, "enabled").name("Enabled");
     }
   }
 
   setFinalPass() {
-    const finalPass = new ShaderPass(
+    this.finalPass = new ShaderPass(
       new ShaderMaterial({
         uniforms: {
           baseTexture: { value: null },
@@ -221,9 +227,16 @@ export default class PostProcessing {
       "baseTexture"
     );
 
-    finalPass.needsSwap = true;
+    this.finalPass.needsSwap = true;
 
-    this.instance!.addPass(finalPass);
+    this.finalPass.enabled = false;
+    this.instance!.addPass(this.finalPass);
+
+    if (this.debug.active) {
+      const finalFolder = this.debugFolder!.addFolder("Final");
+
+      finalFolder.add(this.finalPass, "enabled").name("Enabled");
+    }
   }
   settFilmPass() {
     const filmPass = new FilmPass(
@@ -261,6 +274,7 @@ export default class PostProcessing {
       });
       // this.renderer.clear()
       this.bloomComposer!.render();
+
       this.scene.traverse((objet) => {
         this.restoreMaterial(objet);
       });

@@ -1,10 +1,19 @@
-
-import {Experience} from "../Experience";
-import {Event, Group, Mesh, Object3D, Scene, Vector2,} from "three";
+import { Experience } from "../Experience";
+import {
+  AxesHelper,
+  CubeTextureLoader,
+  MeshBasicMaterial,
+  Event,
+  Group,
+  Mesh,
+  Object3D,
+  Scene,
+  Vector2,
+} from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
-import {allGlbs} from "../../Sources/glb/glb";
+import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-import {loadMap, mapMainIslandData} from "./map";
+import { loadMap, mapMainIslandData } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
@@ -27,8 +36,9 @@ import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 // @ts-ignore
-import {NodeToyMaterial} from "@nodetoy/three-nodetoy";
-import ClickAndDrag, {EventClickDrag} from "../UI/Interactions/ClickAndDrag";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
+import { GUI } from "lil-gui";
 
 export default class Island {
   public experience: Experience;
@@ -81,7 +91,7 @@ export default class Island {
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
-    // this.setBackGround();
+    this.setBackGround();
     this.setupCamera();
 
     // Mouse position
@@ -135,9 +145,11 @@ export default class Island {
   }
 
   public setupCamera() {
+    this.experience.camera.instance.zoom = 0.2;
+    // this.experience.camera.instance.updateProjectionMatrix();
     this.camera.controls.enabled = true;
-    this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -5);
+
+    this.experience.camera.instance.position.set(-5, 17, 17);
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -171,9 +183,26 @@ export default class Island {
 
   // Get map and apply modification on all the map
   private mapGroupInfo() {
-    this.mapGroup.position.set(3, -0.15, 3);
-  }
+    this.mapGroup.position.set(-1, 4, 1);
+    this.mapGroup.rotation.set(0, 2.15, 0);
+    this.mapGroup.scale.set(2.5, 2.5, 2.5);
+    if (this.debug.active) {
+      const mapGroupFolder: GUI =
+        this.debug.debugModelFolder!.addFolder("Map group");
 
+      mapGroupFolder.add(this.mapGroup.position, "x").name("Position X");
+      mapGroupFolder.add(this.mapGroup.position, "y").name("Position Y");
+      mapGroupFolder.add(this.mapGroup.position, "z").name("Position Z");
+
+      mapGroupFolder.add(this.mapGroup.rotation, "x").name("Rotation X");
+      mapGroupFolder.add(this.mapGroup.rotation, "y").name("Rotation Y");
+      mapGroupFolder.add(this.mapGroup.rotation, "z").name("Rotation Z");
+
+      mapGroupFolder.add(this.mapGroup.scale, "x").name("Scale X");
+      mapGroupFolder.add(this.mapGroup.scale, "y").name("Scale Y");
+      mapGroupFolder.add(this.mapGroup.scale, "z").name("Scale Z");
+    }
+  }
 
   //change the value of all the scene
 
@@ -428,6 +457,8 @@ export default class Island {
       new Model3D(allGlbs.Island)
     );
 
+    this.island.loadedModel3D!.children[0].material.transparent = false;
+
     this.cylindre = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Cylindre)
     );
@@ -436,9 +467,9 @@ export default class Island {
     this.island.loadedModel3D!.receiveShadow = true;
 
     // this.scene.add(this.island.loadedModel3D!);
-    this.island.animationAction![0].play();
-    this.island.animationAction![1].play();
-    this.island.animationAction![2].play();
+    // this.island.animationAction![0].play();
+    // this.island.animationAction![1].play();
+    // this.island.animationAction![2].play();
 
     this.islandGroup.add(this.mapGroup);
     this.islandGroup.add(this.island.loadedModel3D!);
@@ -446,15 +477,13 @@ export default class Island {
     this.scene.add(this.islandGroup);
   }
 
-
-
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
 
   update() {
-    this.island?.mixer?.update(this.experience.time.delta * 0.002);
+    // this.island?.mixer?.update(this.experience.time.delta * 0.002);
 
     // varying the height with sin between -1 and 1
     // if (
@@ -488,6 +517,7 @@ export default class Island {
 
   private setBackGround() {
     // load a cubeMap texture
+
     new CubeTextureLoader()
       .setPath("envMap/hdr/")
       .load(
@@ -495,6 +525,7 @@ export default class Island {
         (l) => {
           this.scene.background = l;
           this.scene.backgroundIntensity = 2;
+          console.log(this.scene);
         }
       );
   }

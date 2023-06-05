@@ -20,7 +20,7 @@ type EventMap = {
 export default class ClickAndDrag extends EventEmitter<EventMap> {
   private event: EventClickDrag;
   private model: Object3D;
-  private isOnboarding: boolean
+  private isOnboarding: boolean;
   private previousTouchX: number = 0;
   private previousTouchY: number = 0;
 
@@ -28,7 +28,7 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
     super();
     this.model = model;
     this.event = event;
-    this.isOnboarding = isOnboarding
+    this.isOnboarding = isOnboarding;
 
     this.init();
   }
@@ -60,41 +60,38 @@ export default class ClickAndDrag extends EventEmitter<EventMap> {
   }
 
   private addRotationListenerMouse(event: MouseEvent) {
-    console.log(event.pageX)
     if (this.isOnboarding) {
       if (event.pageX > window.innerWidth / 2) {
         event.movementY > 0
-            ? this.rotateModelYNegatif()
-            : this.rotateModelYPositif();
+          ? this.rotateModelYNegatif()
+          : this.rotateModelYPositif();
       } else {
         event.movementY > 0
-            ? this.rotateModelYPositif()
-            : this.rotateModelYNegatif();
+          ? this.rotateModelYPositif()
+          : this.rotateModelYNegatif();
       }
     } else {
       event.movementX > 0
-          ? this.rotateModelYPositif(0.15)
-          : this.rotateModelYNegatif(0.15);
+        ? this.rotateModelYPositif(0.15)
+        : this.rotateModelYNegatif(0.15);
     }
-
   }
   private addRotationListenerMobile(event: TouchEvent) {
     if (this.isOnboarding) {
       if (event.touches[0].clientX > window.innerWidth / 2) {
         event.touches[0].clientY > this.previousTouchY
-            ? this.rotateModelYNegatif()
-            : this.rotateModelYPositif();
+          ? this.rotateModelYNegatif()
+          : this.rotateModelYPositif();
       } else {
         event.touches[0].clientY > this.previousTouchY
-            ? this.rotateModelYPositif()
-            : this.rotateModelYNegatif();
+          ? this.rotateModelYPositif()
+          : this.rotateModelYNegatif();
       }
     } else {
       event.touches[0].clientX > this.previousTouchX
-          ? this.rotateModelYPositif(0.05)
-          : this.rotateModelYNegatif(0.05);
+        ? this.rotateModelYPositif(0.05)
+        : this.rotateModelYNegatif(0.05);
     }
-
   }
 
   private rotateModelYPositif(step: number = 0.02) {

@@ -143,10 +143,10 @@ export const allGlbs = {
 
   Island: {
     name: "Island",
-    path: "glb/island_test.gltf",
+    path: "glb/island_bake_1.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, -0.5, 0),
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, Math.PI / 2, 0),
     scale: 1,
     animation: true,
     shadow: true,
@@ -263,7 +263,7 @@ export const allGlbs = {
 
   IleBakeMoche: {
     name: "IleBakeMoche",
-    path: "glb/ile_bake_moche2.gltf",
+    path: "glb/island_bake_1.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),

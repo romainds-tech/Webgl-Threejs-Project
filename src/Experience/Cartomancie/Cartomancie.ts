@@ -2,6 +2,8 @@ import { Experience } from "../Experience";
 import {
   AnimationAction,
   AnimationMixer,
+  AxesHelper,
+  BoxGeometry,
   DoubleSide,
   LoopOnce,
   Mesh,
@@ -74,6 +76,9 @@ export default class Cartomancie {
 
   constructor() {
     this.experience = Experience.getInstance();
+    console.log("nfgjrenbk");
+    console.log(this.experience.postProcessing);
+    this.experience.postProcessing.finalPass!.enabled = false;
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.setupCamera();
@@ -85,6 +90,7 @@ export default class Cartomancie {
 
     this.time = this.experience.time;
 
+    this.createCube();
     this.loadModelsItemIsland();
 
     createUICartomancie();
@@ -102,10 +108,10 @@ export default class Cartomancie {
   }
 
   private setupCamera() {
-    this.camera.instance.position.set(-45, 19, 10);
-    this.camera.instance.zoom = 0.25;
+    this.camera.instance.position.set(-35, 27, 15);
+    this.camera.instance.zoom = 0.6;
 
-    this.camera.controls.enabled = true;
+    this.camera.controls.enabled = false;
 
     this.camera.instance.updateProjectionMatrix();
   }
@@ -121,6 +127,33 @@ export default class Cartomancie {
         this.loadCards();
         disabledInterfaceStartCartomancie();
       });
+  }
+
+  private createCube() {
+    const cube = new Mesh(
+      new BoxGeometry(1, 1, 1),
+      new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
+    );
+
+    cube.scale.set(90, 90, 90);
+    this.scene.add(cube);
+
+    if (this.debug.active) {
+      const cubeFolder: GUI =
+        this.debug.debugModelFolder!.addFolder("Cube carto");
+
+      cubeFolder.add(cube.position, "x").name("Position X");
+      cubeFolder.add(cube.position, "y").name("Position Y");
+      cubeFolder.add(cube.position, "z").name("Position Z");
+
+      cubeFolder.add(cube.rotation, "x").name("rotation X");
+      cubeFolder.add(cube.rotation, "y").name("rotation Y");
+      cubeFolder.add(cube.rotation, "z").name("rotation Z");
+
+      cubeFolder.add(cube.scale, "x").name("scale X");
+      cubeFolder.add(cube.scale, "y").name("scale Y");
+      cubeFolder.add(cube.scale, "z").name("scale Z");
+    }
   }
   private addDebugFolder(): GUI | null {
     if (this.debug.active) {
@@ -224,15 +257,15 @@ export default class Cartomancie {
 
       this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
-        setTimeout(() => {
-          document.querySelector(
-            "#popup_first_arcane_cartomancie .text_arcane"
-          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-          this.destroyCard();
-          displayInterfaceFirstArcaneCartomancie();
-          this.setOverlayArcane();
-          this.loadMajorArcane();
-        }, 700);
+        // setTimeout(() => {
+        //   document.querySelector(
+        //     "#popup_first_arcane_cartomancie .text_arcane"
+        //   )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+        //   this.destroyCard();
+        //   displayInterfaceFirstArcaneCartomancie();
+        //   this.setOverlayArcane();
+        //   this.loadMajorArcane();
+        // }, 700);
       });
     }
   }
@@ -413,7 +446,7 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.01);
+    this.mixer?.update(this.time.delta * 0.001);
     NodeToyMaterial.tick();
     if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
       this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =

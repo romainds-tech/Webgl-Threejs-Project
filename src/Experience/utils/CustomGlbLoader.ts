@@ -65,10 +65,10 @@ export default class CustomGlbLoader {
     await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
       this.scene.background = texture;
 
-      //texture.mapping = EquirectangularReflectionMapping;
+      // texture.mapping = EquirectangularReflectionMapping;
 
       // this.scene.environment = texture;
-      // console.log(this.scene.environment);
+      console.log(this.scene.environment);
 
       this.scene.backgroundIntensity = 0;
 
