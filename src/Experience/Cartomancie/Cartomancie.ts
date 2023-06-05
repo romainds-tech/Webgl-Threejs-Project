@@ -4,6 +4,7 @@ import {
   AnimationMixer,
   AxesHelper,
   BoxGeometry,
+  Color,
   DoubleSide,
   LoopOnce,
   Mesh,
@@ -76,9 +77,7 @@ export default class Cartomancie {
 
   constructor() {
     this.experience = Experience.getInstance();
-    console.log("nfgjrenbk");
-    console.log(this.experience.postProcessing);
-    this.experience.postProcessing.finalPass!.enabled = false;
+
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.setupCamera();
@@ -97,8 +96,6 @@ export default class Cartomancie {
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
-
-    this.setupLight();
   }
 
   private setupLight() {
@@ -111,7 +108,7 @@ export default class Cartomancie {
     this.camera.instance.position.set(-35, 27, 15);
     this.camera.instance.zoom = 0.6;
 
-    this.camera.controls.enabled = false;
+    this.camera.controls.enabled = true;
 
     this.camera.instance.updateProjectionMatrix();
   }
@@ -124,36 +121,37 @@ export default class Cartomancie {
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
         this.loadScene();
-        this.loadCards();
+        // this.loadCards();
         disabledInterfaceStartCartomancie();
       });
   }
 
   private createCube() {
-    const cube = new Mesh(
-      new BoxGeometry(1, 1, 1),
-      new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
-    );
-
-    cube.scale.set(90, 90, 90);
-    this.scene.add(cube);
-
-    if (this.debug.active) {
-      const cubeFolder: GUI =
-        this.debug.debugModelFolder!.addFolder("Cube carto");
-
-      cubeFolder.add(cube.position, "x").name("Position X");
-      cubeFolder.add(cube.position, "y").name("Position Y");
-      cubeFolder.add(cube.position, "z").name("Position Z");
-
-      cubeFolder.add(cube.rotation, "x").name("rotation X");
-      cubeFolder.add(cube.rotation, "y").name("rotation Y");
-      cubeFolder.add(cube.rotation, "z").name("rotation Z");
-
-      cubeFolder.add(cube.scale, "x").name("scale X");
-      cubeFolder.add(cube.scale, "y").name("scale Y");
-      cubeFolder.add(cube.scale, "z").name("scale Z");
-    }
+    this.scene.background = new Color(0x000000);
+    // const cube = new Mesh(
+    //   new BoxGeometry(1, 1, 1),
+    //   new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
+    // );
+    //
+    // cube.scale.set(90, 90, 90);
+    // this.scene.add(cube);
+    //
+    // if (this.debug.active) {
+    //   const cubeFolder: GUI =
+    //     this.debug.debugModelFolder!.addFolder("Cube carto");
+    //
+    //   cubeFolder.add(cube.position, "x").name("Position X");
+    //   cubeFolder.add(cube.position, "y").name("Position Y");
+    //   cubeFolder.add(cube.position, "z").name("Position Z");
+    //
+    //   cubeFolder.add(cube.rotation, "x").name("rotation X");
+    //   cubeFolder.add(cube.rotation, "y").name("rotation Y");
+    //   cubeFolder.add(cube.rotation, "z").name("rotation Z");
+    //
+    //   cubeFolder.add(cube.scale, "x").name("scale X");
+    //   cubeFolder.add(cube.scale, "y").name("scale Y");
+    //   cubeFolder.add(cube.scale, "z").name("scale Z");
+    // }
   }
   private addDebugFolder(): GUI | null {
     if (this.debug.active) {
@@ -172,25 +170,25 @@ export default class Cartomancie {
     //   new Model3D(allGlbs.flame)
     // );
 
-    this.sceneCard.loadedModel3D!.children[1].material =
-      new MeshPhysicalMaterial({
-        color: 0xffffff,
-        metalness: 0.7,
-        roughness: 0.05,
-        ior: 1.5,
-        depthWrite: true,
-        map: this.sceneCard.loadedModel3D!.children[1].material.map,
-        metalnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
-        normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
-        roughnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
-        envMapIntensity: 1,
-        transmission: 0.7, // use material.transmission for glass materials
-        opacity: 1,
-        side: DoubleSide,
-        transparent: false,
-      });
+    // this.sceneCard.loadedModel3D!.children[1].material =
+    // new MeshPhysicalMaterial({
+    //   color: 0xffffff,
+    //   metalness: 0.7,
+    //   roughness: 0.05,
+    //   ior: 1.5,
+    //   depthWrite: true,
+    //   map: this.sceneCard.loadedModel3D!.children[1].material.map,
+    //   metalnessMap:
+    //     this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
+    //   normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
+    //   roughnessMap:
+    //     this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
+    //   envMapIntensity: 1,
+    //   transmission: 0.7, // use material.transmission for glass materials
+    //   opacity: 1,
+    //   side: DoubleSide,
+    //   transparent: false,
+    // });
 
     console.log(this.sceneCard);
 
@@ -210,7 +208,7 @@ export default class Cartomancie {
 
     this.scene.add(this.sceneCard.loadedModel3D!);
 
-    // this.loadCards();
+    this.loadCards();
   }
 
   private async createFlame(
@@ -224,10 +222,14 @@ export default class Cartomancie {
       new Model3D(allGlbs.flame)
     );
 
+    console.log(model.loadedModel3D!.children);
     model.loadedModel3D!.children[0].material = material;
-    model.loadedModel3D?.position.set(x, y, z);
-    model.loadedModel3D?.children[0].layers.toggle(1);
 
+    model.loadedModel3D?.position.set(x, y, z);
+
+    this.experience.postProcessing.setSelectObjectsForBloom(
+      model.loadedModel3D!.children[0]
+    );
     this.scene.add(model.loadedModel3D!);
 
     return model;
@@ -238,6 +240,8 @@ export default class Cartomancie {
       this.cards = await CustomGlbLoader.getInstance().loadOne(
         new Model3D(allGlbs.Cards)
       );
+
+      console.log(this.cards);
 
       this.scene.add(this.cards.loadedModel3D!);
     }
@@ -448,10 +452,10 @@ export default class Cartomancie {
   public update() {
     this.mixer?.update(this.time.delta * 0.001);
     NodeToyMaterial.tick();
-    if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
-      this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
-    }
+    // if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
+    //   this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
+    //     Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    // }
   }
 
   private destroyCard() {
