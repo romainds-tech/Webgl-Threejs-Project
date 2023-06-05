@@ -1,12 +1,14 @@
 import { Experience } from "../Experience";
 import {
+  AnimationAction,
   AnimationMixer,
+  AxesHelper,
+  BoxGeometry,
   DoubleSide,
   LoopOnce,
   Mesh,
   MeshBasicMaterial,
-  // MeshStandardMaterial,
-  // Object3D,
+  MeshPhysicalMaterial,
   PlaneGeometry,
   Scene,
   // ShaderMaterial,
@@ -18,15 +20,11 @@ import { GUI } from "lil-gui";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
-// import cardVertexShader from "../../shaders/card/vertex.glsl";
-// import cardFragmentShader from "../../shaders/card/fragment.glsl";
-// import { gsap } from "gsap";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
 import {
   disabledInterfaceStartCartomancie,
   displayInterfaceStartCartomancie,
-  displayInterfaceFirstArcaneCartomancie,
   disabledInterfaceFirstArcaneCartomancie,
   displayInterfaceSecondArcaneCartomancie,
   disabledInterfaceSecondArcaneCartomancie,
@@ -36,8 +34,15 @@ import {
   disabledInterfaceSelectItemCartomancie,
   createUICartomancie,
   deleteAllUI,
+  displayInterfaceFirstArcaneCartomancie,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
+import { flameData } from "../../shaders/Flame";
+// @ts-ignore
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+// import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
+
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 
 export default class Cartomancie {
   public textPrediction?: string;
@@ -58,6 +63,9 @@ export default class Cartomancie {
 
   private overlay?: Mesh;
   private cards?: Model3D;
+  private sceneCard?: Model3D;
+  private flame?: Model3D;
+  private secondFlame?: Model3D;
   private item?: Model3D;
   private mixer?: AnimationMixer;
 
@@ -68,6 +76,9 @@ export default class Cartomancie {
 
   constructor() {
     this.experience = Experience.getInstance();
+    console.log("nfgjrenbk");
+    console.log(this.experience.postProcessing);
+    this.experience.postProcessing.finalPass!.enabled = false;
     this.scene = this.experience.scene;
     this.camera = this.experience.camera;
     this.setupCamera();
@@ -79,23 +90,29 @@ export default class Cartomancie {
 
     this.time = this.experience.time;
 
+    this.createCube();
     this.loadModelsItemIsland();
 
     createUICartomancie();
     displayInterfaceStartCartomancie();
     this.startPrediction();
     this.displayButton();
+
+    this.setupLight();
+  }
+
+  private setupLight() {
+    this.experience.light.loadLightCartomancie();
+    this.experience.light.sunLight!.intensity = 0;
+    this.experience.light.hemisphereLight!.intensity = 0.6;
   }
 
   private setupCamera() {
-    let cameraPosition = 10;
-    this.camera.instance.position.set(
-      -cameraPosition,
-      cameraPosition,
-      -cameraPosition
-    );
-    this.camera.instance.zoom = 0.35;
+    this.camera.instance.position.set(-35, 27, 15);
+    this.camera.instance.zoom = 0.6;
+
     this.camera.controls.enabled = false;
+
     this.camera.instance.updateProjectionMatrix();
   }
 
@@ -106,15 +123,114 @@ export default class Cartomancie {
     document
       .getElementById("button_start_cartomancie")!
       .addEventListener("click", () => {
+        this.loadScene();
         this.loadCards();
         disabledInterfaceStartCartomancie();
       });
+  }
+
+  private createCube() {
+    const cube = new Mesh(
+      new BoxGeometry(1, 1, 1),
+      new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
+    );
+
+    cube.scale.set(90, 90, 90);
+    this.scene.add(cube);
+
+    if (this.debug.active) {
+      const cubeFolder: GUI =
+        this.debug.debugModelFolder!.addFolder("Cube carto");
+
+      cubeFolder.add(cube.position, "x").name("Position X");
+      cubeFolder.add(cube.position, "y").name("Position Y");
+      cubeFolder.add(cube.position, "z").name("Position Z");
+
+      cubeFolder.add(cube.rotation, "x").name("rotation X");
+      cubeFolder.add(cube.rotation, "y").name("rotation Y");
+      cubeFolder.add(cube.rotation, "z").name("rotation Z");
+
+      cubeFolder.add(cube.scale, "x").name("scale X");
+      cubeFolder.add(cube.scale, "y").name("scale Y");
+      cubeFolder.add(cube.scale, "z").name("scale Z");
+    }
   }
   private addDebugFolder(): GUI | null {
     if (this.debug.active) {
       return this.debug.ui!.addFolder("Cartomancie");
     }
     return null;
+  }
+
+  private async loadScene() {
+    // if (this.sceneCard)
+    this.sceneCard = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.SceneCard)
+    );
+
+    // this.flame = await CustomGlbLoader.getInstance().loadOne(
+    //   new Model3D(allGlbs.flame)
+    // );
+
+    this.sceneCard.loadedModel3D!.children[1].material =
+      new MeshPhysicalMaterial({
+        color: 0xffffff,
+        metalness: 0.7,
+        roughness: 0.05,
+        ior: 1.5,
+        depthWrite: true,
+        map: this.sceneCard.loadedModel3D!.children[1].material.map,
+        metalnessMap:
+          this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
+        normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
+        roughnessMap:
+          this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
+        envMapIntensity: 1,
+        transmission: 0.7, // use material.transmission for glass materials
+        opacity: 1,
+        side: DoubleSide,
+        transparent: false,
+      });
+
+    console.log(this.sceneCard);
+
+    const flameMaterial = new NodeToyMaterial({
+      data: flameData,
+    });
+
+    this.flame = await this.createFlame(this.flame!, flameMaterial, 4, 5, -2.7);
+    this.secondFlame = await this.createFlame(
+      this.secondFlame!,
+      flameMaterial,
+      -14.5,
+      2.5,
+      6.4
+    );
+    flameMaterial.needsUpdate = true;
+
+    this.scene.add(this.sceneCard.loadedModel3D!);
+
+    // this.loadCards();
+  }
+
+  private async createFlame(
+    model: Model3D,
+    material: NodeToyMaterial,
+    x: number,
+    y: number,
+    z: number
+  ) {
+    model = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.flame)
+    );
+
+    model.loadedModel3D!.children[0].material = material;
+    model.loadedModel3D?.position.set(x, y, z);
+    model.loadedModel3D?.children[0].layers.toggle(1);
+
+    this.scene.add(model.loadedModel3D!);
+
+    return model;
   }
 
   private async loadCards() {
@@ -133,31 +249,44 @@ export default class Cartomancie {
     if (this.cards?.animationAction) {
       this.mixer = this.cards.mixer;
 
-      const clipMixer = this.mixer!.clipAction(
-        this.cards.animationAction[0].getClip()
-      );
+      setTimeout(() => {
+        this.showOneTimeAnimation(this.cards!.animationAction![0]);
+      }, 1000);
 
-      clipMixer.play();
-      clipMixer.setLoop(LoopOnce, 1);
-      clipMixer.clampWhenFinished = true;
+      this.showOneTimeAnimation(this.cards.animationAction[1]);
+
       this.mixer!.addEventListener("finished", () => {
         console.log("card finished");
-        setTimeout(() => {
-          document.querySelector(
-            "#popup_first_arcane_cartomancie .text_arcane"
-          )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
-          this.destroyCard();
-          displayInterfaceFirstArcaneCartomancie();
-          this.setOverlayArcane();
-          this.loadMajorArcane();
-        }, 500);
+        // setTimeout(() => {
+        //   document.querySelector(
+        //     "#popup_first_arcane_cartomancie .text_arcane"
+        //   )!.innerHTML = predictions[this.predictionNumber].textMajorArcane;
+        //   this.destroyCard();
+        //   displayInterfaceFirstArcaneCartomancie();
+        //   this.setOverlayArcane();
+        //   this.loadMajorArcane();
+        // }, 700);
       });
     }
+  }
+
+  private showOneTimeAnimation(animation: AnimationAction) {
+    const clipMixer = this.mixer!.clipAction(animation.getClip());
+
+    clipMixer.play();
+    clipMixer.setLoop(LoopOnce, 1);
+    clipMixer.clampWhenFinished = true;
   }
 
   private async loadMajorArcane() {
     this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(predictions[this.predictionNumber].modelMajorArcane)
+    );
+
+    new ClickAndDrag(
+      this.firstArcaneImageItem!.loadedModel3D!,
+      EventClickDrag.ROTATION,
+      false
     );
     this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
   }
@@ -167,6 +296,11 @@ export default class Cartomancie {
       new Model3D(predictions[this.predictionNumber].modelMinorArcane)
     );
 
+    new ClickAndDrag(
+      this.secondArcaneImageItem!.loadedModel3D!,
+      EventClickDrag.ROTATION,
+      false
+    );
     this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
   }
 
@@ -288,6 +422,12 @@ export default class Cartomancie {
         );
 
         this.item.loadedModel3D.position.set(x, y, z);
+
+        new ClickAndDrag(
+          this.item!.loadedModel3D!,
+          EventClickDrag.ROTATION,
+          false
+        );
         this.scene.add(this.item.loadedModel3D!);
       }
     }
@@ -306,14 +446,27 @@ export default class Cartomancie {
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.01);
-    // this.cubeVertex?.mixer?.update(this.experience.time.delta);
+    this.mixer?.update(this.time.delta * 0.001);
+    NodeToyMaterial.tick();
+    if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
+      this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
+        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
   }
 
   private destroyCard() {
-    this.scene.remove(this.cards?.loadedModel3D!);
+    this.scene.remove(
+      this.cards?.loadedModel3D!,
+      this.sceneCard?.loadedModel3D!,
+      this.flame?.loadedModel3D!,
+      this.secondFlame?.loadedModel3D!
+    );
     this.cards?.destroy();
-    // this.cards = undefined;
+    this.sceneCard?.destroy();
+    this.flame?.destroy();
+    this.secondFlame?.destroy();
+
+    this.experience.light.destroyLightCartomancie();
   }
 
   private destroyFirstArcane() {

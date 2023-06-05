@@ -1,41 +1,44 @@
 import { Experience } from "../Experience";
 import {
+  AxesHelper,
+  CubeTextureLoader,
+  MeshBasicMaterial,
+  Event,
   Group,
+  Mesh,
   Object3D,
   Scene,
   Vector2,
-  Event,
-  CylinderGeometry,
-  Mesh,
-  CubeTextureLoader,
-  MeshBasicMaterial,
-  BackSide,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
 import Model3D from "../utils/Model3d";
-import { mapMainIslandData, loadMap } from "./map";
+import { loadMap, mapMainIslandData } from "./map";
 import Sizes from "../utils/Sizes";
 import Camera from "../Camera";
 import ItemIslandManager from "./ItemIslandManager";
+import gsap from "gsap";
 import {
-  displayInterfaceInformationItem,
-  disablePopupIterfaceModificateItem,
-  onClickOnDisabledModificationButton,
-  displayPopupIterfaceModificateItem,
-  disableInterfaceInformationItem,
-  disableInterfaceCreationItem,
-  displayInterfaceCreationItem,
   createUIIsland,
-  displayInterfaceGlobalOnIsland,
+  disableInterfaceCreationItem,
   disableInterfaceGlobalOnIsland,
+  disableInterfaceInformationItem,
+  disablePopupIterfaceModificateItem,
+  displayInterfaceCreationItem,
+  displayInterfaceGlobalOnIsland,
+  displayInterfaceInformationItem,
+  displayPopupIterfaceModificateItem,
+  onClickOnDisabledModificationButton,
 } from "./displayInterfaceIsland";
 import RaycasterExperience from "../UI/Interactions/RaycasterExperience";
 import Cartomancie from "../Cartomancie/Cartomancie";
 import ItemIsland from "./ItemIsland";
 import Debug from "../utils/Debug";
+import Sky from "../Sky/Sky";
+// @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import { data } from "../../shaders/beacon/data";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
+import { GUI } from "lil-gui";
 
 export default class Island {
   public experience: Experience;
@@ -63,6 +66,7 @@ export default class Island {
 
   // Map object
   private mapGroup: Group;
+  private islandGroup: Group;
   private raycaster: RaycasterExperience;
   private canRaycast: boolean;
   private isSelected: boolean;
@@ -108,6 +112,8 @@ export default class Island {
       this.allObjectsCreateInMap
     );
 
+    this.islandGroup = new Group();
+
     // Get all map and apply methods
     this.mapGroupInfo();
     this.onMouseDown = this.onClickDown;
@@ -132,16 +138,18 @@ export default class Island {
 
   public loadAllScene() {
     this.setupCamera();
-    this.scene.add(this.island?.loadedModel3D!);
-    this.scene.add(this.mapGroup);
+    this.scene.add(this.islandGroup);
+    // this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
   }
 
   public setupCamera() {
+    this.experience.camera.instance.zoom = 0.2;
+    // this.experience.camera.instance.updateProjectionMatrix();
     this.camera.controls.enabled = true;
-    this.experience.camera.instance.zoom = 0.6;
-    this.experience.camera.instance.position.set(-5, 5, -20);
+
+    this.experience.camera.instance.position.set(-5, 17, 17);
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
@@ -175,7 +183,25 @@ export default class Island {
 
   // Get map and apply modification on all the map
   private mapGroupInfo() {
-    this.mapGroup.position.set(3, -0.15, 3);
+    this.mapGroup.position.set(-1, 4, 1);
+    this.mapGroup.rotation.set(0, 2.15, 0);
+    this.mapGroup.scale.set(2.5, 2.5, 2.5);
+    if (this.debug.active) {
+      const mapGroupFolder: GUI =
+        this.debug.debugModelFolder!.addFolder("Map group");
+
+      mapGroupFolder.add(this.mapGroup.position, "x").name("Position X");
+      mapGroupFolder.add(this.mapGroup.position, "y").name("Position Y");
+      mapGroupFolder.add(this.mapGroup.position, "z").name("Position Z");
+
+      mapGroupFolder.add(this.mapGroup.rotation, "x").name("Rotation X");
+      mapGroupFolder.add(this.mapGroup.rotation, "y").name("Rotation Y");
+      mapGroupFolder.add(this.mapGroup.rotation, "z").name("Rotation Z");
+
+      mapGroupFolder.add(this.mapGroup.scale, "x").name("Scale X");
+      mapGroupFolder.add(this.mapGroup.scale, "y").name("Scale Y");
+      mapGroupFolder.add(this.mapGroup.scale, "z").name("Scale Z");
+    }
   }
 
   //change the value of all the scene
@@ -279,34 +305,14 @@ export default class Island {
     this.destroyImageItem();
     this.checkIfAddItemToCreate();
     disablePopupIterfaceModificateItem();
+    this.moveIslandGroup(0, 1);
+    this.camera.controls.enabled = true;
+    this.experience.camera.instance.updateProjectionMatrix();
   }
 
   private createItemAtPosition(positionPlane: Object3D<Event>) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
-    console.log(newItem);
-    // newItem.children.forEach(child => {
-    //   console.log(child.material)
-    //   child.material = new MeshPhysicalMaterial( {
-    //     color: params.color,
-    //     metalness: params.metalness,
-    //     roughness: params.roughness,
-    //     ior: params.ior,
-    //     // alphaTest: 1,
-    //     depthWrite: false,
-    //     map: child.material.map,
-    //     metalnessMap: child.material.metalnessMap,
-    //     normalMap: child.material.normalMap,
-    //     roughnessMap: child.material.roughnessMap,
-    //     envMapIntensity: params.envMapIntensity,
-    //     transmission: params.transmission, // use material.transmission for glass materials
-    //     // specularIntensity: params.specularIntensity,
-    //     opacity: params.opacity,
-    //     // side: DoubleSide,
-    //     transparent: true
-    //   } );
-    //   console.log(child.material)
-    // })
 
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
@@ -314,6 +320,10 @@ export default class Island {
       this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
+    // localStorage.setItem(
+    //   "item[" + (this.mapGroup.children.length - 1).toString() + "]",
+    //   JSON.stringify(this.mapGroup.children[this.mapGroup.children.length - 1])
+    // );
   }
 
   private selectItem(itemSelected: ItemIsland) {
@@ -329,18 +339,37 @@ export default class Island {
     this.imageItem = itemSelected.object!.clone();
     this.setImageItem();
     this.displayEditMode(true);
+
+    this.moveIslandGroup(-5, 0.5);
     displayInterfaceInformationItem();
     disableInterfaceCreationItem();
-    // this.camera.controls.enabled = false;
-    // this.experience.camera.instance.updateProjectionMatrix();
+    this.camera.controls.enabled = false;
+    this.experience.camera.instance.updateProjectionMatrix();
+  }
+
+  private moveIslandGroup(y: number, scale: number) {
+    gsap.to(this.islandGroup.position, { duration: 1, y: y });
+    gsap.to(this.islandGroup.scale, {
+      duration: 1,
+      x: scale,
+      y: scale,
+      z: scale,
+    });
   }
 
   setImageItem() {
     let sizeImageItem = 1.5;
     if (this.imageItem) {
-      this.imageItem.scale.set(sizeImageItem, sizeImageItem, sizeImageItem);
+      gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 2, z: 0 });
+      gsap.to(this.imageItem.scale, {
+        duration: 1,
+        x: sizeImageItem,
+        y: sizeImageItem,
+        z: sizeImageItem,
+      });
 
-      this.imageItem.position.set(0, 1, 0);
+      new ClickAndDrag(this.imageItem, EventClickDrag.ROTATION, false);
+
       this.scene.add(this.imageItem);
     }
   }
@@ -375,6 +404,7 @@ export default class Island {
         this.resetPositionOfSelectedObject();
         this.canRaycast = true;
         this.checkIfAddItemToCreate();
+        this.moveIslandGroup(0, 1);
         this.destroyImageItem();
       });
   }
@@ -402,6 +432,7 @@ export default class Island {
         this.canRaycast = true;
         this.destroyImageItem();
         this.camera.controls.enabled = true;
+        this.moveIslandGroup(0, 1);
         this.experience.camera.instance.updateProjectionMatrix();
       });
   }
@@ -423,8 +454,10 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.IleBakeMoche)
+      new Model3D(allGlbs.Island)
     );
+
+    this.island.loadedModel3D!.children[0].material.transparent = false;
 
     this.cylindre = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Cylindre)
@@ -433,17 +466,15 @@ export default class Island {
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
 
-    this.scene.add(this.island.loadedModel3D!);
-    this.scene.add(this.cylindre.loadedModel3D!);
-
-    console.log(
-      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
-    );
-
-    this.scene.add(this.island.loadedModel3D!);
-    this.island.animationAction![0].play();
-    this.island.animationAction![1].play();
+    // this.scene.add(this.island.loadedModel3D!);
+    // this.island.animationAction![0].play();
+    // this.island.animationAction![1].play();
     // this.island.animationAction![2].play();
+
+    this.islandGroup.add(this.mapGroup);
+    this.islandGroup.add(this.island.loadedModel3D!);
+
+    this.scene.add(this.islandGroup);
   }
 
   private destroyImageItem() {
@@ -452,42 +483,41 @@ export default class Island {
   }
 
   update() {
-    this.island?.mixer?.update(this.experience.time.delta * 0.002);
+    // this.island?.mixer?.update(this.experience.time.delta * 0.002);
 
     // varying the height with sin between -1 and 1
-    if (
-      this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
-    ) {
-      this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
-    }
+    // if (
+    //   this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
+    // ) {
+    //   this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
+    //     Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    // }
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
     // light : this.experience.light.sunLight
 
-    this.experience.light.sunLight.position.copy(
+    this.experience.light.sunLight!.position.copy(
       this.experience.camera.instance.position
     );
-    this.experience.light.sunLight.position.y += 7;
-    this.experience.light.sunLight.position.z += 13;
-    this.experience.light.sunLight.position.x += 1;
+    this.experience.light.sunLight!.position.y += 7;
+    this.experience.light.sunLight!.position.z += 13;
+    this.experience.light.sunLight!.position.x += 1;
 
     NodeToyMaterial.tick();
   }
 
   destroy() {
-    this.scene.remove(this.island?.loadedModel3D!);
-    this.island?.loadedModel3D?.remove();
-    this.scene.remove(this.cylindre?.loadedModel3D!);
-    this.cylindre?.loadedModel3D?.remove();
+    this.scene.remove(this.islandGroup);
+    this.islandGroup.remove();
 
-    this.scene.remove(this.mapGroup);
-    this.mapGroup.remove();
+    this.scene.remove(this.cylindre?.loadedModel3D!);
+    this.cylindre?.loadedModel3D!.remove();
   }
 
   private setBackGround() {
     // load a cubeMap texture
+
     new CubeTextureLoader()
       .setPath("envMap/hdr/")
       .load(
@@ -495,6 +525,7 @@ export default class Island {
         (l) => {
           this.scene.background = l;
           this.scene.backgroundIntensity = 2;
+          console.log(this.scene);
         }
       );
   }

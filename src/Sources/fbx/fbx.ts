@@ -11,6 +11,7 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     shadow: true,
+    transmission: false,
   },
   Whale: {
     name: "Whale",
@@ -21,6 +22,7 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     shadow: true,
+    transmission: false,
   },
   Cygne: {
     name: "Cygne",
@@ -31,5 +33,6 @@ export const allFbx = {
     scale: 0.001,
     animation: true,
     shadow: true,
+    transmission: false,
   },
 };

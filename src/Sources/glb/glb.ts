@@ -143,22 +143,10 @@ export const allGlbs = {
 
   Island: {
     name: "Island",
-    path: "glb/island_test.gltf",
+    path: "glb/island_bake_1.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, -0.5, 0),
-    rotation: new Vector3(0, 0, 0),
-    scale: 1,
-    animation: true,
-    shadow: true,
-    transmission: false,
-  },
-
-  Cards: {
-    name: "Cards",
-    path: "glb/cards_v1.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(-4, 0, 2),
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, Math.PI / 2, 0),
     scale: 1,
     animation: true,
     shadow: true,
@@ -177,11 +165,11 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Card1: {
-    name: "Card1",
-    path: "glb/cartomancie/carte_1.gltf",
+  Batons2: {
+    name: "Batons2",
+    path: "glb/cartomancie/2_batons.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-2, 4, -2),
+    position: new Vector3(0, 4, 0),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
@@ -189,11 +177,11 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Card2: {
-    name: "Card2",
-    path: "glb/cartomancie/carte_2.gltf",
+  Batons4: {
+    name: "Batons4",
+    path: "glb/cartomancie/baton4.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-2, 4, -2),
+    position: new Vector3(0, 4, 0),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
@@ -201,11 +189,11 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Card3: {
-    name: "Card3",
-    path: "glb/cartomancie/carte_3.gltf",
+  Cup6: {
+    name: "Cup6",
+    path: "glb/cartomancie/cup6.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-2, 4, -2),
+    position: new Vector3(0, 4, 0),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
@@ -213,11 +201,47 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Card4: {
-    name: "Card4",
-    path: "glb/cartomancie/carte_4.gltf",
+  Jugement: {
+    name: "Jugement",
+    path: "glb/cartomancie/jugement.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(-2, 4, -2),
+    position: new Vector3(0, 4, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Lune: {
+    name: "Lune",
+    path: "glb/cartomancie/lune.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 4, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Sword: {
+    name: "Sword",
+    path: "glb/cartomancie/sword_7.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 4, 0),
+    rotation: new Vector3(0, Math.PI, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Temperance: {
+    name: "Temperance",
+    path: "glb/cartomancie/temperance.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 4, 0),
     rotation: new Vector3(0, Math.PI, 0),
     scale: 2.7,
     animation: true,
@@ -239,13 +263,38 @@ export const allGlbs = {
 
   IleBakeMoche: {
     name: "IleBakeMoche",
-    path: "glb/island_bake.gltf",
+    path: "glb/island_bake_1.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),
     scale: 1,
     animation: true,
     shadow: true,
+    transmission: false,
+  },
+
+  SceneCard: {
+    name: "Scene card",
+    path: "glb/cartomancie/scene_card.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, 0, 2),
+    rotation: new Vector3(0, Math.PI / 2, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Cards: {
+    name: "Cards",
+    path: "glb/cartomancie/cards_animations.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-4, -0.4, 2),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
+    transmission: false,
   },
 
   Fiole: {
@@ -267,6 +316,18 @@ export const allGlbs = {
     position: new Vector3(-4, 7, -5),
     rotation: new Vector3(0, 5.5, 0),
     scale: 2,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  flame: {
+    name: "flame",
+    path: "glb/FLAMME.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
     animation: true,
     shadow: true,
     transmission: false,

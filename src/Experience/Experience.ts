@@ -10,6 +10,7 @@ import Light from "./Light/Light";
 import Onboarding from "./Onboarding/Onboarding";
 import Cartomancie from "./Cartomancie/Cartomancie";
 import Sky from "./Sky/Sky";
+import PostProcessing from "./utils/PostProcessing";
 
 export class Experience {
   private static instance: Experience;
@@ -26,6 +27,7 @@ export class Experience {
   public sky?: Sky;
   public debug: Debug;
   public onBoarding: Onboarding;
+  public postProcessing: PostProcessing;
 
   private constructor() {
     Experience.instance = this;
@@ -40,6 +42,7 @@ export class Experience {
     // this.sky = new Sky();
     this.onBoarding = new Onboarding();
     this.renderer = new Renderer();
+    this.postProcessing = new PostProcessing();
 
     this.sizes.on("resize", (): void => {
       this.resize();
@@ -52,7 +55,7 @@ export class Experience {
     this.onBoarding.on("onboardingFinish", () => {
       console.log("onboardingFinish");
       this.onBoarding.destroy();
-      this.island = new Island(0);
+      this.island = new Island();
     });
   }
 
@@ -68,6 +71,7 @@ export class Experience {
   private resize() {
     this.camera.resize();
     this.renderer.resize();
+    this.postProcessing.resize();
   }
 
   private update() {
@@ -83,6 +87,7 @@ export class Experience {
     if (this.sky) {
       this.sky.update();
     }
+    this.postProcessing.update();
   }
 
   static getInstance() {

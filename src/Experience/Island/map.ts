@@ -62,14 +62,14 @@ export function loadMap(
 
   let map: Group = new Group();
   let editMode: Group = new Group();
-  let allObjectInMal: Group = new Group();
+  let allObjectInMap: Group = new Group();
 
   // the map is created with a matrix containing numbers corresponding to different objects
   for (let x = 0; x < sizeX; x++) {
     for (let y = 0; y < sizeY; y++) {
       const distance = 1;
-      let posx = x * distance - (sizeX / distance) * distance; // position x
-      let posy = y * distance - (sizeY / distance) * distance; // position y (it's the Z axis)
+      let posx = x * distance - sizeX / 2 + distance / 2; // position x
+      let posy = y * distance - sizeY / 2 + distance / 2; // position y (it's the Z axis)
 
       // display a different object in function of the number in the matrix
       switch (mapdata.data[y][x]) {
@@ -98,8 +98,9 @@ export function loadMap(
     }
   }
   editMode.name = "editMode";
-  allObjectInMal.add(map);
-  allObjectInMal.add(editMode);
-  scene.add(allObjectInMal);
-  return allObjectInMal;
+  allObjectInMap.add(map);
+  allObjectInMap.add(editMode);
+  console.log(editMode.position);
+  scene.add(allObjectInMap);
+  return allObjectInMap;
 }
