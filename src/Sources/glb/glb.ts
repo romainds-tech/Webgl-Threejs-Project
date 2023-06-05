@@ -69,7 +69,7 @@ export const allGlbs = {
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
-    shadow: true,
+    shadow: false,
     transmission: false,
   },
   Herbe: {

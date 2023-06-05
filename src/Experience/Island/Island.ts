@@ -99,6 +99,7 @@ export default class Island {
     this.debug = this.experience.debug;
     this.setBackGround();
     this.setupCamera();
+    this.setupLight();
 
     // Mouse position
     this.mouse = new Vector2();
@@ -155,6 +156,12 @@ export default class Island {
 
     this.experience.camera.instance.position.set(-5, 17, 17);
     this.experience.camera.instance.updateProjectionMatrix();
+  }
+
+  setupLight() {
+    this.experience.light!.sunLight!.intensity = 86.9;
+    this.experience.light!.hemisphereLight!.intensity = 6;
+    this.experience.light.sunLight!.castShadow = true;
   }
 
   public checkIfAddItemToCreate() {

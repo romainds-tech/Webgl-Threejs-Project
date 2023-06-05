@@ -3,7 +3,7 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag, { Event } from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
 import gsap from "gsap";
 import { Scene } from "three";
@@ -48,15 +48,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
       this.showQuestion();
     });
 
-    this.loadAllModels().then(() => {
-      this.setupLight();
-      this.setupCamera();
-      this.showQuestion();
-    });
+    this.loadAllModels();
+    this.setupLight();
+    this.setupCamera();
+    this.showQuestion();
   }
 
   private setupLight() {
     this.experience.light.sunLight!.intensity = 0;
+    this.experience.light.sunLight!.castShadow = false;
   }
 
   private async loadAllModels() {
@@ -88,36 +88,39 @@ export default class Onboarding extends EventEmitter<EventMap> {
     );
 
     this.scene.add(this.circle2.loadedModel3D!);
+
+    // this.startMovementCamera();
   }
 
   private setupCamera() {
     console.log(this.experience.camera.instance.position);
-    this.experience.camera.instance.position.set(-5, 5, 20);
+    this.experience.camera.instance.position.set(-1, 5, 4);
 
-    this.experience.camera.instance.zoom = 0.35;
+    this.experience.camera.instance.zoom = 0.7;
     this.experience.camera.instance.updateProjectionMatrix();
-    this.experience.camera.controls.enabled = false;
+    this.experience.camera.controls.enabled = true;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
-    this.startMovementCamera();
   }
 
   private startMovementCamera() {
-    addEventListener("load", () => {
-      gsap.to(this.experience.camera.instance.position, {
-        duration: 1,
-        y: 20,
-        ease: "Expo.easeOut",
-      });
-
-      gsap.to(this.experience.camera.instance, {
-        duration: 1,
-        zoom: 1.75,
-        ease: "Expo.easeOut",
-        onUpdate: () => {
-          this.experience.camera.instance.updateProjectionMatrix();
-        },
-      });
+    gsap.to(this.experience.camera.instance.position, {
+      duration: 2,
+      x: -1,
+      y: 5,
+      z: 4,
+      ease: "Expo.easeOut",
+      onUpdate: () => {
+        this.experience.camera.instance.updateProjectionMatrix();
+      },
+    });
+    gsap.to(this.experience.camera.instance, {
+      duration: 2,
+      zoom: 0.7,
+      ease: "Expo.easeOut",
+      onUpdate: () => {
+        this.experience.camera.instance.updateProjectionMatrix();
+      },
     });
   }
 
@@ -178,7 +181,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (question.Type === "wheel") {
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
-        Event.ROTATION
+        EventClickDrag.ROTATION,
+        true
       );
       // cut the circle in parts
       let nbOptions = question.Options!.length - 1;
@@ -212,7 +216,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
         .value
     ) {
       this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+        Math.sin(this.experience.time.elapsed * 0.002) * 0.5 + 0.5;
     }
     NodeToyMaterial.tick();
   }
