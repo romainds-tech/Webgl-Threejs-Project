@@ -1,14 +1,19 @@
 import { Experience } from "../Experience";
 import {
-  AxesHelper,
   CubeTextureLoader,
-  MeshBasicMaterial,
   Event,
   Group,
   Mesh,
   Object3D,
   Scene,
   Vector2,
+  Event,
+  Mesh,
+  CubeTextureLoader,
+  LinearFilter,
+  RedFormat,
+  Data3DTexture,
+  Vector3,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -37,8 +42,7 @@ import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
-import { GUI } from "lil-gui";
+import { data } from "../../shaders/beacon/data";
 
 export default class Island {
   public experience: Experience;
@@ -73,6 +77,8 @@ export default class Island {
   private readonly mouse: Vector2;
   private readonly allObjectsCreateInMap: Array<Object3D>;
   private beacon?: Mesh;
+  private cloud?: Mesh;
+
   //
   public itemIslandManager: ItemIslandManager;
   // // public textItemIsland: TextItemIsland;
@@ -132,8 +138,6 @@ export default class Island {
 
     this.actionOnClickButtons();
     this.imageItem = null;
-
-    this.checkIfAddItemToCreate();
   }
 
   public loadAllScene() {
@@ -463,18 +467,23 @@ export default class Island {
       new Model3D(allGlbs.Cylindre)
     );
 
+    this.cylindre.loadedModel3D!.scale.set(0.6, 3, 0.6);
+    this.cylindre.loadedModel3D!.position.set(0, 15, 0);
+
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
 
-    // this.scene.add(this.island.loadedModel3D!);
-    // this.island.animationAction![0].play();
-    // this.island.animationAction![1].play();
+    this.scene.add(this.island.loadedModel3D!);
+    this.scene.add(this.cylindre.loadedModel3D!);
+
+    console.log(
+      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
+    );
+
+    this.scene.add(this.island.loadedModel3D!);
+    this.island.animationAction![0].play();
+    this.island.animationAction![1].play();
     // this.island.animationAction![2].play();
-
-    this.islandGroup.add(this.mapGroup);
-    this.islandGroup.add(this.island.loadedModel3D!);
-
-    this.scene.add(this.islandGroup);
   }
 
   private destroyImageItem() {
@@ -486,12 +495,12 @@ export default class Island {
     // this.island?.mixer?.update(this.experience.time.delta * 0.002);
 
     // varying the height with sin between -1 and 1
-    // if (
-    //   this.cylindre?.loadedModel3D?.children[0].material.uniforms.height.value
-    // ) {
-    //   this.cylindre.loadedModel3D.children[0].material.uniforms.height.value =
-    //     Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
-    // }
+    if (
+      this.cylindre?.loadedModel3D?.children[0].material.uniforms.Hauteur1.value
+    ) {
+      this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
+        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+    }
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
@@ -528,5 +537,45 @@ export default class Island {
           console.log(this.scene);
         }
       );
+  }
+
+  private setCloudTexture() {
+    let size = 128;
+    let data = new Uint8Array(size * size * size);
+
+    let i = 0;
+    let scale = 0.05;
+    let perlin = new ImprovedNoise();
+    let vector = new Vector3();
+
+    for (let z = 0; z < size; z++) {
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const d =
+            1.0 -
+            vector
+              .set(x, y, z)
+              .subScalar(size / 2)
+              .divideScalar(size)
+              .length();
+          data[i] =
+            (128 +
+              128 *
+                perlin.noise((x * scale) / 1.5, y * scale, (z * scale) / 1.5)) *
+            d *
+            d;
+          i++;
+        }
+      }
+    }
+
+    let texture = new Data3DTexture(data, size, size, size);
+    texture.format = RedFormat;
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.unpackAlignment = 1;
+    texture.needsUpdate = true;
+
+    return texture;
   }
 }
