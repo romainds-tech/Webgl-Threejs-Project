@@ -50,10 +50,10 @@ export default class Light {
     this.sunLight!.position.set(7, 13, 1);
 
     // increase shadow surface
-    this.sunLight.shadow.camera.top = 100;
-    this.sunLight.shadow.camera.bottom = -100;
-    this.sunLight.shadow.camera.left = -100;
-    this.sunLight.shadow.camera.right = 100;
+    this.sunLight.shadow.camera.top = 30;
+    this.sunLight.shadow.camera.bottom = -30;
+    this.sunLight.shadow.camera.left = -30;
+    this.sunLight.shadow.camera.right = 30;
 
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
     // this.sunLight.position.multiplyScalar(30);

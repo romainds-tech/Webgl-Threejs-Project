@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
 import { data } from "../../shaders/beacon/data";
+import { data1 } from "../../shaders/glyphes/data";
 
 export const allGlbs = {
   ThreeVertex: {
@@ -28,35 +29,47 @@ export const allGlbs = {
   },
   TempleCircle1: {
     name: "TempleCircle1",
-    path: "glb/temple_circle_1.gltf",
+    path: "glb/anneaux_grand.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
-    shadow: true,
+    shadow: false,
+    transmission: false,
+  },
+  TempleCircle1Bis: {
+    name: "TempleCircle1Bis",
+    path: "glb/anneaux_grand.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, -90, 0),
+    scale: 0.0102,
+    animation: false,
+    shadow: false,
+    nodeToyMaterial: data1,
     transmission: false,
   },
   TempleCircle2: {
     name: "TempleCircle2",
-    path: "glb/temple_circle_2.gltf",
+    path: "glb/anneaux_petit.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
-    shadow: true,
+    shadow: false,
     transmission: false,
   },
   Temple: {
     name: "Temple",
     path: "glb/temple.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(0.8, 0, 0),
+    position: new Vector3(-0.2, 0, -2.2),
     rotation: new Vector3(0, -90, 0),
     scale: 0.01,
     animation: false,
-    shadow: true,
+    shadow: false,
     transmission: false,
   },
   Herbe: {
@@ -259,6 +272,7 @@ export const allGlbs = {
     animation: false,
     shadow: false,
     nodeToyMaterial: data,
+    transmission: false,
   },
 
   IleBakeMoche: {

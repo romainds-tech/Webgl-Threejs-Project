@@ -3,10 +3,7 @@ import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
-import ClickAndDrag, {
-  Event,
-  EventClickDrag,
-} from "../UI/Interactions/ClickAndDrag";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
 import gsap from "gsap";
 import { Scene } from "three";
@@ -16,6 +13,7 @@ import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
+import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 type EventMap = {
   onboardingFinish: [];
@@ -23,9 +21,10 @@ type EventMap = {
 export default class Onboarding extends EventEmitter<EventMap> {
   public experience: Experience;
   public scene: Scene;
-  // private cookieManager: CookieManager;
+  private cookieManager: CookieManager;
   private temple?: Model3D;
   private circle1?: Model3D;
+  private circle1Bis?: Model3D;
   private circle2?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
@@ -35,12 +34,12 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
   constructor() {
     super();
-    // this.cookieManager = CookieManager.getInstance();
+    this.cookieManager = CookieManager.getInstance();
     this.experience = Experience.getInstance();
     this.scene = this.experience.scene;
     this.questions = questions;
     // this.setupBackgroundImage();
-    // this.user = this.cookieManager.getCookie("user");
+    this.user = this.cookieManager.getCookie("user");
 
     this.buttonOnboarding = new Button();
     this.buttonOnboarding.setButtonOnboarding();
@@ -48,34 +47,16 @@ export default class Onboarding extends EventEmitter<EventMap> {
     button?.addEventListener("click", () => {
       this.showQuestion();
     });
-    this.loadAllModels();
-    this.setupCamera();
-    // this.setupBackgroundImage();
-    // this.user = this.setUserFromCookie();
 
+    this.loadAllModels();
+    this.setupLight();
+    this.setupCamera();
     this.showQuestion();
   }
 
-  private setUserFromCookie(): User {
-    let cookie = document.cookie;
-    if (cookie) {
-      console.log(cookie);
-      return JSON.parse(cookie);
-    }
-    return {
-      phoneNumber: "",
-      zodiacSign: "",
-      hourBirth: "",
-    };
-  }
-
-  private setCookie(user: User) {
-    document.cookie = JSON.stringify(user);
-
-    this.loadAllModels().then(() => {
-      this.setupCamera();
-      this.showQuestion();
-    });
+  private setupLight() {
+    this.experience.light.sunLight!.intensity = 0;
+    this.experience.light.sunLight!.castShadow = false;
   }
 
   private async loadAllModels() {
@@ -92,45 +73,54 @@ export default class Onboarding extends EventEmitter<EventMap> {
       new Model3D(allGlbs.TempleCircle1)
     );
 
+    //apply texture to circle
     this.circle1.loadedModel3D!.children[0].material.map = textureCircle;
-    console.log(this.circle1.loadedModel3D!.children[0]);
     this.scene.add(this.circle1.loadedModel3D!);
+
+    this.circle1Bis = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.TempleCircle1Bis)
+    );
+
+    this.scene.add(this.circle1Bis.loadedModel3D!);
 
     this.circle2 = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.TempleCircle2)
     );
 
     this.scene.add(this.circle2.loadedModel3D!);
+
+    // this.startMovementCamera();
   }
 
   private setupCamera() {
     console.log(this.experience.camera.instance.position);
-    this.experience.camera.instance.position.set(-5, 5, 20);
+    this.experience.camera.instance.position.set(-1, 5, 4);
 
-    this.experience.camera.instance.zoom = 0.35;
+    this.experience.camera.instance.zoom = 0.7;
     this.experience.camera.instance.updateProjectionMatrix();
-    this.experience.camera.controls.enabled = false;
+    this.experience.camera.controls.enabled = true;
 
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
-    this.startMovementCamera();
   }
 
   private startMovementCamera() {
-    addEventListener("load", () => {
-      gsap.to(this.experience.camera.instance.position, {
-        duration: 1,
-        y: 20,
-        ease: "Expo.easeOut",
-      });
-
-      gsap.to(this.experience.camera.instance, {
-        duration: 1,
-        zoom: 1.75,
-        ease: "Expo.easeOut",
-        onUpdate: () => {
-          this.experience.camera.instance.updateProjectionMatrix();
-        },
-      });
+    gsap.to(this.experience.camera.instance.position, {
+      duration: 2,
+      x: -1,
+      y: 5,
+      z: 4,
+      ease: "Expo.easeOut",
+      onUpdate: () => {
+        this.experience.camera.instance.updateProjectionMatrix();
+      },
+    });
+    gsap.to(this.experience.camera.instance, {
+      duration: 2,
+      zoom: 0.7,
+      ease: "Expo.easeOut",
+      onUpdate: () => {
+        this.experience.camera.instance.updateProjectionMatrix();
+      },
     });
   }
 
@@ -154,12 +144,12 @@ export default class Onboarding extends EventEmitter<EventMap> {
     let question: typeof questions = this.questions![this.currentQuestionIndex];
 
     // si la question est déjà enregistré dans le user on passe à la suivante
-    // if (this.user[question.id] !== "") {
-    //   console.log("question déjà répondu");
-    //   this.currentQuestionIndex++;
-    //   this.showQuestion();
-    //   return;
-    // }
+    if (this.user[question.id] !== "") {
+      console.log("question déjà répondu");
+      this.currentQuestionIndex++;
+      this.showQuestion();
+      return;
+    }
 
     // we show the question
     let title = new Text(question.Title, typeText.TITLE);
@@ -174,6 +164,15 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // user answer
       input.addEventListener("input", (e) => {
         // save the answer in the user object
+        switch (question.id) {
+          case "phoneNumber":
+            this.user!.phoneNumber = input.value;
+            break;
+          default:
+            console.error(`Unrecognized question id: ${question.id}`);
+        }
+
+        this.cookieManager.setCookie(this.user!);
       });
 
       // save the answer in the cookies
@@ -195,23 +194,32 @@ export default class Onboarding extends EventEmitter<EventMap> {
         angleRotation = Math.abs(Math.floor(angleRotation! % 360));
         let index = Math.abs(Math.floor(angleRotation / angle));
 
-        // switch (question.id) {
-        //   case "zodiacSign":
-        //     this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
-        //     break;
-        //   case "hourBirth":
-        //     this.user!.hourBirth = index.toString(); // Or however you determine the birth hour
-        //     break;
-        // }
+        switch (question.id) {
+          case "zodiacSign":
+            this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
+            break;
+          case "hourBirth":
+            this.user!.hourBirth = index.toString(); // Or however you determine the birth hour
+            break;
+        }
 
-        // this.cookieManager.setCookie(this.user!);
+        this.cookieManager.setCookie(this.user!);
       });
     }
 
     this.currentQuestionIndex++;
   }
 
-  update() {}
+  update() {
+    if (
+      this.circle1Bis?.loadedModel3D?.children[0].material.uniforms.Aparition
+        .value
+    ) {
+      this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
+        Math.sin(this.experience.time.elapsed * 0.002) * 0.5 + 0.5;
+    }
+    NodeToyMaterial.tick();
+  }
 
   destroy() {
     this.scene.remove(this.temple?.loadedModel3D!);
@@ -220,7 +228,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.scene.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
-    // this.circle1 = undefined;F
+    this.circle1 = undefined;
 
     this.scene.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();
