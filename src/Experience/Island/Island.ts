@@ -7,15 +7,11 @@ import {
   Object3D,
   Scene,
   Vector2,
-  Event,
-  Mesh,
-  CubeTextureLoader,
   LinearFilter,
   RedFormat,
   Data3DTexture,
   Vector3,
   Intersection,
-  BoxGeometry,
   MeshBasicMaterial,
   PlaneGeometry,
 } from "three";
@@ -46,9 +42,13 @@ import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import { data } from "../../shaders/beacon/data";
 import { GUI } from "lil-gui";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
+import Popup from "../UI/Popups/Popup";
+import Button from "../UI/Buttons/Button";
+import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise";
+import { transitionCartomancieData } from "../../shaders/TransitionCartomancie";
+import { flameData } from "../../shaders/Flame";
 
 export default class Island {
   public experience: Experience;
@@ -64,14 +64,6 @@ export default class Island {
 
   public numberOfElementToAdd: number;
 
-  private experience: Experience;
-  private debug: Debug;
-  private scene: Scene;
-  private sizes: Sizes;
-  private camera: Camera;
-
-  // Map
-  private island?: Model3D;
   // var for trigger event
   private readonly onMouseDown: (event: MouseEvent) => void;
 
@@ -83,7 +75,6 @@ export default class Island {
   private isSelected: boolean;
   private readonly mouse: Vector2;
   public readonly allObjectsCreateInMap: Array<Object3D>;
-  private beacon?: Mesh;
   private cloud?: Mesh;
 
   //
@@ -93,10 +84,6 @@ export default class Island {
   public imageItem: Object3D<Event> | null;
   public buttonIsland: Button;
 
-  private itemIslandManager: ItemIslandManager;
-
-  private imageItem: Object3D<Event> | null;
-
   constructor() {
     // Experience
     this.experience = Experience.getInstance();
@@ -105,6 +92,7 @@ export default class Island {
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
+    this.setupPlaneInFrontOfCamera();
     this.setBackGround();
     // this.setupCamera();
     this.movementCamera();
@@ -163,6 +151,7 @@ export default class Island {
     this.scene.add(this.islandGroup);
     this.setupLight();
     this.setBackGround();
+    this.displayCylinder();
     // this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
@@ -196,34 +185,50 @@ export default class Island {
     }
   }
 
+  private displayCylinder() {
+    if (this.numberOfElementToAdd == -1) {
+      this.loadCylinder();
+    }
+  }
+
+  private setupPlaneInFrontOfCamera() {
+    this.planeForSky = new Mesh(
+      new PlaneGeometry(10, 10),
+      new MeshBasicMaterial({
+        color: 0x000000,
+        opacity: 0,
+        transparent: true,
+        visible: true,
+      })
+    );
+
+    //this.experience.postProcessing.setSelectObjectsForBloom(this.planeForSky);
+
+    this.camera.instance.add(this.planeForSky);
+    this.planeForSky.position.z = -1;
+  }
   private movementCamera() {
     this.experience.camera.instance.zoom = 3.15;
     this.camera.controls.enabled = true;
 
     this.experience.camera.instance.position.set(8, -12, 17);
     this.experience.camera.instance.updateProjectionMatrix();
-    gsap
-      .timeline({ repeat: 0, delay: 2 })
-      .to(this.camera.instance.position, {
-        duration: 1,
-        x: 12,
-        y: 5,
-        ease: "none",
-      })
-      .to(this.camera.instance.position, {
-        duration: 2.2,
-        x: -5,
-        y: 17,
-        ease: "none",
-        onComplete: () => {
-          this.camera.updateActive = true;
-        },
-      });
+
+    gsap.timeline({ repeat: 0, delay: 2 }).to(this.camera.instance.position, {
+      duration: 3.2,
+      x: -5,
+      y: 17,
+      ease: "circ.out",
+      onComplete: () => {
+        this.camera.updateActive = true;
+        this.displayCylinder();
+      },
+    });
 
     gsap.to(this.camera.instance, {
       duration: 3.2,
       zoom: 0.2,
-      ease: "expo.inOut",
+      ease: "ease.out",
       onUpdate: () => {
         this.camera.instance.updateProjectionMatrix();
       },
@@ -292,7 +297,7 @@ export default class Island {
 
       // modification item position
       if (this.isSelected) {
-        this.modificationItemPosition(selectedPlane);
+        this.modificationItemPosition(selectedPlane, intersects);
       }
       // if create object
       else {
@@ -309,10 +314,29 @@ export default class Island {
           selectedPlane.name == "cartomancie" &&
           this.numberOfElementToAdd == -1
         ) {
-          this.destroy();
           disableInterfaceGlobalOnIsland();
-          this.experience.cartomancie = new Cartomancie();
+
           this.camera.updateActive = true;
+          this.planeForSky!.material = new NodeToyMaterial({
+            data: transitionCartomancieData,
+          });
+
+          console.log(this.planeForSky?.material);
+          gsap.to(this.planeForSky!.material.uniforms.Transi, {
+            duration: 0.5,
+            delay: 0.5,
+            value: 2,
+            ease: "none",
+            onComplete: () => {
+              setTimeout(() => {
+                this.destroy();
+                this.planeForSky!.material.visible = false;
+                this.experience.cartomancie = new Cartomancie();
+              }, 500);
+            },
+          });
+
+          //
         }
         // Else we gonna change position of this item
         else {
@@ -463,17 +487,12 @@ export default class Island {
         // this.destroy();
 
         console.log("anneaux");
-        this.planeForSky = new Mesh(
-          new PlaneGeometry(this.sizes.width, this.sizes.height),
-          new MeshBasicMaterial({
-            color: 0x000000,
-            opacity: 0,
-            transparent: true,
-          })
-        );
-
-        this.camera.instance.add(this.planeForSky);
-        this.planeForSky.position.z = -1;
+        this.planeForSky!.material = new MeshBasicMaterial({
+          color: 0x000000,
+          opacity: 0,
+          transparent: true,
+          visible: true,
+        });
 
         gsap.to(this.camera.instance.position, {
           duration: 1.2,
@@ -493,7 +512,7 @@ export default class Island {
           },
         });
 
-        gsap.to(this.planeForSky.material, {
+        gsap.to(this.planeForSky!.material, {
           duration: 0.5,
           delay: 0.5,
           opacity: 1,
@@ -562,24 +581,10 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
-
     this.island.loadedModel3D!.children[0].material.transparent = false;
-
-    this.cylindre = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Cylindre)
-    );
-
-    this.cylindre.loadedModel3D!.scale.set(0.6, 3, 0.6);
-    this.cylindre.loadedModel3D!.position.set(0, 15, 0);
 
     this.island.loadedModel3D!.castShadow = true;
     this.island.loadedModel3D!.receiveShadow = true;
-
-    this.scene.add(this.cylindre.loadedModel3D!);
-
-    // console.log(
-    //   this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
-    // );
 
     this.islandGroup.add(this.mapGroup);
     this.islandGroup.add(this.island.loadedModel3D!);
@@ -590,14 +595,22 @@ export default class Island {
     // this.island.animationAction![2].play();
   }
 
+  private async loadCylinder() {
+    this.cylindre = await CustomGlbLoader.getInstance().loadOne(
+      new Model3D(allGlbs.Cylindre)
+    );
+
+    this.cylindre.loadedModel3D!.scale.set(0.6, 3, 0.6);
+    this.cylindre.loadedModel3D!.position.set(0, 15, 0);
+
+    this.scene.add(this.cylindre.loadedModel3D!);
+  }
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
 
   update() {
-    // this.island?.mixer?.update(this.experience.time.delta * 0.002);
-
     // varying the height with sin between -1 and 1
     if (
       this.cylindre?.loadedModel3D?.children[0].material.uniforms.Hauteur1.value
@@ -605,6 +618,8 @@ export default class Island {
       this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
         Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }
+
+    NodeToyMaterial.tick();
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
@@ -623,6 +638,9 @@ export default class Island {
   destroy() {
     this.scene.remove(this.islandGroup);
     this.islandGroup.remove();
+
+    this.scene.remove(this.cylindre?.loadedModel3D!);
+    this.cylindre?.loadedModel3D!.remove();
 
     this.scene.remove(this.cylindre?.loadedModel3D!);
     this.cylindre?.loadedModel3D!.remove();

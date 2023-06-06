@@ -24,7 +24,7 @@ export default class PostProcessing {
 
   private materials: {};
   // @ts-ignore
-  private selectedObjectsForBloom: Selection;
+  public selectedObjectsForBloom: Selection;
 
   private renderTarget?: WebGLRenderTarget;
   private instance?: EffectComposer;
@@ -84,8 +84,7 @@ export default class PostProcessing {
         intensity: 10.5,
         mipmapBlur: true,
         luminanceThreshold: 0.1,
-        luminanceSmoothing: 0.75,
-        radius: 0.5,
+        luminanceSmoothing: 0.1,
       }
     );
     selectiveBloomEffect.selection = this.selectedObjectsForBloom;
