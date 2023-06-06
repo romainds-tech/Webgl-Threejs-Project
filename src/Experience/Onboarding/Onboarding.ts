@@ -60,34 +60,23 @@ export default class Onboarding extends EventEmitter<EventMap> {
   }
 
   private async loadAllModels() {
-    this.temple = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Temple)
-    );
-
-    this.scene.add(this.temple.loadedModel3D!);
+    this.temple = this.experience.allModels.Temple;
+    this.scene.add(this.temple?.loadedModel3D!);
 
     let textureCircle = CustomImageLoader.getInstance().loadImage(
       "textures/circle/glyphes_4.png"
     );
-    this.circle1 = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.TempleCircle1)
-    );
+    this.circle1 = this.experience.allModels.TempleCircle1;
 
     //apply texture to circle
-    this.circle1.loadedModel3D!.children[0].material.map = textureCircle;
-    this.scene.add(this.circle1.loadedModel3D!);
+    this.circle1!.loadedModel3D!.children[0].material.map = textureCircle;
+    this.scene.add(this.circle1?.loadedModel3D!);
 
-    this.circle1Bis = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.TempleCircle1Bis)
-    );
+    this.circle1Bis = this.experience.allModels.TempleCircle1Bis;
+    this.scene.add(this.circle1Bis?.loadedModel3D!);
 
-    this.scene.add(this.circle1Bis.loadedModel3D!);
-
-    this.circle2 = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.TempleCircle2)
-    );
-
-    this.scene.add(this.circle2.loadedModel3D!);
+    this.circle2 = this.experience.allModels.TempleCircle2;
+    this.scene.add(this.circle2?.loadedModel3D!);
 
     // this.startMovementCamera();
   }
