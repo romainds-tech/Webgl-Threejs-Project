@@ -457,6 +457,19 @@ export default class Cartomancie {
       if (this.itemPrediction) {
         this.itemPrediction.loadedModel3D!.scale.set(0.1, 0.1, 0.1);
       }
+
+      for (
+        let i = 0;
+        i < this.experience.island.allObjectsCreateInMap.length;
+        i++
+      ) {
+        if (
+          this.experience.island.allObjectsCreateInMap[i].name == "cartomancie"
+        ) {
+          this.experience.island.allObjectsCreateInMap.splice(i, 1);
+        }
+      }
+
       this.experience.island.setupCamera();
       this.experience.island.loadAllScene();
     }

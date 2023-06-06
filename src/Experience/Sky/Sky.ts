@@ -1,6 +1,7 @@
 import { Experience } from "../Experience";
 import {
   Color,
+  CubeTextureLoader,
   DoubleSide,
   Group,
   Mesh,
@@ -22,6 +23,7 @@ import {
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
+import gsap from "gsap";
 
 export default class Sky {
   public experience: Experience;
@@ -70,10 +72,22 @@ export default class Sky {
   }
 
   private setupCamera() {
-    this.camera.instance.zoom = 0.15;
+    this.camera.instance.zoom = 0.05;
     this.camera.instance.position.set(-5, 15, -5);
+    this.camera.instance.fov = 10;
     // this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
+
+    gsap.to(this.experience.island!.planeForSky!.material, {
+      duration: 0.5,
+      delay: 0.5,
+      opacity: 0,
+      ease: "none",
+      onComplete: () => {
+        this.camera.updateActive = false;
+      },
+    });
+    this.setBackGround();
   }
 
   private allActionOnButton() {
@@ -87,9 +101,18 @@ export default class Sky {
     document
       .getElementById("button_back_island_sky")!
       .addEventListener("click", () => {
-        this.destroy();
         deleteUISky();
-        this.experience.island?.loadAllScene();
+        gsap.to(this.experience.island!.planeForSky!.material, {
+          duration: 0.5,
+          opacity: 1,
+          ease: "none",
+          onComplete: () => {
+            this.destroy();
+            this.camera.updateActive = true;
+            this.experience.island?.backFromSky();
+            this.experience.island?.loadAllScene();
+          },
+        });
       });
   }
 
@@ -165,7 +188,7 @@ export default class Sky {
       -0.9,
       0.55,
       -1.15,
-      new Color(0xfb607f),
+      new Color("green"),
       new Color(0x1a1b36),
       "Love Ring"
     );
@@ -301,12 +324,28 @@ export default class Sky {
     }
   }
 
+  private setBackGround() {
+    // load a cubeMap texture
+
+    new CubeTextureLoader()
+      .setPath("envMap/hdrSky/")
+      .load(
+        ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
+        (l) => {
+          this.scene.background = l;
+          this.scene.backgroundIntensity = 2;
+          console.log(this.scene);
+        }
+      );
+  }
+
   destroy() {
     this.scene.remove(this.loveGroup!);
     this.loveGroup = undefined;
     this.scene.remove(this.workRing!);
     // this.workRing = null;
     this.scene.remove(this.healthRing!);
+    this.scene.background = null;
     // this.healthRing = null;
   }
 }

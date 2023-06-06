@@ -22,6 +22,8 @@ export default class Camera {
   public debug: Debug;
   public debugFolder?: GUI;
 
+  public updateActive: boolean;
+
   constructor() {
     this.experience = Experience.getInstance();
     this.sizes = this.experience.sizes;
@@ -29,8 +31,11 @@ export default class Camera {
     this.canvas = this.experience.canvas;
     // this.instance = this.setInstance();
     this.instance = this.setInstancePerspective();
+
     this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
+
+    this.updateActive = true;
   }
   private setInstance(): OrthographicCamera {
     let cameraInstance: OrthographicCamera;
@@ -63,6 +68,7 @@ export default class Camera {
       100
     );
     cameraInstance.position.set(0, 0, 3);
+
     this.scene.add(cameraInstance);
     return cameraInstance;
   }
@@ -86,6 +92,14 @@ export default class Camera {
         .name("Zoom")
         .onChange(() => {
           console.log(this.instance.zoom);
+          this.instance.updateProjectionMatrix();
+        });
+
+      cameraName
+        .add(this.instance, "fov", 0, 100)
+        .name("fov")
+        .onChange(() => {
+          console.log(this.instance.fov);
           this.instance.updateProjectionMatrix();
         });
 
@@ -127,6 +141,8 @@ export default class Camera {
   }
 
   update(): void {
-    this.controls.update();
+    if (this.updateActive) {
+      this.controls.update();
+    }
   }
 }
