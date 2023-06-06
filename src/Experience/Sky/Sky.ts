@@ -1,6 +1,7 @@
 import { Experience } from "../Experience";
 import {
   Color,
+  CubeTextureLoader,
   DoubleSide,
   Group,
   Mesh,
@@ -22,11 +23,14 @@ import {
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
 import { allGlbs } from "../../Sources/glb/glb";
+import gsap from "gsap";
 
 export default class Sky {
   public experience: Experience;
   public scene: Scene;
   private camera: Camera;
+
+  private allRings: Group;
 
   public debug: Debug;
   public debugFolder: GUI | null;
@@ -50,6 +54,7 @@ export default class Sky {
 
     this.time = this.experience.time;
 
+    this.allRings = new Group();
     this.loveRing = null;
     this.workRing = null;
     this.healthRing = null;
@@ -70,10 +75,24 @@ export default class Sky {
   }
 
   private setupCamera() {
-    this.camera.instance.zoom = 0.15;
-    this.camera.instance.position.set(-5, 15, -5);
+    this.camera.updateActive = false;
+    this.camera.instance.zoom = 0.05;
+    this.camera.instance.position.set(-4, 1, -32);
+    this.camera.instance.rotation.set(0, -3, 6);
+    this.camera.instance.fov = 4;
     // this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
+
+    gsap.to(this.experience.island!.planeForSky!.material, {
+      duration: 0.5,
+      delay: 0.5,
+      opacity: 0,
+      ease: "none",
+      onComplete: () => {
+        this.camera.updateActive = false;
+      },
+    });
+    this.setBackGround();
   }
 
   private allActionOnButton() {
@@ -87,9 +106,18 @@ export default class Sky {
     document
       .getElementById("button_back_island_sky")!
       .addEventListener("click", () => {
-        this.destroy();
         deleteUISky();
-        this.experience.island?.loadAllScene();
+        gsap.to(this.experience.island!.planeForSky!.material, {
+          duration: 0.5,
+          opacity: 1,
+          ease: "none",
+          onComplete: () => {
+            this.destroy();
+            this.camera.updateActive = true;
+            this.experience.island?.backFromSky();
+            this.experience.island?.loadAllScene();
+          },
+        });
       });
   }
 
@@ -153,9 +181,11 @@ export default class Sky {
     this.loveGroup!.add(this.jowelRingLove.loadedModel3D!);
     this.loveGroup!.add(this.loveRing!);
 
-    this.scene.add(this.loveGroup!);
-    this.scene.add(this.workRing!);
-    this.scene.add(this.healthRing!);
+    this.allRings.add(this.loveGroup!);
+    this.allRings.add(this.workRing!);
+    this.allRings.add(this.healthRing!);
+
+    this.scene.add(this.allRings);
   }
   private addRings(): void {
     this.loveRing = this.createRing(
@@ -165,7 +195,7 @@ export default class Sky {
       -0.9,
       0.55,
       -1.15,
-      new Color(0xfb607f),
+      new Color("green"),
       new Color(0x1a1b36),
       "Love Ring"
     );
@@ -301,12 +331,37 @@ export default class Sky {
     }
   }
 
+  private setBackGround() {
+    // load a cubeMap texture
+
+    new CubeTextureLoader()
+      .setPath("envMap/hdrSky/")
+      .load(
+        ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
+        (l) => {
+          this.scene.background = l;
+          this.scene.backgroundIntensity = 2;
+          console.log(this.scene);
+        }
+      );
+  }
+
   destroy() {
-    this.scene.remove(this.loveGroup!);
+    this.scene.remove(
+      this.loveGroup!,
+      this.loveRing!,
+      this.jowelRingLove?.loadedModel3D!
+    );
     this.loveGroup = undefined;
+    this.loveRing = null;
+    this.jowelRingLove = undefined;
+
     this.scene.remove(this.workRing!);
-    // this.workRing = null;
+    this.workRing = null;
     this.scene.remove(this.healthRing!);
-    // this.healthRing = null;
+    this.scene.background = null;
+    this.healthRing = null;
+
+    this.scene.remove(this.allRings);
   }
 }

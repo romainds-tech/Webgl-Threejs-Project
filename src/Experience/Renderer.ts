@@ -8,7 +8,6 @@ import {
   PCFSoftShadowMap,
   ReinhardToneMapping,
   Scene,
-  sRGBEncoding,
   WebGLRenderer,
 } from "three";
 import Camera from "./Camera";
@@ -42,6 +41,7 @@ export default class Renderer {
     });
     instance.autoClear = false;
     instance.clear();
+    // @ts-ignore
     instance.gammaFactor = 2.2;
     instance.useLegacyLights = true;
     instance.toneMapping = ReinhardToneMapping;
@@ -52,13 +52,13 @@ export default class Renderer {
     instance.setSize(this.sizes.width, this.sizes.height);
     instance.setPixelRatio(this.sizes.pixelRatio);
 
-
     return instance;
   }
 
   public resize() {
     this.instance.setSize(this.sizes.width, this.sizes.height);
 
+    console.log(this.sizes.width + " " + this.sizes.height);
     this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
   }
 

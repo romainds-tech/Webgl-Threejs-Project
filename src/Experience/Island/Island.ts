@@ -7,13 +7,13 @@ import {
   Object3D,
   Scene,
   Vector2,
-  Event,
-  Mesh,
-  CubeTextureLoader,
-  LinearFilter,
-  RedFormat,
-  Data3DTexture,
-  Vector3,
+  // LinearFilter,
+  // RedFormat,
+  // Data3DTexture,
+  // Vector3,
+  Intersection,
+  MeshBasicMaterial,
+  PlaneGeometry,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -42,7 +42,10 @@ import Debug from "../utils/Debug";
 import Sky from "../Sky/Sky";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-import { data } from "../../shaders/beacon/data";
+import { GUI } from "lil-gui";
+import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
+
+import { transitionCartomancieData } from "../../shaders/TransitionCartomancie";
 
 export default class Island {
   public experience: Experience;
@@ -52,19 +55,12 @@ export default class Island {
   public camera: Camera;
 
   public item?: Model3D;
+  public planeForSky?: Mesh;
   private island?: Model3D;
   private cylindre?: Model3D;
 
   public numberOfElementToAdd: number;
 
-  private experience: Experience;
-  private debug: Debug;
-  private scene: Scene;
-  private sizes: Sizes;
-  private camera: Camera;
-
-  // Map
-  private island?: Model3D;
   // var for trigger event
   private readonly onMouseDown: (event: MouseEvent) => void;
 
@@ -75,37 +71,33 @@ export default class Island {
   private canRaycast: boolean;
   private isSelected: boolean;
   private readonly mouse: Vector2;
-  private readonly allObjectsCreateInMap: Array<Object3D>;
-  private beacon?: Mesh;
-  private cloud?: Mesh;
+  public readonly allObjectsCreateInMap: Array<Object3D>;
+  // private cloud?: Mesh;
 
   //
   public itemIslandManager: ItemIslandManager;
   // // public textItemIsland: TextItemIsland;
-  public popupIsland: Popup;
   public imageItem: Object3D<Event> | null;
-  public buttonIsland: Button;
-
-  private itemIslandManager: ItemIslandManager;
-
-  private imageItem: Object3D<Event> | null;
 
   constructor() {
     // Experience
     this.experience = Experience.getInstance();
+
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
+    this.setupPlaneInFrontOfCamera();
     this.setBackGround();
-    this.setupCamera();
+    // this.setupCamera();
+    this.movementCamera();
     this.setupLight();
 
     // Mouse position
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = 0;
+    this.numberOfElementToAdd = -1;
     //
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
@@ -141,9 +133,20 @@ export default class Island {
     this.imageItem = null;
   }
 
+  public backFromSky() {
+    gsap.to(this.planeForSky!.material, {
+      duration: 0.5,
+      opacity: 0,
+      ease: "none",
+    });
+  }
+
   public loadAllScene() {
     this.setupCamera();
     this.scene.add(this.islandGroup);
+    this.setupLight();
+    this.setBackGround();
+    this.displayCylinder();
     // this.scene.add(this.cylindre?.loadedModel3D!);
 
     displayInterfaceGlobalOnIsland();
@@ -151,7 +154,7 @@ export default class Island {
 
   public setupCamera() {
     this.experience.camera.instance.zoom = 0.2;
-    // this.experience.camera.instance.updateProjectionMatrix();
+    this.camera.instance.fov = 30;
     this.camera.controls.enabled = true;
 
     this.experience.camera.instance.position.set(-5, 17, 17);
@@ -175,6 +178,56 @@ export default class Island {
       this.displayEditMode(false);
       disableInterfaceCreationItem();
     }
+  }
+
+  private displayCylinder() {
+    if (this.numberOfElementToAdd == -1) {
+      this.loadCylinder();
+    }
+  }
+
+  private setupPlaneInFrontOfCamera() {
+    this.planeForSky = new Mesh(
+      new PlaneGeometry(10, 10),
+      new MeshBasicMaterial({
+        color: 0x000000,
+        opacity: 0,
+        transparent: true,
+        visible: true,
+      })
+    );
+
+    //this.experience.postProcessing.setSelectObjectsForBloom(this.planeForSky);
+
+    this.camera.instance.add(this.planeForSky);
+    this.planeForSky.position.z = -1;
+  }
+  private movementCamera() {
+    this.experience.camera.instance.zoom = 3.15;
+    this.camera.controls.enabled = true;
+
+    this.experience.camera.instance.position.set(8, -12, 17);
+    this.experience.camera.instance.updateProjectionMatrix();
+
+    gsap.timeline({ repeat: 0, delay: 2 }).to(this.camera.instance.position, {
+      duration: 3.2,
+      x: -5,
+      y: 17,
+      ease: "circ.out",
+      onComplete: () => {
+        this.camera.updateActive = true;
+        this.displayCylinder();
+      },
+    });
+
+    gsap.to(this.camera.instance, {
+      duration: 3.2,
+      zoom: 0.2,
+      ease: "ease.out",
+      onUpdate: () => {
+        this.camera.instance.updateProjectionMatrix();
+      },
+    });
   }
 
   private displayEditMode(isEdit: boolean) {
@@ -239,7 +292,7 @@ export default class Island {
 
       // modification item position
       if (this.isSelected) {
-        this.modificationItemPosition(selectedPlane);
+        this.modificationItemPosition(selectedPlane, intersects);
       }
       // if create object
       else {
@@ -248,21 +301,45 @@ export default class Island {
           selectedPlane.position.z
         );
         // If we dont have item on this case, we create one
-        if (
-          checkItem == null &&
-          this.numberOfElementToAdd > 0 &&
-          selectedPlane.name == "edit"
-        ) {
-          this.createItemAtPosition(selectedPlane);
+        if (checkItem == null && this.numberOfElementToAdd > 0) {
+          this.createItemAtPosition(selectedPlane, intersects);
         }
         // Click on center to have a prediction
         else if (
           selectedPlane.name == "cartomancie" &&
-          this.numberOfElementToAdd == 0
+          this.numberOfElementToAdd == -1
         ) {
-          this.destroy();
           disableInterfaceGlobalOnIsland();
-          this.experience.cartomancie = new Cartomancie();
+
+          for (let i = 0; i < this.allObjectsCreateInMap.length; i++) {
+            if (this.allObjectsCreateInMap[i].name == "cartomancie") {
+              this.allObjectsCreateInMap.splice(i, 1);
+            }
+          }
+
+          this.camera.updateActive = true;
+          this.planeForSky!.material = new NodeToyMaterial({
+            data: transitionCartomancieData,
+          });
+
+          console.log(this.planeForSky?.material);
+          // @ts-ignore
+          gsap.to(this.planeForSky!.material.uniforms.Transi, {
+            duration: 0.5,
+            delay: 0.5,
+            value: 2,
+            ease: "none",
+            onComplete: () => {
+              setTimeout(() => {
+                this.destroy();
+                // @ts-ignore
+                this.planeForSky!.material.visible = false;
+                this.experience.cartomancie = new Cartomancie();
+              }, 500);
+            },
+          });
+
+          //
         }
         // Else we gonna change position of this item
         else {
@@ -292,16 +369,21 @@ export default class Island {
   };
 
   // MANAGE ITEM
-  private modificationItemPosition(selectedBloc: Object3D<Event>) {
+  private modificationItemPosition(
+    selectedBloc: Object3D<Event>,
+    intersect: Intersection<Object3D<Event>>[]
+  ) {
     this.displayEditMode(true);
     // places item on a new selected block
     if (
       !this.itemIslandManager.getItemAtPosition(
         selectedBloc.position.x,
         selectedBloc.position.z
-      ) &&
-      selectedBloc.name == "edit"
+      )
     ) {
+      if (selectedBloc.name == "cartomancie") {
+        selectedBloc = intersect[1].object;
+      }
       this.itemIslandManager.selectedItem!.position.set(
         selectedBloc.position.x,
         0,
@@ -321,20 +403,23 @@ export default class Island {
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
-  private createItemAtPosition(positionPlane: Object3D<Event>) {
+  private createItemAtPosition(
+    positionPlane: Object3D<Event>,
+    intersect: Intersection<Object3D<Event>>[]
+  ) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
+    console.log(intersect);
+    if (positionPlane.name == "cartomancie") {
+      positionPlane = intersect[1].object;
+    }
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
     this.itemIslandManager.newTextToCreate =
       this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
-    // localStorage.setItem(
-    //   "item[" + (this.mapGroup.children.length - 1).toString() + "]",
-    //   JSON.stringify(this.mapGroup.children[this.mapGroup.children.length - 1])
-    // );
   }
 
   private selectItem(itemSelected: ItemIsland) {
@@ -369,9 +454,9 @@ export default class Island {
   }
 
   setImageItem() {
-    let sizeImageItem = 1.5;
+    let sizeImageItem = 2.5;
     if (this.imageItem) {
-      gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 2, z: 0 });
+      gsap.to(this.imageItem.position, { duration: 1, x: 0, y: 8, z: 0 });
       gsap.to(this.imageItem.scale, {
         duration: 1,
         x: sizeImageItem,
@@ -402,8 +487,40 @@ export default class Island {
       .getElementById("button_rings_island")!
       .addEventListener("click", () => {
         disableInterfaceGlobalOnIsland();
-        this.destroy();
-        this.experience.sky = new Sky();
+        // this.destroy();
+
+        console.log("anneaux");
+        this.planeForSky!.material = new MeshBasicMaterial({
+          color: 0x000000,
+          opacity: 0,
+          transparent: true,
+          visible: true,
+        });
+
+        gsap.to(this.camera.instance.position, {
+          duration: 1.2,
+          y: 50,
+          ease: "expo.inOut",
+        });
+
+        gsap.to(this.camera.instance.rotation, {
+          duration: 1.2,
+          x: Math.PI / 2,
+          z: 0.5,
+          ease: "expo.inOut",
+          onComplete: () => {
+            this.destroy();
+            this.camera.updateActive = true;
+            this.experience.sky = new Sky();
+          },
+        });
+
+        gsap.to(this.planeForSky!.material, {
+          duration: 0.5,
+          delay: 0.5,
+          opacity: 1,
+          ease: "none",
+        });
       });
   }
   private clickOnCrossButtonInformationItem() {
@@ -467,9 +584,22 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
-
+    // @ts-ignore
     this.island.loadedModel3D!.children[0].material.transparent = false;
 
+    this.island.loadedModel3D!.castShadow = true;
+    this.island.loadedModel3D!.receiveShadow = true;
+
+    this.islandGroup.add(this.mapGroup);
+    this.islandGroup.add(this.island.loadedModel3D!);
+    this.scene.add(this.islandGroup);
+
+    this.island.animationAction![0].play();
+    this.island.animationAction![1].play();
+    // this.island.animationAction![2].play();
+  }
+
+  private async loadCylinder() {
     this.cylindre = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Cylindre)
     );
@@ -477,37 +607,25 @@ export default class Island {
     this.cylindre.loadedModel3D!.scale.set(0.6, 3, 0.6);
     this.cylindre.loadedModel3D!.position.set(0, 15, 0);
 
-    this.island.loadedModel3D!.castShadow = true;
-    this.island.loadedModel3D!.receiveShadow = true;
-
-    this.scene.add(this.island.loadedModel3D!);
     this.scene.add(this.cylindre.loadedModel3D!);
-
-    console.log(
-      this.cylindre.loadedModel3D?.children[0].material.uniforms.height.value
-    );
-
-    this.scene.add(this.island.loadedModel3D!);
-    this.island.animationAction![0].play();
-    this.island.animationAction![1].play();
-    // this.island.animationAction![2].play();
   }
-
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
     this.imageItem = null;
   }
 
   update() {
-    // this.island?.mixer?.update(this.experience.time.delta * 0.002);
-
     // varying the height with sin between -1 and 1
     if (
+      // @ts-ignore
       this.cylindre?.loadedModel3D?.children[0].material.uniforms.Hauteur1.value
     ) {
+      // @ts-ignore
       this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
         Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }
+
+    NodeToyMaterial.tick();
 
     // fix light to follow the same movement as the camera but not the same position
     // camera : this.camera.instance
@@ -529,6 +647,11 @@ export default class Island {
 
     this.scene.remove(this.cylindre?.loadedModel3D!);
     this.cylindre?.loadedModel3D!.remove();
+
+    this.scene.remove(this.cylindre?.loadedModel3D!);
+    this.cylindre?.loadedModel3D!.remove();
+
+    this.scene.background = null;
   }
 
   private setBackGround() {
@@ -546,43 +669,43 @@ export default class Island {
       );
   }
 
-  private setCloudTexture() {
-    let size = 128;
-    let data = new Uint8Array(size * size * size);
-
-    let i = 0;
-    let scale = 0.05;
-    let perlin = new ImprovedNoise();
-    let vector = new Vector3();
-
-    for (let z = 0; z < size; z++) {
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-          const d =
-            1.0 -
-            vector
-              .set(x, y, z)
-              .subScalar(size / 2)
-              .divideScalar(size)
-              .length();
-          data[i] =
-            (128 +
-              128 *
-                perlin.noise((x * scale) / 1.5, y * scale, (z * scale) / 1.5)) *
-            d *
-            d;
-          i++;
-        }
-      }
-    }
-
-    let texture = new Data3DTexture(data, size, size, size);
-    texture.format = RedFormat;
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.unpackAlignment = 1;
-    texture.needsUpdate = true;
-
-    return texture;
-  }
+  // private setCloudTexture() {
+  //   let size = 128;
+  //   let data = new Uint8Array(size * size * size);
+  //
+  //   let i = 0;
+  //   let scale = 0.05;
+  //   let perlin = new ImprovedNoise();
+  //   let vector = new Vector3();
+  //
+  //   for (let z = 0; z < size; z++) {
+  //     for (let y = 0; y < size; y++) {
+  //       for (let x = 0; x < size; x++) {
+  //         const d =
+  //           1.0 -
+  //           vector
+  //             .set(x, y, z)
+  //             .subScalar(size / 2)
+  //             .divideScalar(size)
+  //             .length();
+  //         data[i] =
+  //           (128 +
+  //             128 *
+  //               perlin.noise((x * scale) / 1.5, y * scale, (z * scale) / 1.5)) *
+  //           d *
+  //           d;
+  //         i++;
+  //       }
+  //     }
+  //   }
+  //
+  //   let texture = new Data3DTexture(data, size, size, size);
+  //   texture.format = RedFormat;
+  //   texture.minFilter = LinearFilter;
+  //   texture.magFilter = LinearFilter;
+  //   texture.unpackAlignment = 1;
+  //   texture.needsUpdate = true;
+  //
+  //   return texture;
+  // }
 }

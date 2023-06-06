@@ -69,10 +69,10 @@ export function createUISky() {
   Input.getInstance().createInputWithSubtitle(
     "title_last_prediction_sky",
     "title_prediction_cartomancie all_ui_sky",
-    "Prédiction du xx/xx/xxxx",
+    "Prédiction du 08/06/2023",
     "subtitle_cartomancie all_ui_sky",
     "CARTOMANCIE",
-    PositionY.TOP,
+    PositionY.TOP_20,
     PositionX.CENTER
   );
 
@@ -80,10 +80,10 @@ export function createUISky() {
 
   Popup.getInstance().createPopupTextOnly(
     "popup_last_prediction_sky",
-    "div div_arcane div_prediction all_ui_sky",
+    "div div_arcane all_ui_sky",
     "predicition",
     "text_arcane height_arcane",
-    PositionY.TOP_55
+    PositionY.TOP_50
   );
 
   // const divContainer = document.createElement("div");
@@ -114,14 +114,14 @@ export function createUISky() {
     "button_return_rings_sky",
     "button big_button button_prediction all_ui_sky",
     "RETOURNER VOIR MES STATS",
-    PositionY.BOTTOM,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
   Button.getInstance().createButtonWithImage(
     "button_back_island_sky",
     "button button_just_image all_ui_sky",
-    "/public/images/island_button.png",
+    "/images/island_button.png",
     "button_island_sky",
     "",
     PositionY.BOTTOM,

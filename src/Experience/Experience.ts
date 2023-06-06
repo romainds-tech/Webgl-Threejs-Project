@@ -33,6 +33,10 @@ export class Experience {
     Experience.instance = this;
 
     this.debug = new Debug();
+    if (this.debug.active) {
+      // @ts-ignore
+      window.experience = this;
+    }
     this.sizes = new Sizes();
     this.canvas = this.setCanvas();
     this.time = new Time();

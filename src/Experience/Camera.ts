@@ -1,11 +1,5 @@
 import Sizes from "./utils/Sizes";
-import {
-  AxesHelper,
-  Group,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Scene,
-} from "three";
+import { AxesHelper, PerspectiveCamera, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
@@ -18,9 +12,11 @@ export default class Camera {
   public scene: Scene;
   public canvas: HTMLCanvasElement | undefined;
   public controls: OrbitControls;
-  public instance: OrthographicCamera | PerspectiveCamera;
+  public instance: PerspectiveCamera;
   public debug: Debug;
   public debugFolder?: GUI;
+
+  public updateActive: boolean;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -29,30 +25,33 @@ export default class Camera {
     this.canvas = this.experience.canvas;
     // this.instance = this.setInstance();
     this.instance = this.setInstancePerspective();
+
     this.controls = this.setOrbitControls();
     this.debug = this.experience.debug;
-  }
-  private setInstance(): OrthographicCamera {
-    let cameraInstance: OrthographicCamera;
-    const aspect = this.sizes.width / this.sizes.height;
-    const frustumSize = 10;
-    cameraInstance = new OrthographicCamera(
-      (frustumSize * aspect) / -4,
-      (frustumSize * aspect) / 4,
-      frustumSize / 4,
-      frustumSize / -4,
-      0.1,
-      300
-    );
 
-    cameraInstance.zoom = 0.35;
-    cameraInstance.updateProjectionMatrix();
-
-    // cameraInstance.position.set(1, 2, 30);
-    cameraInstance.position.set(-5, 5, -5);
-    this.scene.add(cameraInstance);
-    return cameraInstance;
+    this.updateActive = true;
   }
+  // private setInstance(): OrthographicCamera {
+  //   let cameraInstance: OrthographicCamera;
+  //   const aspect = this.sizes.width / this.sizes.height;
+  //   const frustumSize = 10;
+  //   cameraInstance = new OrthographicCamera(
+  //     (frustumSize * aspect) / -4,
+  //     (frustumSize * aspect) / 4,
+  //     frustumSize / 4,
+  //     frustumSize / -4,
+  //     0.1,
+  //     300
+  //   );
+  //
+  //   cameraInstance.zoom = 0.35;
+  //   cameraInstance.updateProjectionMatrix();
+  //
+  //   // cameraInstance.position.set(1, 2, 30);
+  //   cameraInstance.position.set(-5, 5, -5);
+  //   this.scene.add(cameraInstance);
+  //   return cameraInstance;
+  // }
 
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
@@ -60,9 +59,10 @@ export default class Camera {
       30,
       this.sizes.width / this.sizes.height,
       0.1,
-      1000
+      100
     );
     cameraInstance.position.set(0, 0, 3);
+
     this.scene.add(cameraInstance);
     return cameraInstance;
   }
@@ -89,13 +89,12 @@ export default class Camera {
           this.instance.updateProjectionMatrix();
         });
 
-      // cameraName
-      //   .add(this.instance, "fov", 0, 5)
-      //   .name("Zoom")
-      //   .onChange(() => {
-      //     console.log(this.instance);
-      //     this.instance.updateProjectionMatrix();
-      //   });
+      cameraName
+        .add(this.instance, "fov", 0, 100)
+        .name("fov")
+        .onChange(() => {
+          this.instance.updateProjectionMatrix();
+        });
 
       cameraName.add(this.instance.position, "x").name("Position X");
       cameraName.add(this.instance.position, "y").name("Position Y");
@@ -116,12 +115,12 @@ export default class Camera {
 
   resize(): void {
     const aspect = this.sizes.width / this.sizes.height;
-    const frustumSize = 10;
 
-    this.instance.left = (frustumSize * aspect) / -2;
-    this.instance.right = (frustumSize * aspect) / 2;
-    this.instance.top = frustumSize / 2;
-    this.instance.bottom = frustumSize / -2;
+    this.instance.aspect = aspect;
+    // this.instance.left = (frustumSize * aspect) / -2;
+    // this.instance.right = (frustumSize * aspect) / 2;
+    // this.instance.top = frustumSize / 2;
+    // this.instance.bottom = frustumSize / -2;
 
     this.instance.updateProjectionMatrix();
   }
@@ -135,6 +134,8 @@ export default class Camera {
   }
 
   update(): void {
-    this.controls.update();
+    if (this.updateActive) {
+      this.controls.update();
+    }
   }
 }

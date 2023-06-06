@@ -2,7 +2,11 @@ import { Experience } from "../Experience";
 import {
   CylinderGeometry,
   DirectionalLight,
-  HemisphereLight, Mesh, MeshBasicMaterial, PointLight, PointLightHelper,
+  HemisphereLight,
+  Mesh,
+  MeshBasicMaterial,
+  PointLight,
+  PointLightHelper,
   Scene,
   SpotLight,
   SpotLightHelper,
@@ -46,7 +50,7 @@ export default class Light {
     this.sunLight.intensity = 86.9;
     this.sunLight!.castShadow = true;
     this.sunLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
-    this.sunLight!.shadow.normalBias = -0.0001;
+    this.sunLight!.shadow.normalBias = -0.01;
     this.sunLight!.position.set(7, 13, 1);
 
     // increase shadow surface
@@ -94,6 +98,8 @@ export default class Light {
         .max(5)
         .step(1);
 
+      lightFolder.addColor(this.sunLight!, "color");
+
       lightFolder
         .add(this.hemisphereLight!, "intensity")
         .name("hemisphereLightIntensity")
@@ -101,14 +107,34 @@ export default class Light {
         .max(10)
         .step(0.1);
 
-      lightFolder.addColor(this.sunLight!, "color");
+      lightFolder
+        .add(this.hemisphereLight!.position, "x")
+        .name("hemisphere pos X")
+        .min(0)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.hemisphereLight!.position, "y")
+        .name("hemisphere pos y")
+        .min(0)
+        .max(100)
+        .step(1);
+
+      lightFolder
+        .add(this.hemisphereLight!.position, "z")
+        .name("hemisphere pos z")
+        .min(0)
+        .max(100)
+        .step(1);
+
+      lightFolder.addColor(this.hemisphereLight!, "color");
     }
   }
 
-
   loadLightCartomancie(): void {
-    this.createSpotLightCartomancie()
-    this.pointPointLightCartomancie()
+    this.createSpotLightCartomancie();
+    this.pointPointLightCartomancie();
   }
 
   private createSpotLightCartomancie() {
@@ -119,7 +145,7 @@ export default class Light {
     this.spotLight.shadow.camera.fov = 30;
 
     this.spotLight!.shadow.mapSize.set(1024 * 4, 1024 * 4);
-    this.spotLight!.shadow.normalBias = -0.0001;
+    this.spotLight!.shadow.normalBias = -0.01;
 
     this.spotLight!.position.set(24, 26, 13);
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
@@ -131,8 +157,8 @@ export default class Light {
     this.scene.add(this.spotLightHelper);
 
     const mesh = new Mesh(
-        new CylinderGeometry(2, 2, 10, 32),
-        new MeshBasicMaterial({ transparent: true, opacity: 0 })
+      new CylinderGeometry(2, 2, 10, 32),
+      new MeshBasicMaterial({ transparent: true, opacity: 0, visible: false })
     );
     mesh.position.set(-19, 0, -6);
     this.scene.add(mesh);
@@ -143,102 +169,99 @@ export default class Light {
     if (this.debug.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
       lightFolder!
-          .add(this.spotLight!, "intensity")
-          .name("spotLightIntensity")
-          .min(0)
-          .max(100)
-          .step(0.1);
+        .add(this.spotLight!, "intensity")
+        .name("spotLightIntensity")
+        .min(0)
+        .max(100)
+        .step(0.1);
 
       lightFolder
-          .add(this.spotLight!, "distance")
-          .name("distance")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.spotLight!, "distance")
+        .name("distance")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder
-          .add(this.spotLight!, "penumbra")
-          .name("penumbra")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.spotLight!, "penumbra")
+        .name("penumbra")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder
-          .add(this.spotLight!.position, "x")
-          .name("spotLightX")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.spotLight!.position, "x")
+        .name("spotLightX")
+        .min(-100)
+        .max(100)
+        .step(1);
       lightFolder
-          .add(this.spotLight!.position, "y")
-          .name("spotLightY")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.spotLight!.position, "y")
+        .name("spotLightY")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder
-          .add(this.spotLight!.position, "z")
-          .name("spotLightZ")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.spotLight!.position, "z")
+        .name("spotLightZ")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder
-          .add(this.spotLight!, "angle")
-          .name("angle")
-          .min(-10)
-          .max(10)
-          .step(Math.PI * 0.1);
+        .add(this.spotLight!, "angle")
+        .name("angle")
+        .min(-10)
+        .max(10)
+        .step(Math.PI * 0.1);
 
       lightFolder.addColor(this.spotLight!, "color");
     }
   }
   private pointPointLightCartomancie() {
-    this.pointLight = new PointLight( 0x4300fa, 4, 100 );
-    this.pointLight.position.set( 4, 2, -3 );
-    this.scene.add( this.pointLight );
+    this.pointLight = new PointLight(0x4300fa, 4, 100);
+    this.pointLight.position.set(4, 2, -3);
+    this.scene.add(this.pointLight);
 
-    this.pointLightHelper = new PointLightHelper( this.pointLight, 1 );
-    this.scene.add( this.pointLightHelper );
+    this.pointLightHelper = new PointLightHelper(this.pointLight, 1);
+    this.scene.add(this.pointLightHelper);
 
     if (this.debug.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
       lightFolder!
-          .add(this.pointLight!, "intensity")
-          .name("spotLightIntensity")
-          .min(0)
-          .max(100)
-          .step(0.1);
+        .add(this.pointLight!, "intensity")
+        .name("spotLightIntensity")
+        .min(0)
+        .max(100)
+        .step(0.1);
 
       lightFolder
-          .add(this.pointLight!, "distance")
-          .name("distance")
-          .min(-100)
-          .max(100)
-          .step(1);
-
-
-      lightFolder
-          .add(this.pointLight!.position, "x")
-          .name("spotLightX")
-          .min(-100)
-          .max(100)
-          .step(1);
-      lightFolder
-          .add(this.pointLight!.position, "y")
-          .name("spotLightY")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.pointLight!, "distance")
+        .name("distance")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder
-          .add(this.pointLight!.position, "z")
-          .name("spotLightZ")
-          .min(-100)
-          .max(100)
-          .step(1);
+        .add(this.pointLight!.position, "x")
+        .name("spotLightX")
+        .min(-100)
+        .max(100)
+        .step(1);
+      lightFolder
+        .add(this.pointLight!.position, "y")
+        .name("spotLightY")
+        .min(-100)
+        .max(100)
+        .step(1);
 
-
+      lightFolder
+        .add(this.pointLight!.position, "z")
+        .name("spotLightZ")
+        .min(-100)
+        .max(100)
+        .step(1);
 
       lightFolder.addColor(this.pointLight!, "color");
     }
@@ -251,7 +274,12 @@ export default class Light {
     this.spotLightHelper?.dispose();
     this.pointLightHelper?.dispose();
 
-    this.scene.remove(this.spotLight!, this.pointLight!, this.spotLightHelper!, this.pointLightHelper!)
+    this.scene.remove(
+      this.spotLight!,
+      this.pointLight!,
+      this.spotLightHelper!,
+      this.pointLightHelper!
+    );
   }
   destroy() {
     this.sunLight?.dispose();

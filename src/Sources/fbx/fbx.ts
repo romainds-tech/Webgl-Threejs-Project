@@ -1,4 +1,4 @@
-import { Clock, Vector3 } from "three";
+import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
 
 export const allFbx = {
