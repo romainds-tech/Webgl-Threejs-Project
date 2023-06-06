@@ -69,7 +69,6 @@ export default class Camera {
 
   private setOrbitControls(): OrbitControls {
     let controls: OrbitControls = new OrbitControls(this.instance, this.canvas);
-    console.log(controls);
     // controls.enableDamping = true;
     return controls;
   }
@@ -79,13 +78,10 @@ export default class Camera {
       this.instance.add(new AxesHelper(10));
       const cameraName: GUI = this.debug.debugModelFolder!.addFolder("Camera");
 
-      console.log(this.instance);
-
       cameraName
         .add(this.instance, "zoom", 0, 5)
         .name("Zoom")
         .onChange(() => {
-          console.log(this.instance.zoom);
           this.instance.updateProjectionMatrix();
         });
 

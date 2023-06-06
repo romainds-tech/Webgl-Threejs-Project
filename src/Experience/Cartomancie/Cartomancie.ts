@@ -163,9 +163,7 @@ export default class Cartomancie {
 
   private async loadScene() {
     // if (this.sceneCard)
-    this.sceneCard = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.SceneCard)
-    );
+    this.sceneCard = this.experience.allModels.sceneCard;
 
     const flameMaterial = new NodeToyMaterial({
       data: flameData,
@@ -209,11 +207,8 @@ export default class Cartomancie {
     y: number,
     z: number
   ) {
-    model = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.flame)
-    );
+    model = this.experience.allModels.flame;
 
-    console.log(model.loadedModel3D!.children);
     // @ts-ignore
     model.loadedModel3D!.children[0].material = material;
 
@@ -225,11 +220,7 @@ export default class Cartomancie {
 
   private async loadCards() {
     if (this.cards == undefined) {
-      this.cards = await CustomGlbLoader.getInstance().loadOne(
-        new Model3D(allGlbs.Cards)
-      );
-
-      console.log(this.cards);
+      this.cards = this.experience.allModels.Cards;
 
       this.groupeScene.rotation.set(0, -0.2, 0);
       this.groupeScene.add(this.cards.loadedModel3D!);
@@ -300,7 +291,7 @@ export default class Cartomancie {
       this.showOneTimeAnimation(this.cards.animationAction[1]);
 
       this.mixer!.addEventListener("finished", () => {
-        console.log("card finished");
+
         setTimeout(() => {
           document.querySelector(
             "#popup_first_arcane_cartomancie .text_arcane"
@@ -323,9 +314,10 @@ export default class Cartomancie {
   }
 
   private async loadMajorArcane() {
-    this.firstArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(predictions[this.predictionNumber].modelMajorArcane)
-    );
+    this.firstArcaneImageItem =
+      this.experience.allModels.predictions[
+        this.predictionNumber
+      ].modelMajorArcane;
 
     new ClickAndDrag(
       this.firstArcaneImageItem!.loadedModel3D!,
@@ -336,9 +328,10 @@ export default class Cartomancie {
   }
 
   private async loadMinorArcane() {
-    this.secondArcaneImageItem = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(predictions[this.predictionNumber].modelMinorArcane)
-    );
+    this.secondArcaneImageItem =
+      this.experience.allModels.predictions[
+        this.predictionNumber
+      ].modelMinorArcane;
 
     new ClickAndDrag(
       this.secondArcaneImageItem!.loadedModel3D!,
@@ -463,9 +456,8 @@ export default class Cartomancie {
   }
 
   private async loadModelsItemIsland() {
-    this.item = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(predictions[this.predictionNumber].item)
-    );
+    this.item =
+      this.experience.allModels.predictions[this.predictionNumber].item;
   }
 
   private setupItem(x: number, y: number, z: number) {

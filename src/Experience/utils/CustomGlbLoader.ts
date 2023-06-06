@@ -63,8 +63,6 @@ export default class CustomGlbLoader {
       // texture.mapping = EquirectangularReflectionMapping;
 
       // this.scene.environment = texture;
-      console.log(this.scene.environment);
-      console.log(this.scene.background);
 
       this.scene.backgroundIntensity = 0;
 
@@ -128,7 +126,6 @@ export default class CustomGlbLoader {
         if (model.transmission) {
           loadedModel.scene.traverse((child) => {
             if (child instanceof Mesh) {
-              console.log(child);
               child.material = new MeshPhysicalMaterial({
                 color: 0xffffff,
                 metalness: 0.7,
