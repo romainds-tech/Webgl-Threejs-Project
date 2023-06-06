@@ -487,6 +487,7 @@ export default class Island {
         disableInterfaceGlobalOnIsland();
         // this.destroy();
 
+
         this.planeForSky!.material = new MeshBasicMaterial({
           color: 0x000000,
           opacity: 0,
@@ -576,6 +577,7 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = this.experience.allModels.Island;
+
     // @ts-ignore
     this.island.loadedModel3D!.children[0].material.transparent = false;
 
@@ -598,6 +600,7 @@ export default class Island {
     this.cylindre?.loadedModel3D!.position.set(0, 15, 0);
 
     this.scene.add(this.cylindre?.loadedModel3D!);
+
   }
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);

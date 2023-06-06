@@ -165,32 +165,6 @@ export default class Cartomancie {
     // if (this.sceneCard)
     this.sceneCard = this.experience.allModels.sceneCard;
 
-    // this.flame = await CustomGlbLoader.getInstance().loadOne(
-    //   new Model3D(allGlbs.flame)
-    // );
-
-    /*this.sceneCard.loadedModel3D!.children[1].material =
-      new MeshPhysicalMaterial({
-        color: 0xffffff,
-        metalness: 0.7,
-        roughness: 0.05,
-        ior: 1.5,
-        depthWrite: true,
-        map: this.sceneCard.loadedModel3D!.children[1].material.map,
-        metalnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
-        normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
-        roughnessMap:
-          this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
-        envMapIntensity: 1,
-        transmission: 0.7, // use material.transmission for glass materials
-        opacity: 1,
-        side: DoubleSide,
-        transparent: false,
-      });
-
-     */
-
     const flameMaterial = new NodeToyMaterial({
       data: flameData,
     });
@@ -317,6 +291,7 @@ export default class Cartomancie {
       this.showOneTimeAnimation(this.cards.animationAction[1]);
 
       this.mixer!.addEventListener("finished", () => {
+
         setTimeout(() => {
           document.querySelector(
             "#popup_first_arcane_cartomancie .text_arcane"

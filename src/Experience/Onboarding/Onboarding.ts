@@ -5,14 +5,12 @@ import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
-import gsap from "gsap";
 import { Scene } from "three";
-import Text from "../UI/Texts/Text";
-import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
+// @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 type EventMap = {
@@ -69,6 +67,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.circle1 = this.experience.allModels.TempleCircle1;
 
     //apply texture to circle
+    
+    // @ts-ignore
     this.circle1!.loadedModel3D!.children[0].material.map = textureCircle;
     this.scene.add(this.circle1?.loadedModel3D!);
 
@@ -160,7 +160,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
             this.user!.phoneNumber = input.value;
             break;
           default:
-          // @ts-ignore
+            // @ts-ignore
+            console.error(`Unrecognized question id: ${question.id}`);
+
         }
 
         this.cookieManager.setCookie(this.user!);
