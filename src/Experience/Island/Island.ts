@@ -7,10 +7,10 @@ import {
   Object3D,
   Scene,
   Vector2,
-  LinearFilter,
-  RedFormat,
-  Data3DTexture,
-  Vector3,
+  // LinearFilter,
+  // RedFormat,
+  // Data3DTexture,
+  // Vector3,
   Intersection,
   MeshBasicMaterial,
   PlaneGeometry,
@@ -44,11 +44,8 @@ import Sky from "../Sky/Sky";
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { GUI } from "lil-gui";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
-import Popup from "../UI/Popups/Popup";
-import Button from "../UI/Buttons/Button";
-import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise";
+
 import { transitionCartomancieData } from "../../shaders/TransitionCartomancie";
-import { flameData } from "../../shaders/Flame";
 
 export default class Island {
   public experience: Experience;
@@ -75,14 +72,12 @@ export default class Island {
   private isSelected: boolean;
   private readonly mouse: Vector2;
   public readonly allObjectsCreateInMap: Array<Object3D>;
-  private cloud?: Mesh;
+  // private cloud?: Mesh;
 
   //
   public itemIslandManager: ItemIslandManager;
   // // public textItemIsland: TextItemIsland;
-  public popupIsland: Popup;
   public imageItem: Object3D<Event> | null;
-  public buttonIsland: Button;
 
   constructor() {
     // Experience
@@ -316,12 +311,19 @@ export default class Island {
         ) {
           disableInterfaceGlobalOnIsland();
 
+          for (let i = 0; i < this.allObjectsCreateInMap.length; i++) {
+            if (this.allObjectsCreateInMap[i].name == "cartomancie") {
+              this.allObjectsCreateInMap.splice(i, 1);
+            }
+          }
+
           this.camera.updateActive = true;
           this.planeForSky!.material = new NodeToyMaterial({
             data: transitionCartomancieData,
           });
 
           console.log(this.planeForSky?.material);
+          // @ts-ignore
           gsap.to(this.planeForSky!.material.uniforms.Transi, {
             duration: 0.5,
             delay: 0.5,
@@ -330,6 +332,7 @@ export default class Island {
             onComplete: () => {
               setTimeout(() => {
                 this.destroy();
+                // @ts-ignore
                 this.planeForSky!.material.visible = false;
                 this.experience.cartomancie = new Cartomancie();
               }, 500);
@@ -581,6 +584,7 @@ export default class Island {
     this.island = await CustomGlbLoader.getInstance().loadOne(
       new Model3D(allGlbs.Island)
     );
+    // @ts-ignore
     this.island.loadedModel3D!.children[0].material.transparent = false;
 
     this.island.loadedModel3D!.castShadow = true;
@@ -613,8 +617,10 @@ export default class Island {
   update() {
     // varying the height with sin between -1 and 1
     if (
+      // @ts-ignore
       this.cylindre?.loadedModel3D?.children[0].material.uniforms.Hauteur1.value
     ) {
+      // @ts-ignore
       this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
         Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }
@@ -663,43 +669,43 @@ export default class Island {
       );
   }
 
-  private setCloudTexture() {
-    let size = 128;
-    let data = new Uint8Array(size * size * size);
-
-    let i = 0;
-    let scale = 0.05;
-    let perlin = new ImprovedNoise();
-    let vector = new Vector3();
-
-    for (let z = 0; z < size; z++) {
-      for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-          const d =
-            1.0 -
-            vector
-              .set(x, y, z)
-              .subScalar(size / 2)
-              .divideScalar(size)
-              .length();
-          data[i] =
-            (128 +
-              128 *
-                perlin.noise((x * scale) / 1.5, y * scale, (z * scale) / 1.5)) *
-            d *
-            d;
-          i++;
-        }
-      }
-    }
-
-    let texture = new Data3DTexture(data, size, size, size);
-    texture.format = RedFormat;
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.unpackAlignment = 1;
-    texture.needsUpdate = true;
-
-    return texture;
-  }
+  // private setCloudTexture() {
+  //   let size = 128;
+  //   let data = new Uint8Array(size * size * size);
+  //
+  //   let i = 0;
+  //   let scale = 0.05;
+  //   let perlin = new ImprovedNoise();
+  //   let vector = new Vector3();
+  //
+  //   for (let z = 0; z < size; z++) {
+  //     for (let y = 0; y < size; y++) {
+  //       for (let x = 0; x < size; x++) {
+  //         const d =
+  //           1.0 -
+  //           vector
+  //             .set(x, y, z)
+  //             .subScalar(size / 2)
+  //             .divideScalar(size)
+  //             .length();
+  //         data[i] =
+  //           (128 +
+  //             128 *
+  //               perlin.noise((x * scale) / 1.5, y * scale, (z * scale) / 1.5)) *
+  //           d *
+  //           d;
+  //         i++;
+  //       }
+  //     }
+  //   }
+  //
+  //   let texture = new Data3DTexture(data, size, size, size);
+  //   texture.format = RedFormat;
+  //   texture.minFilter = LinearFilter;
+  //   texture.magFilter = LinearFilter;
+  //   texture.unpackAlignment = 1;
+  //   texture.needsUpdate = true;
+  //
+  //   return texture;
+  // }
 }

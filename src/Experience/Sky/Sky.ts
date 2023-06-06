@@ -30,6 +30,8 @@ export default class Sky {
   public scene: Scene;
   private camera: Camera;
 
+  private allRings: Group;
+
   public debug: Debug;
   public debugFolder: GUI | null;
   public time: Time;
@@ -52,6 +54,7 @@ export default class Sky {
 
     this.time = this.experience.time;
 
+    this.allRings = new Group();
     this.loveRing = null;
     this.workRing = null;
     this.healthRing = null;
@@ -72,9 +75,11 @@ export default class Sky {
   }
 
   private setupCamera() {
+    this.camera.updateActive = false;
     this.camera.instance.zoom = 0.05;
-    this.camera.instance.position.set(-5, 15, -5);
-    this.camera.instance.fov = 10;
+    this.camera.instance.position.set(-4, 1, -32);
+    this.camera.instance.rotation.set(0, -3, 6);
+    this.camera.instance.fov = 4;
     // this.camera.controls.enabled = false;
     this.camera.instance.updateProjectionMatrix();
 
@@ -176,9 +181,11 @@ export default class Sky {
     this.loveGroup!.add(this.jowelRingLove.loadedModel3D!);
     this.loveGroup!.add(this.loveRing!);
 
-    this.scene.add(this.loveGroup!);
-    this.scene.add(this.workRing!);
-    this.scene.add(this.healthRing!);
+    this.allRings.add(this.loveGroup!);
+    this.allRings.add(this.workRing!);
+    this.allRings.add(this.healthRing!);
+
+    this.scene.add(this.allRings);
   }
   private addRings(): void {
     this.loveRing = this.createRing(
@@ -340,12 +347,21 @@ export default class Sky {
   }
 
   destroy() {
-    this.scene.remove(this.loveGroup!);
+    this.scene.remove(
+      this.loveGroup!,
+      this.loveRing!,
+      this.jowelRingLove?.loadedModel3D!
+    );
     this.loveGroup = undefined;
+    this.loveRing = null;
+    this.jowelRingLove = undefined;
+
     this.scene.remove(this.workRing!);
-    // this.workRing = null;
+    this.workRing = null;
     this.scene.remove(this.healthRing!);
     this.scene.background = null;
-    // this.healthRing = null;
+    this.healthRing = null;
+
+    this.scene.remove(this.allRings);
   }
 }

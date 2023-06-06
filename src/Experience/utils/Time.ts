@@ -13,6 +13,7 @@ export default class Time extends EventEmitter<EventMap> {
   constructor() {
     super();
 
+    // @ts-ignore
     this.start = Date.now();
     this.current = this.start;
     this.elapsed = 0;
@@ -24,6 +25,7 @@ export default class Time extends EventEmitter<EventMap> {
   }
 
   tick() {
+    // @ts-ignore
     const currentTime = Date.now();
     this.delta = currentTime - this.current;
     this.current = currentTime;

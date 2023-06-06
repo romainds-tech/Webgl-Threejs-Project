@@ -9,6 +9,7 @@ export default class Debug {
     this.ui = null;
 
     this.addDebug();
+    // @ts-ignore
     this.debugModelFolder = this.addModelDebugFolder()?.close();
   }
 

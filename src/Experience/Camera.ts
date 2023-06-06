@@ -1,11 +1,5 @@
 import Sizes from "./utils/Sizes";
-import {
-  AxesHelper,
-  Group,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Scene,
-} from "three";
+import { AxesHelper, PerspectiveCamera, Scene } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Experience } from "./Experience";
 import gsap from "gsap";
@@ -18,7 +12,7 @@ export default class Camera {
   public scene: Scene;
   public canvas: HTMLCanvasElement | undefined;
   public controls: OrbitControls;
-  public instance: OrthographicCamera | PerspectiveCamera;
+  public instance: PerspectiveCamera;
   public debug: Debug;
   public debugFolder?: GUI;
 
@@ -37,27 +31,27 @@ export default class Camera {
 
     this.updateActive = true;
   }
-  private setInstance(): OrthographicCamera {
-    let cameraInstance: OrthographicCamera;
-    const aspect = this.sizes.width / this.sizes.height;
-    const frustumSize = 10;
-    cameraInstance = new OrthographicCamera(
-      (frustumSize * aspect) / -4,
-      (frustumSize * aspect) / 4,
-      frustumSize / 4,
-      frustumSize / -4,
-      0.1,
-      300
-    );
-
-    cameraInstance.zoom = 0.35;
-    cameraInstance.updateProjectionMatrix();
-
-    // cameraInstance.position.set(1, 2, 30);
-    cameraInstance.position.set(-5, 5, -5);
-    this.scene.add(cameraInstance);
-    return cameraInstance;
-  }
+  // private setInstance(): OrthographicCamera {
+  //   let cameraInstance: OrthographicCamera;
+  //   const aspect = this.sizes.width / this.sizes.height;
+  //   const frustumSize = 10;
+  //   cameraInstance = new OrthographicCamera(
+  //     (frustumSize * aspect) / -4,
+  //     (frustumSize * aspect) / 4,
+  //     frustumSize / 4,
+  //     frustumSize / -4,
+  //     0.1,
+  //     300
+  //   );
+  //
+  //   cameraInstance.zoom = 0.35;
+  //   cameraInstance.updateProjectionMatrix();
+  //
+  //   // cameraInstance.position.set(1, 2, 30);
+  //   cameraInstance.position.set(-5, 5, -5);
+  //   this.scene.add(cameraInstance);
+  //   return cameraInstance;
+  // }
 
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
@@ -99,7 +93,6 @@ export default class Camera {
         .add(this.instance, "fov", 0, 100)
         .name("fov")
         .onChange(() => {
-          console.log(this.instance.fov);
           this.instance.updateProjectionMatrix();
         });
 
@@ -122,12 +115,12 @@ export default class Camera {
 
   resize(): void {
     const aspect = this.sizes.width / this.sizes.height;
-    const frustumSize = 10;
 
-    this.instance.left = (frustumSize * aspect) / -2;
-    this.instance.right = (frustumSize * aspect) / 2;
-    this.instance.top = frustumSize / 2;
-    this.instance.bottom = frustumSize / -2;
+    this.instance.aspect = aspect;
+    // this.instance.left = (frustumSize * aspect) / -2;
+    // this.instance.right = (frustumSize * aspect) / 2;
+    // this.instance.top = frustumSize / 2;
+    // this.instance.bottom = frustumSize / -2;
 
     this.instance.updateProjectionMatrix();
   }
