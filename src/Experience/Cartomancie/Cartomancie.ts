@@ -16,9 +16,7 @@ import {
 import Debug from "../utils/Debug";
 import Time from "../utils/Time";
 import { GUI } from "lil-gui";
-import CustomGlbLoader from "../utils/CustomGlbLoader";
 import Model3D from "../utils/Model3d";
-import { allGlbs } from "../../Sources/glb/glb";
 import Camera from "../Camera";
 import Sizes from "../utils/Sizes";
 import {
@@ -36,10 +34,8 @@ import {
   displayInterfaceFirstArcaneCartomancie,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
-import { flameData } from "../../shaders/Flame";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
-// import {element} from "three/examples/jsm/nodes/shadernode/ShaderNodeBaseElements";
 
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 
@@ -51,14 +47,14 @@ export default class Cartomancie {
   public healthPercent?: number;
 
   private experience: Experience;
-  private scene: Scene;
-  public camera: Camera;
-  private sizes: Sizes;
+  private scene?: Scene;
+  public camera?: Camera;
+  private sizes?: Sizes;
 
-  private debug: Debug;
+  private debug?: Debug;
   private debugFolder: GUI | null;
 
-  private time: Time;
+  private time?: Time;
 
   private overlay?: Mesh;
   private cards?: Model3D;
@@ -100,18 +96,20 @@ export default class Cartomancie {
   }
 
   private setupLight() {
-    this.experience.light.sunLight!.intensity = 0;
-    this.experience.light.hemisphereLight!.intensity = 0;
-    this.experience.renderer.instance.toneMappingExposure = 7;
+    this.experience.light!.sunLight!.intensity = 0;
+    this.experience.light!.hemisphereLight!.intensity = 0;
+    this.experience.renderer!.instance.toneMappingExposure = 7;
   }
 
   private setupCamera() {
-    this.camera.instance.position.set(-30, 15, 21);
-    this.camera.instance.zoom = 0.6;
+    if (this.camera) {
+      this.camera.instance.position.set(-30, 15, 21);
+      this.camera.instance.zoom = 0.6;
 
-    this.camera.controls.enabled = false;
+      this.camera.controls.enabled = false;
 
-    this.camera.instance.updateProjectionMatrix();
+      this.camera.instance.updateProjectionMatrix();
+    }
   }
 
   private setupPrediction() {
@@ -128,34 +126,10 @@ export default class Cartomancie {
   }
 
   private createCube() {
-    this.scene.background = new Color(0x000000);
-    // const cube = new Mesh(
-    //   new BoxGeometry(1, 1, 1),
-    //   new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
-    // );
-    //
-    // cube.scale.set(90, 90, 90);
-    // this.scene.add(cube);
-    //
-    // if (this.debug.active) {
-    //   const cubeFolder: GUI =
-    //     this.debug.debugModelFolder!.addFolder("Cube carto");
-    //
-    //   cubeFolder.add(cube.position, "x").name("Position X");
-    //   cubeFolder.add(cube.position, "y").name("Position Y");
-    //   cubeFolder.add(cube.position, "z").name("Position Z");
-    //
-    //   cubeFolder.add(cube.rotation, "x").name("rotation X");
-    //   cubeFolder.add(cube.rotation, "y").name("rotation Y");
-    //   cubeFolder.add(cube.rotation, "z").name("rotation Z");
-    //
-    //   cubeFolder.add(cube.scale, "x").name("scale X");
-    //   cubeFolder.add(cube.scale, "y").name("scale Y");
-    //   cubeFolder.add(cube.scale, "z").name("scale Z");
-    // }
+    this.scene!.background = new Color(0x000000);
   }
   private addDebugFolder(): GUI | null {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       return this.debug.ui!.addFolder("Cartomancie");
     }
     return null;
@@ -163,59 +137,29 @@ export default class Cartomancie {
 
   private async loadScene() {
     // if (this.sceneCard)
-    this.sceneCard = this.experience.allModels.sceneCard;
+    this.sceneCard = this.experience.allModels.SceneCard;
 
-    const flameMaterial = new NodeToyMaterial({
-      data: flameData,
-    });
-
-    this.flame = await this.createFlame(
-      this.flame!,
-      flameMaterial,
-      4,
-      4.3,
-      -2.7
-    );
-    this.experience.postProcessing.setSelectObjectsForBloom(
+    this.flame = this.experience.allModels.Flame;
+    this.flame?.loadedModel3D?.position.set(4, 4.3, -2.7);
+    this.groupeScene.add(this.flame?.loadedModel3D!);
+    this.experience.postProcessing?.setSelectObjectsForBloom(
       // @ts-ignore
       this.flame.loadedModel3D?.children[0]
     );
 
-    this.secondFlame = await this.createFlame(
-      this.secondFlame!,
-      flameMaterial,
-      -14.5,
-      2,
-      6.4
-    );
-    flameMaterial.needsUpdate = true;
-
-    this.experience.postProcessing.setSelectObjectsForBloom(
+    this.secondFlame = this.experience.allModels.SecondFlame;
+    this.secondFlame?.loadedModel3D?.position.set(-14.5, 2, 6.4);
+    this.groupeScene.add(this.secondFlame?.loadedModel3D!);
+    this.experience.postProcessing?.setSelectObjectsForBloom(
       // @ts-ignore
       this.secondFlame.loadedModel3D?.children[0]
     );
 
-    this.groupeScene.add(this.sceneCard.loadedModel3D!);
+    this.groupeScene.add(this.sceneCard?.loadedModel3D!);
+    this.groupeScene.add(this.flame?.loadedModel3D!);
+    this.groupeScene.add(this.secondFlame?.loadedModel3D!);
 
     this.loadCards();
-  }
-
-  private async createFlame(
-    model: Model3D,
-    material: NodeToyMaterial,
-    x: number,
-    y: number,
-    z: number
-  ) {
-    model = this.experience.allModels.flame;
-
-    // @ts-ignore
-    model.loadedModel3D!.children[0].material = material;
-
-    model.loadedModel3D?.position.set(x, y, z);
-    this.groupeScene.add(model.loadedModel3D!);
-
-    return model;
   }
 
   private async loadCards() {
@@ -223,9 +167,10 @@ export default class Cartomancie {
       this.cards = this.experience.allModels.Cards;
 
       this.groupeScene.rotation.set(0, -0.2, 0);
-      this.groupeScene.add(this.cards.loadedModel3D!);
+      this.groupeScene.add(this.cards?.loadedModel3D!);
 
-      this.scene.add(this.groupeScene);
+      this.scene?.add(this.groupeScene);
+      console.log(this.groupeScene);
       this.addDebug();
     }
 
@@ -233,7 +178,7 @@ export default class Cartomancie {
   }
 
   private addDebug() {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       const sceneFolder: GUI =
         this.debugFolder!.addFolder("SceneCarto entiere");
       sceneFolder!
@@ -291,7 +236,6 @@ export default class Cartomancie {
       this.showOneTimeAnimation(this.cards.animationAction[1]);
 
       this.mixer!.addEventListener("finished", () => {
-
         setTimeout(() => {
           document.querySelector(
             "#popup_first_arcane_cartomancie .text_arcane"
@@ -314,31 +258,35 @@ export default class Cartomancie {
   }
 
   private async loadMajorArcane() {
-    this.firstArcaneImageItem =
-      this.experience.allModels.predictions[
-        this.predictionNumber
-      ].modelMajorArcane;
+    for (let [key] of Object.entries(this.experience.allModels)) {
+      console.log(`${key}: ${this.experience.allModels[key]}`);
+      if (key === predictions[this.predictionNumber].modelMajorArcane.name) {
+        this.firstArcaneImageItem = this.experience.allModels[key];
+      }
+    }
 
     new ClickAndDrag(
       this.firstArcaneImageItem!.loadedModel3D!,
       EventClickDrag.ROTATION,
       false
     );
-    this.scene.add(this.firstArcaneImageItem.loadedModel3D!);
+    this.scene?.add(this.firstArcaneImageItem?.loadedModel3D!);
   }
 
   private async loadMinorArcane() {
-    this.secondArcaneImageItem =
-      this.experience.allModels.predictions[
-        this.predictionNumber
-      ].modelMinorArcane;
+    for (let [key] of Object.entries(this.experience.allModels)) {
+      console.log(`${key}: ${this.experience.allModels[key]}`);
+      if (key === predictions[this.predictionNumber].modelMinorArcane.name) {
+        this.secondArcaneImageItem = this.experience.allModels[key];
+      }
+    }
 
     new ClickAndDrag(
       this.secondArcaneImageItem!.loadedModel3D!,
       EventClickDrag.ROTATION,
       false
     );
-    this.scene.add(this.secondArcaneImageItem.loadedModel3D!);
+    this.scene?.add(this.secondArcaneImageItem?.loadedModel3D!);
   }
 
   private displayButton() {
@@ -456,8 +404,12 @@ export default class Cartomancie {
   }
 
   private async loadModelsItemIsland() {
-    this.item =
-      this.experience.allModels.predictions[this.predictionNumber].item;
+    for (let [key] of Object.entries(this.experience.allModels)) {
+      console.log(`${key}: ${this.experience.allModels[key]}`);
+      if (key === predictions[this.predictionNumber].item.name) {
+        this.item = this.experience.allModels[key];
+      }
+    }
   }
 
   private setupItem(x: number, y: number, z: number) {
@@ -477,54 +429,64 @@ export default class Cartomancie {
           EventClickDrag.ROTATION,
           false
         );
-        this.scene.add(this.item.loadedModel3D!);
+        this.scene?.add(this.item.loadedModel3D!);
       }
     }
   }
 
   private setOverlayArcane() {
-    const geometry = new PlaneGeometry(this.sizes.width, this.sizes.height);
+    const geometry = new PlaneGeometry(this.sizes?.width, this.sizes?.height);
     const material = new MeshBasicMaterial({
       color: 0x1b2b2c,
       side: DoubleSide,
     });
     this.overlay = new Mesh(geometry, material);
     this.overlay.position.set(0, -15, 0);
-    this.overlay.lookAt(this.camera.instance.position);
-    this.scene.add(this.overlay);
+    this.overlay.lookAt(this.camera!.instance.position);
+    this.scene?.add(this.overlay);
   }
 
   public update() {
-    this.mixer?.update(this.time.delta * 0.001);
+    this.mixer?.update(this.time!.delta * 0.001);
     NodeToyMaterial.tick();
-    // @ts-ignore
-    if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
+
+    if (
       // @ts-ignore
-      this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+      this.flame?.loadedModel3D!.children[0].material.uniforms.Haut.value &&
+      // @ts-ignore
+      this.secondFlame.loadedModel3D!.children[0].material.uniforms.Haut.value
+    ) {
+      // @ts-ignore
+      this.flame!.loadedModel3D!.children[0].material.uniforms.Haut.value =
+        Math.sin(this.experience.time!.elapsed * 0.001) * 0.5 + 0.5;
+      // @ts-ignore
+      this.secondFlame!.loadedModel3D!.children[0].material.uniforms.Haut.value =
+        Math.sin(this.experience.time!.elapsed * 0.001) * 0.5 + 0.5;
     }
   }
 
   private destroyCard() {
-    this.scene.remove(this.groupeScene);
+    this.scene?.remove(this.groupeScene);
     this.cards?.destroy();
     this.sceneCard?.destroy();
     this.flame?.destroy();
     this.secondFlame?.destroy();
+    this.flame = undefined;
+    this.secondFlame = undefined;
 
-    this.experience.light.destroyLightCartomancie();
+    this.experience.light?.destroyLightCartomancie();
   }
 
   private destroyFirstArcane() {
     if (this.firstArcaneImageItem) {
-      this.scene.remove(this.firstArcaneImageItem.loadedModel3D!);
+      this.scene?.remove(this.firstArcaneImageItem.loadedModel3D!);
       this.firstArcaneImageItem.loadedModel3D!.remove();
       this.firstArcaneImageItem = undefined;
     }
   }
   private destroySecondArcane() {
     if (this.secondArcaneImageItem) {
-      this.scene.remove(this.secondArcaneImageItem.loadedModel3D!);
+      this.scene?.remove(this.secondArcaneImageItem.loadedModel3D!);
       this.secondArcaneImageItem.loadedModel3D!.remove();
       this.secondArcaneImageItem = undefined;
     }
@@ -532,20 +494,20 @@ export default class Cartomancie {
 
   private removeItemFromScene() {
     if (this.item) {
-      this.scene.remove(this.item.loadedModel3D!);
+      this.scene?.remove(this.item.loadedModel3D!);
     }
   }
 
   public destroyAll() {
     if (this.overlay) {
-      this.scene.remove(this.overlay);
+      this.scene?.remove(this.overlay);
       this.overlay.remove();
       this.overlay = undefined;
     }
 
-    this.scene.remove(this.item?.loadedModel3D!);
+    this.scene?.remove(this.item?.loadedModel3D!);
     this.item?.loadedModel3D?.remove();
     this.item = undefined;
-    this.scene.background = null;
+    this.scene!.background = null;
   }
 }

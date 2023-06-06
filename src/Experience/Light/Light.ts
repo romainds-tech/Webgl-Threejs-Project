@@ -16,7 +16,7 @@ import { GUI } from "lil-gui";
 
 export default class Light {
   public experience: Experience;
-  public scene: Scene;
+  public scene?: Scene;
 
   public sunLight?: DirectionalLight;
   public spotLight?: SpotLight;
@@ -24,7 +24,7 @@ export default class Light {
   public spotLightHelper?: SpotLightHelper;
   public pointLightHelper?: PointLightHelper;
   public hemisphereLight?: HemisphereLight;
-  public debug: Debug;
+  public debug?: Debug;
   public debugFolder: GUI | null;
 
   constructor() {
@@ -38,7 +38,7 @@ export default class Light {
   }
 
   addDebugFolder(): GUI | null {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       return this.debug.ui!.addFolder("Light").close();
     }
     return null;
@@ -61,14 +61,14 @@ export default class Light {
 
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
     // this.sunLight.position.multiplyScalar(30);
-    this.scene.add(this.sunLight);
+    this.scene?.add(this.sunLight);
 
     this.hemisphereLight = new HemisphereLight(0xadaff0, 0xcdf0ca, 6);
     // this.hemisphereLight.castShadow = true;
-    this.scene.add(this.hemisphereLight);
+    this.scene?.add(this.hemisphereLight);
 
     // Debug
-    if (this.debug.active) {
+    if (this.debug?.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("Light");
       lightFolder!
         .add(this.sunLight!, "intensity")
@@ -151,22 +151,22 @@ export default class Light {
     // this.sunLight.color.setHSL(0.1, 1, 0.95);
     // this.sunLight.position.multiplyScalar(30);
 
-    this.scene.add(this.spotLight);
+    this.scene?.add(this.spotLight);
 
     this.spotLightHelper = new SpotLightHelper(this.spotLight, 1);
-    this.scene.add(this.spotLightHelper);
+    this.scene?.add(this.spotLightHelper);
 
     const mesh = new Mesh(
       new CylinderGeometry(2, 2, 10, 32),
       new MeshBasicMaterial({ transparent: true, opacity: 0, visible: false })
     );
     mesh.position.set(-19, 0, -6);
-    this.scene.add(mesh);
+    this.scene?.add(mesh);
 
     this.spotLight!.target = mesh;
 
     // Debug
-    if (this.debug.active) {
+    if (this.debug?.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
       lightFolder!
         .add(this.spotLight!, "intensity")
@@ -222,12 +222,12 @@ export default class Light {
   private pointPointLightCartomancie() {
     this.pointLight = new PointLight(0x4300fa, 4, 100);
     this.pointLight.position.set(4, 2, -3);
-    this.scene.add(this.pointLight);
+    this.scene?.add(this.pointLight);
 
     this.pointLightHelper = new PointLightHelper(this.pointLight, 1);
-    this.scene.add(this.pointLightHelper);
+    this.scene?.add(this.pointLightHelper);
 
-    if (this.debug.active) {
+    if (this.debug?.active) {
       const lightFolder: GUI = this.debugFolder!.addFolder("PointLight");
       lightFolder!
         .add(this.pointLight!, "intensity")
@@ -274,7 +274,7 @@ export default class Light {
     this.spotLightHelper?.dispose();
     this.pointLightHelper?.dispose();
 
-    this.scene.remove(
+    this.scene?.remove(
       this.spotLight!,
       this.pointLight!,
       this.spotLightHelper!,

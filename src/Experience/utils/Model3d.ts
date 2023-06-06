@@ -33,7 +33,7 @@ export interface IModel3D {
 
 export default class Model3D {
   experience: Experience;
-  debug: Debug;
+  debug?: Debug;
 
   name: string;
   path: string;
@@ -76,7 +76,7 @@ export default class Model3D {
   }
 
   addDebug() {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       this.loadedModel3D?.add(new AxesHelper(10));
       const modelNameFolder: GUI = this.debug.debugModelFolder!.addFolder(
         this.name

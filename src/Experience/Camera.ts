@@ -8,12 +8,12 @@ import { GUI } from "lil-gui";
 
 export default class Camera {
   public experience: Experience;
-  public sizes: Sizes;
-  public scene: Scene;
+  public sizes?: Sizes;
+  public scene?: Scene;
   public canvas: HTMLCanvasElement | undefined;
   public controls: OrbitControls;
   public instance: PerspectiveCamera;
-  public debug: Debug;
+  public debug?: Debug;
   public debugFolder?: GUI;
 
   public updateActive: boolean;
@@ -31,39 +31,18 @@ export default class Camera {
 
     this.updateActive = true;
   }
-  // private setInstance(): OrthographicCamera {
-  //   let cameraInstance: OrthographicCamera;
-  //   const aspect = this.sizes.width / this.sizes.height;
-  //   const frustumSize = 10;
-  //   cameraInstance = new OrthographicCamera(
-  //     (frustumSize * aspect) / -4,
-  //     (frustumSize * aspect) / 4,
-  //     frustumSize / 4,
-  //     frustumSize / -4,
-  //     0.1,
-  //     300
-  //   );
-  //
-  //   cameraInstance.zoom = 0.35;
-  //   cameraInstance.updateProjectionMatrix();
-  //
-  //   // cameraInstance.position.set(1, 2, 30);
-  //   cameraInstance.position.set(-5, 5, -5);
-  //   this.scene.add(cameraInstance);
-  //   return cameraInstance;
-  // }
 
   private setInstancePerspective(): PerspectiveCamera {
     let cameraInstance: PerspectiveCamera;
     cameraInstance = new PerspectiveCamera(
       30,
-      this.sizes.width / this.sizes.height,
+      this.sizes!.width / this.sizes!.height,
       0.1,
       100
     );
     cameraInstance.position.set(0, 0, 3);
 
-    this.scene.add(cameraInstance);
+    this.scene?.add(cameraInstance);
     return cameraInstance;
   }
 
@@ -74,7 +53,7 @@ export default class Camera {
   }
 
   addDebug() {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       this.instance.add(new AxesHelper(10));
       const cameraName: GUI = this.debug.debugModelFolder!.addFolder("Camera");
 
@@ -110,13 +89,9 @@ export default class Camera {
   }
 
   resize(): void {
-    const aspect = this.sizes.width / this.sizes.height;
+    const aspect = this.sizes!.width / this.sizes!.height;
 
     this.instance.aspect = aspect;
-    // this.instance.left = (frustumSize * aspect) / -2;
-    // this.instance.right = (frustumSize * aspect) / 2;
-    // this.instance.top = frustumSize / 2;
-    // this.instance.bottom = frustumSize / -2;
 
     this.instance.updateProjectionMatrix();
   }
