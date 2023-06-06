@@ -322,7 +322,6 @@ export default class Island {
             data: transitionCartomancieData,
           });
 
-          console.log(this.planeForSky?.material);
           // @ts-ignore
           gsap.to(this.planeForSky!.material.uniforms.Transi, {
             duration: 0.5,
@@ -410,7 +409,6 @@ export default class Island {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
-    console.log(intersect);
     if (positionPlane.name == "cartomancie") {
       positionPlane = intersect[1].object;
     }
@@ -489,7 +487,6 @@ export default class Island {
         disableInterfaceGlobalOnIsland();
         // this.destroy();
 
-        console.log("anneaux");
         this.planeForSky!.material = new MeshBasicMaterial({
           color: 0x000000,
           opacity: 0,
@@ -528,7 +525,6 @@ export default class Island {
       .getElementById("button_disable_select_item_island")!
       .addEventListener("click", () => {
         disableInterfaceInformationItem();
-        console.log("cross button");
         this.resetPositionOfSelectedObject();
         this.canRaycast = true;
         this.checkIfAddItemToCreate();
@@ -542,7 +538,6 @@ export default class Island {
       .getElementById("abandonned_modificate_item_position_island")!
       .addEventListener("click", () => {
         disablePopupIterfaceModificateItem();
-        console.log("annuler button");
         this.resetPositionOfSelectedObject();
         this.checkIfAddItemToCreate();
         this.destroyImageItem();
@@ -556,7 +551,6 @@ export default class Island {
         displayPopupIterfaceModificateItem();
         disableInterfaceInformationItem();
         disableInterfaceCreationItem();
-        console.log("deplacer button");
         this.canRaycast = true;
         this.destroyImageItem();
         this.camera.controls.enabled = true;
@@ -581,9 +575,7 @@ export default class Island {
 
   // ITEMS
   private async loadIsland() {
-    this.island = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Island)
-    );
+    this.island = this.experience.allModels.Island;
     // @ts-ignore
     this.island.loadedModel3D!.children[0].material.transparent = false;
 
@@ -600,14 +592,12 @@ export default class Island {
   }
 
   private async loadCylinder() {
-    this.cylindre = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.Cylindre)
-    );
+    this.cylindre = this.experience.allModels.Cylindre;
 
-    this.cylindre.loadedModel3D!.scale.set(0.6, 3, 0.6);
-    this.cylindre.loadedModel3D!.position.set(0, 15, 0);
+    this.cylindre?.loadedModel3D!.scale.set(0.6, 3, 0.6);
+    this.cylindre?.loadedModel3D!.position.set(0, 15, 0);
 
-    this.scene.add(this.cylindre.loadedModel3D!);
+    this.scene.add(this.cylindre?.loadedModel3D!);
   }
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
@@ -664,7 +654,6 @@ export default class Island {
         (l) => {
           this.scene.background = l;
           this.scene.backgroundIntensity = 2;
-          console.log(this.scene);
         }
       );
   }

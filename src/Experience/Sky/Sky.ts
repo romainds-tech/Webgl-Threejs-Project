@@ -172,9 +172,8 @@ export default class Sky {
   }
 
   private async loadJowel() {
-    this.jowelRingLove = await CustomGlbLoader.getInstance().loadOne(
-      new Model3D(allGlbs.RingJowel)
-    );
+    this.jowelRingLove = this.experience.allModels.RingJowel;
+
     // this.jowelRingLove.loadedModel3D?.rotation.set(-0.9, 0.55, -1.15);
     this.addRings();
 
@@ -341,7 +340,6 @@ export default class Sky {
         (l) => {
           this.scene.background = l;
           this.scene.backgroundIntensity = 2;
-          console.log(this.scene);
         }
       );
   }

@@ -173,7 +173,7 @@ export const allGlbs = {
 
   SceneCard: {
     name: "SceneCard",
-    path: "glb/cartomancie/scene_card.gltf",
+    path: "glb/cartomancie/scene_cards.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-4, 0, 2),
     rotation: new Vector3(0, Math.PI / 2, 0),

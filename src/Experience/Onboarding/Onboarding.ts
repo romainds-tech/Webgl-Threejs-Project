@@ -82,8 +82,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
   }
 
   private setupCamera() {
-    console.log(this.experience.camera.instance.position);
-    this.experience.camera.instance.position.set(-1, 5, 4);
+    this.experience.camera?.instance.position.set(-1, 5, 4);
 
     this.experience.camera.instance.zoom = 0.7;
     this.experience.camera.instance.updateProjectionMatrix();
@@ -135,7 +134,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
     // si la question est déjà enregistré dans le user on passe à la suivante
     // @ts-ignore
     if (this.user[question.id] !== "") {
-      console.log("question déjà répondu");
       this.currentQuestionIndex++;
       this.showQuestion();
       return;
@@ -162,8 +160,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
             this.user!.phoneNumber = input.value;
             break;
           default:
-            // @ts-ignore
-            console.error(`Unrecognized question id: ${question.id}`);
+          // @ts-ignore
         }
 
         this.cookieManager.setCookie(this.user!);
@@ -241,14 +238,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.drag?.destroy();
     this.drag = undefined;
 
-    console.log("destroy onboarding");
-    console.log(document.querySelector("#button_onboarding"));
-
     document
       .querySelector("#button_onboarding")
-      ?.removeEventListener("click", (e) => {
-        console.log("click", e);
-      });
+      ?.removeEventListener("click", () => {});
 
     document.querySelector("#button_onboarding")?.remove();
   }

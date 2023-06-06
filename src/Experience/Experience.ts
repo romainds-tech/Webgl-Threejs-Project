@@ -66,7 +66,6 @@ export class Experience {
     });
 
     this.onBoarding.on("onboardingFinish", () => {
-      console.log("onboardingFinish");
       this.onBoarding?.destroy();
       this.island = new Island();
     });
@@ -110,8 +109,6 @@ export class Experience {
         new Model3D(value)
       );
     }
-    console.log("this.allModels", this.allModels);
-    console.log("END");
     this.completeSetup();
   }
 
