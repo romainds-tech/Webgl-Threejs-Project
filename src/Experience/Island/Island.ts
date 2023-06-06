@@ -14,6 +14,10 @@ import {
   RedFormat,
   Data3DTexture,
   Vector3,
+  Intersection,
+  BoxGeometry,
+  MeshBasicMaterial,
+  PlaneGeometry,
 } from "three";
 import CustomGlbLoader from "../utils/CustomGlbLoader";
 import { allGlbs } from "../../Sources/glb/glb";
@@ -54,6 +58,7 @@ export default class Island {
   public camera: Camera;
 
   public item?: Model3D;
+  public planeForSky?: Mesh;
   private island?: Model3D;
   private cylindre?: Model3D;
 
@@ -77,7 +82,7 @@ export default class Island {
   private canRaycast: boolean;
   private isSelected: boolean;
   private readonly mouse: Vector2;
-  private readonly allObjectsCreateInMap: Array<Object3D>;
+  public readonly allObjectsCreateInMap: Array<Object3D>;
   private beacon?: Mesh;
   private cloud?: Mesh;
 
@@ -109,7 +114,7 @@ export default class Island {
     this.mouse = new Vector2();
 
     // Map
-    this.numberOfElementToAdd = 0;
+    this.numberOfElementToAdd = -1;
     //
     this.itemIslandManager = new ItemIslandManager();
     this.allObjectsCreateInMap = new Array<Object3D>();
@@ -145,6 +150,14 @@ export default class Island {
     this.imageItem = null;
   }
 
+  public backFromSky() {
+    gsap.to(this.planeForSky!.material, {
+      duration: 0.5,
+      opacity: 0,
+      ease: "none",
+    });
+  }
+
   public loadAllScene() {
     this.setupCamera();
     this.scene.add(this.islandGroup);
@@ -157,6 +170,7 @@ export default class Island {
 
   public setupCamera() {
     this.experience.camera.instance.zoom = 0.2;
+    this.camera.instance.fov = 30;
     this.camera.controls.enabled = true;
 
     this.experience.camera.instance.position.set(-5, 17, 17);
@@ -201,6 +215,9 @@ export default class Island {
         x: -5,
         y: 17,
         ease: "none",
+        onComplete: () => {
+          this.camera.updateActive = true;
+        },
       });
 
     gsap.to(this.camera.instance, {
@@ -284,21 +301,18 @@ export default class Island {
           selectedPlane.position.z
         );
         // If we dont have item on this case, we create one
-        if (
-          checkItem == null &&
-          this.numberOfElementToAdd > 0 &&
-          selectedPlane.name == "edit"
-        ) {
-          this.createItemAtPosition(selectedPlane);
+        if (checkItem == null && this.numberOfElementToAdd > 0) {
+          this.createItemAtPosition(selectedPlane, intersects);
         }
         // Click on center to have a prediction
         else if (
           selectedPlane.name == "cartomancie" &&
-          this.numberOfElementToAdd == 0
+          this.numberOfElementToAdd == -1
         ) {
           this.destroy();
           disableInterfaceGlobalOnIsland();
           this.experience.cartomancie = new Cartomancie();
+          this.camera.updateActive = true;
         }
         // Else we gonna change position of this item
         else {
@@ -328,16 +342,21 @@ export default class Island {
   };
 
   // MANAGE ITEM
-  private modificationItemPosition(selectedBloc: Object3D<Event>) {
+  private modificationItemPosition(
+    selectedBloc: Object3D<Event>,
+    intersect: Intersection<Object3D<Event>>[]
+  ) {
     this.displayEditMode(true);
     // places item on a new selected block
     if (
       !this.itemIslandManager.getItemAtPosition(
         selectedBloc.position.x,
         selectedBloc.position.z
-      ) &&
-      selectedBloc.name == "edit"
+      )
     ) {
+      if (selectedBloc.name == "cartomancie") {
+        selectedBloc = intersect[1].object;
+      }
       this.itemIslandManager.selectedItem!.position.set(
         selectedBloc.position.x,
         0,
@@ -357,20 +376,23 @@ export default class Island {
     this.experience.camera.instance.updateProjectionMatrix();
   }
 
-  private createItemAtPosition(positionPlane: Object3D<Event>) {
+  private createItemAtPosition(
+    positionPlane: Object3D<Event>,
+    intersect: Intersection<Object3D<Event>>[]
+  ) {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
+    console.log(intersect);
+    if (positionPlane.name == "cartomancie") {
+      positionPlane = intersect[1].object;
+    }
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
     this.itemIslandManager.newTextToCreate =
       this.experience.cartomancie?.textPrediction;
     this.numberOfElementToAdd -= 1;
     this.checkIfAddItemToCreate();
-    // localStorage.setItem(
-    //   "item[" + (this.mapGroup.children.length - 1).toString() + "]",
-    //   JSON.stringify(this.mapGroup.children[this.mapGroup.children.length - 1])
-    // );
   }
 
   private selectItem(itemSelected: ItemIsland) {
@@ -439,38 +461,44 @@ export default class Island {
       .addEventListener("click", () => {
         disableInterfaceGlobalOnIsland();
         // this.destroy();
+
         console.log("anneaux");
-        console.log(this.camera.instance);
-        // gsap.to(this.camera.instance.position, {
-        //   duration: 2,
-        //   x: 12,
-        //   y: 5,
-        //   ease: "expo.inOut",
-        // })
+        this.planeForSky = new Mesh(
+          new PlaneGeometry(this.sizes.width, this.sizes.height),
+          new MeshBasicMaterial({
+            color: 0x000000,
+            opacity: 0,
+            transparent: true,
+          })
+        );
 
-        // gsap.to(this.camera.instance.position, {
-        //   delay: 0.5,
-        //   duration: 1,
-        //   x: 8,
-        //   y: -12,
-        //   ease: "expo.inOut",
-        // });
-        // gsap.to(this.camera.instance, {
-        //   delay: 0.5,
-        //   duration: 3,
-        //   zoom: 3.15,
-        //   onUpdate: () => {
-        //     this.camera.instance.updateProjectionMatrix();
-        //   },
-        // });
+        this.camera.instance.add(this.planeForSky);
+        this.planeForSky.position.z = -1;
 
-        // gsap.to(this.islandGroup.scale, {
-        //   duration: 1,
-        //   x: scale,
-        //   y: scale,
-        //   z: scale,
-        // });
-        // this.experience.sky = new Sky();
+        gsap.to(this.camera.instance.position, {
+          duration: 1.2,
+          y: 50,
+          ease: "expo.inOut",
+        });
+
+        gsap.to(this.camera.instance.rotation, {
+          duration: 1.2,
+          x: Math.PI / 2,
+          z: 0.5,
+          ease: "expo.inOut",
+          onComplete: () => {
+            this.destroy();
+            this.camera.updateActive = true;
+            this.experience.sky = new Sky();
+          },
+        });
+
+        gsap.to(this.planeForSky.material, {
+          duration: 0.5,
+          delay: 0.5,
+          opacity: 1,
+          ease: "none",
+        });
       });
   }
   private clickOnCrossButtonInformationItem() {

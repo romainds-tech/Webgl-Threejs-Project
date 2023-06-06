@@ -69,10 +69,10 @@ export function createUISky() {
   Input.getInstance().createInputWithSubtitle(
     "title_last_prediction_sky",
     "title_prediction_cartomancie all_ui_sky",
-    "Prédiction du xx/xx/xxxx",
+    "Prédiction du 08/06/2023",
     "subtitle_cartomancie all_ui_sky",
     "CARTOMANCIE",
-    PositionY.TOP,
+    PositionY.TOP_20,
     PositionX.CENTER
   );
 
@@ -114,7 +114,7 @@ export function createUISky() {
     "button_return_rings_sky",
     "button big_button button_prediction all_ui_sky",
     "RETOURNER VOIR MES STATS",
-    PositionY.BOTTOM,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
