@@ -2,6 +2,7 @@ import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
 import { data } from "../../shaders/beacon/data";
 import { data1 } from "../../shaders/glyphes/data";
+import { flameData } from "../../shaders/Flame";
 
 export const allGlbs = {
   TempleCircle1: {
@@ -219,15 +220,29 @@ export const allGlbs = {
     transmission: false,
   },
 
-  flame: {
-    name: "flame",
-    path: "glb/FLAMME.gltf",
+  Flame: {
+    name: "Flame",
+    path: "glb/flame.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, 0, 0),
     scale: 1,
-    animation: true,
-    shadow: true,
+    animation: false,
+    shadow: false,
+    nodeToyMaterial: flameData,
+    transmission: false,
+  },
+
+  SecondFlame: {
+    name: "SecondFlame",
+    path: "glb/flame.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 1,
+    animation: false,
+    shadow: false,
+    nodeToyMaterial: flameData,
     transmission: false,
   },
 };

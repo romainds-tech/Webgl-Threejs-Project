@@ -104,6 +104,7 @@ export class Experience {
   private async loadAllModels() {
     // parcours allGlb et charge les modèles avec un for en utilisant objectKeys
     for (let [key, value] of Object.entries(allGlbs)) {
+      // @ts-ignore
       console.log(`${key}: ${allGlbs[key]}`);
       this.allModels[key] = await CustomGlbLoader.getInstance().loadOne(
         new Model3D(value)

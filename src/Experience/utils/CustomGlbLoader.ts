@@ -18,7 +18,7 @@ import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 export default class CustomGlbLoader {
   public experience: Experience;
-  public scene: Scene;
+  public scene?: Scene;
   private static instance: CustomGlbLoader;
   private static gltfLoader: GLTFLoader;
   private static rbgeLoader: RGBELoader;
@@ -58,13 +58,15 @@ export default class CustomGlbLoader {
 
   private async setDataTexture(path: string) {
     await CustomGlbLoader.rbgeLoader.load(path, (texture) => {
-      this.scene.background = texture;
+      if (this.scene) {
+        this.scene.background = texture;
 
-      // texture.mapping = EquirectangularReflectionMapping;
+        // texture.mapping = EquirectangularReflectionMapping;
 
-      // this.scene.environment = texture;
+        // this.scene.environment = texture;
 
-      this.scene.backgroundIntensity = 0;
+        this.scene.backgroundIntensity = 0;
+      }
 
       this.dataTexture = texture;
     });
