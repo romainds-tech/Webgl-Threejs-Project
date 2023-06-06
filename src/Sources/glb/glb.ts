@@ -185,7 +185,7 @@ export const allGlbs = {
 
   Cards: {
     name: "Cards",
-    path: "glb/cartomancie/cards_animations.gltf",
+    path: "glb/cartomancie/cards_v3.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-4, -0.4, 2),
     rotation: new Vector3(0, 0, 0),

@@ -60,7 +60,7 @@ export default class Camera {
       30,
       this.sizes.width / this.sizes.height,
       0.1,
-      1000
+      100
     );
     cameraInstance.position.set(0, 0, 3);
     this.scene.add(cameraInstance);
@@ -88,14 +88,6 @@ export default class Camera {
           console.log(this.instance.zoom);
           this.instance.updateProjectionMatrix();
         });
-
-      // cameraName
-      //   .add(this.instance, "fov", 0, 5)
-      //   .name("Zoom")
-      //   .onChange(() => {
-      //     console.log(this.instance);
-      //     this.instance.updateProjectionMatrix();
-      //   });
 
       cameraName.add(this.instance.position, "x").name("Position X");
       cameraName.add(this.instance.position, "y").name("Position Y");
