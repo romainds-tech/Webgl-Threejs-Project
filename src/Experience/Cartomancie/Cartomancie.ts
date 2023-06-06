@@ -170,32 +170,6 @@ export default class Cartomancie {
       new Model3D(allGlbs.SceneCard)
     );
 
-    // this.flame = await CustomGlbLoader.getInstance().loadOne(
-    //   new Model3D(allGlbs.flame)
-    // );
-
-    // this.sceneCard.loadedModel3D!.children[1].material =
-    // new MeshPhysicalMaterial({
-    //   color: 0xffffff,
-    //   metalness: 0.7,
-    //   roughness: 0.05,
-    //   ior: 1.5,
-    //   depthWrite: true,
-    //   map: this.sceneCard.loadedModel3D!.children[1].material.map,
-    //   metalnessMap:
-    //     this.sceneCard.loadedModel3D!.children[1].material.metalnessMap,
-    //   normalMap: this.sceneCard.loadedModel3D!.children[1].material.normalMap,
-    //   roughnessMap:
-    //     this.sceneCard.loadedModel3D!.children[1].material.roughnessMap,
-    //   envMapIntensity: 1,
-    //   transmission: 0.7, // use material.transmission for glass materials
-    //   opacity: 1,
-    //   side: DoubleSide,
-    //   transparent: false,
-    // });
-
-    console.log(this.sceneCard);
-
     const flameMaterial = new NodeToyMaterial({
       data: flameData,
     });
@@ -207,6 +181,10 @@ export default class Cartomancie {
       4.3,
       -2.7
     );
+    this.experience.postProcessing.setSelectObjectsForBloom(
+      this.flame.loadedModel3D?.children[0]
+    );
+
     this.secondFlame = await this.createFlame(
       this.secondFlame!,
       flameMaterial,
@@ -215,6 +193,10 @@ export default class Cartomancie {
       6.4
     );
     flameMaterial.needsUpdate = true;
+
+    this.experience.postProcessing.setSelectObjectsForBloom(
+      this.secondFlame.loadedModel3D?.children[0]
+    );
 
     this.groupeScene.add(this.sceneCard.loadedModel3D!);
 
@@ -236,10 +218,6 @@ export default class Cartomancie {
     model.loadedModel3D!.children[0].material = material;
 
     model.loadedModel3D?.position.set(x, y, z);
-
-    this.experience.postProcessing.setSelectObjectsForBloom(
-      model.loadedModel3D!.children[0]
-    );
     this.groupeScene.add(model.loadedModel3D!);
 
     return model;
