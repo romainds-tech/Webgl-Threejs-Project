@@ -77,7 +77,7 @@ export const allGlbs = {
 
   Batons4: {
     name: "Batons4",
-    path: "glb/cartomancie/baton4.gltf",
+    path: "glb/cartomancie/4_baton.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 1, 0),
     rotation: new Vector3(0, 3.8, 0),
@@ -89,7 +89,19 @@ export const allGlbs = {
 
   Cup6: {
     name: "Cup6",
-    path: "glb/cartomancie/cup6.gltf",
+    path: "glb/cartomancie/6_coupes.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 1, 0),
+    rotation: new Vector3(0, 3.8, 0),
+    scale: 2.7,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
+  Tower: {
+    name: "Tower",
+    path: "glb/cartomancie/la_tour.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 1, 0),
     rotation: new Vector3(0, 3.8, 0),
@@ -113,7 +125,7 @@ export const allGlbs = {
 
   Lune: {
     name: "Lune",
-    path: "glb/cartomancie/lune.gltf",
+    path: "glb/cartomancie/la_lune.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 1, 0),
     rotation: new Vector3(0, 3.8, 0),
@@ -125,7 +137,7 @@ export const allGlbs = {
 
   Sword: {
     name: "Sword",
-    path: "glb/cartomancie/sword_7.gltf",
+    path: "glb/cartomancie/7_epees.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 1, 0),
     rotation: new Vector3(0, 3.8, 0),

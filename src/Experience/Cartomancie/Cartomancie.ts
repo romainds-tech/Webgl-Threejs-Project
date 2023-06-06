@@ -170,7 +170,7 @@ export default class Cartomancie {
       this.groupeScene.add(this.cards?.loadedModel3D!);
 
       this.scene?.add(this.groupeScene);
-      console.log(this.groupeScene);
+
       this.addDebug();
     }
 
@@ -259,7 +259,6 @@ export default class Cartomancie {
 
   private async loadMajorArcane() {
     for (let [key] of Object.entries(this.experience.allModels)) {
-      console.log(`${key}: ${this.experience.allModels[key]}`);
       if (key === predictions[this.predictionNumber].modelMajorArcane.name) {
         this.firstArcaneImageItem = this.experience.allModels[key];
       }
@@ -275,7 +274,6 @@ export default class Cartomancie {
 
   private async loadMinorArcane() {
     for (let [key] of Object.entries(this.experience.allModels)) {
-      console.log(`${key}: ${this.experience.allModels[key]}`);
       if (key === predictions[this.predictionNumber].modelMinorArcane.name) {
         this.secondArcaneImageItem = this.experience.allModels[key];
       }
