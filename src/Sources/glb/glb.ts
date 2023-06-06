@@ -40,11 +40,11 @@ export const allGlbs = {
   },
   TempleCircle1Bis: {
     name: "TempleCircle1Bis",
-    path: "glb/anneaux_grand.gltf",
+    path: "glb/anneaux_grand_bis.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
     rotation: new Vector3(0, -90, 0),
-    scale: 0.0102,
+    scale: 0.01,
     animation: false,
     shadow: false,
     nodeToyMaterial: data1,
