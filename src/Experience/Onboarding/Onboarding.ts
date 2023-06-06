@@ -5,14 +5,12 @@ import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
-import gsap from "gsap";
 import { Scene } from "three";
-import Text from "../UI/Texts/Text";
-import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
+// @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 type EventMap = {
@@ -92,26 +90,26 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.experience.camera.debugFolder = this.experience.camera.addDebug();
   }
 
-  private startMovementCamera() {
-    gsap.to(this.experience.camera.instance.position, {
-      duration: 2,
-      x: -1,
-      y: 5,
-      z: 4,
-      ease: "Expo.easeOut",
-      onUpdate: () => {
-        this.experience.camera.instance.updateProjectionMatrix();
-      },
-    });
-    gsap.to(this.experience.camera.instance, {
-      duration: 2,
-      zoom: 0.7,
-      ease: "Expo.easeOut",
-      onUpdate: () => {
-        this.experience.camera.instance.updateProjectionMatrix();
-      },
-    });
-  }
+  // private startMovementCamera() {
+  //   gsap.to(this.experience.camera.instance.position, {
+  //     duration: 2,
+  //     x: -1,
+  //     y: 5,
+  //     z: 4,
+  //     ease: "Expo.easeOut",
+  //     onUpdate: () => {
+  //       this.experience.camera.instance.updateProjectionMatrix();
+  //     },
+  //   });
+  //   gsap.to(this.experience.camera.instance, {
+  //     duration: 2,
+  //     zoom: 0.7,
+  //     ease: "Expo.easeOut",
+  //     onUpdate: () => {
+  //       this.experience.camera.instance.updateProjectionMatrix();
+  //     },
+  //   });
+  // }
 
   private showQuestion() {
     document.querySelectorAll(".text")?.forEach((text) => {
@@ -133,6 +131,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     let question: typeof questions = this.questions![this.currentQuestionIndex];
 
     // si la question est déjà enregistré dans le user on passe à la suivante
+    // @ts-ignore
     if (this.user[question.id] !== "") {
       console.log("question déjà répondu");
       this.currentQuestionIndex++;
@@ -141,9 +140,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     }
 
     // we show the question
-    let title = new Text(question.Title, typeText.TITLE);
-    let content = new Text(question.Content, typeText.TEXT);
+    // let title = new Text(question.Title, typeText.TITLE);
+    // let content = new Text(question.Content, typeText.TEXT);
 
+    // @ts-ignore
     if (question.Type === "input") {
       let input = document.createElement("input");
       input.type = "text";
@@ -151,13 +151,16 @@ export default class Onboarding extends EventEmitter<EventMap> {
       document.body.appendChild(input);
 
       // user answer
+      // @ts-ignore
       input.addEventListener("input", (e) => {
         // save the answer in the user object
+        // @ts-ignore
         switch (question.id) {
           case "phoneNumber":
             this.user!.phoneNumber = input.value;
             break;
           default:
+            // @ts-ignore
             console.error(`Unrecognized question id: ${question.id}`);
         }
 
@@ -167,6 +170,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
       // save the answer in the cookies
     }
 
+    // @ts-ignore
     if (question.Type === "wheel") {
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
@@ -174,15 +178,18 @@ export default class Onboarding extends EventEmitter<EventMap> {
         true
       );
       // cut the circle in parts
+      // @ts-ignore
       let nbOptions = question.Options!.length - 1;
       let angle = 360 / nbOptions;
 
       this.drag.on("rotationMovement", (): void => {
         let angleRotation = this.circle1?.loadedModel3D?.rotation.y;
+        // @ts-ignore
         angleRotation = angleRotation * (180 / Math.PI);
         angleRotation = Math.abs(Math.floor(angleRotation! % 360));
         let index = Math.abs(Math.floor(angleRotation / angle));
 
+        // @ts-ignore
         switch (question.id) {
           case "zodiacSign":
             this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
@@ -201,9 +208,11 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
   update() {
     if (
+      // @ts-ignore
       this.circle1Bis?.loadedModel3D?.children[0].material.uniforms.Aparition
         .value
     ) {
+      // @ts-ignore
       this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
         Math.sin(this.experience.time.elapsed * 0.0005) * 0.5 + 0.5;
     }

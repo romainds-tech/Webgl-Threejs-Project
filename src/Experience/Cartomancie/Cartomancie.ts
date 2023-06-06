@@ -2,15 +2,12 @@ import { Experience } from "../Experience";
 import {
   AnimationAction,
   AnimationMixer,
-  AxesHelper,
-  BoxGeometry,
   Color,
   DoubleSide,
   Group,
   LoopOnce,
   Mesh,
   MeshBasicMaterial,
-  MeshPhysicalMaterial,
   PlaneGeometry,
   Scene,
   // ShaderMaterial,
@@ -182,6 +179,7 @@ export default class Cartomancie {
       -2.7
     );
     this.experience.postProcessing.setSelectObjectsForBloom(
+      // @ts-ignore
       this.flame.loadedModel3D?.children[0]
     );
 
@@ -195,6 +193,7 @@ export default class Cartomancie {
     flameMaterial.needsUpdate = true;
 
     this.experience.postProcessing.setSelectObjectsForBloom(
+      // @ts-ignore
       this.secondFlame.loadedModel3D?.children[0]
     );
 
@@ -215,6 +214,7 @@ export default class Cartomancie {
     );
 
     console.log(model.loadedModel3D!.children);
+    // @ts-ignore
     model.loadedModel3D!.children[0].material = material;
 
     model.loadedModel3D?.position.set(x, y, z);
@@ -505,7 +505,9 @@ export default class Cartomancie {
   public update() {
     this.mixer?.update(this.time.delta * 0.001);
     NodeToyMaterial.tick();
+    // @ts-ignore
     if (this.flame?.loadedModel3D?.children[0].material.uniforms.Haut.value) {
+      // @ts-ignore
       this.flame.loadedModel3D.children[0].material.uniforms.Haut.value =
         Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
     }

@@ -5,22 +5,15 @@ import {
   AnimationClip,
   AnimationMixer,
   Clock,
-  CubeTextureLoader,
   DataTexture,
   Euler,
   Mesh,
-  MeshLambertMaterial,
-  MeshStandardMaterial,
-  PMREMGenerator,
   Scene,
   MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  PMREMGenerator,
-  Scene,
-  Texture,
 } from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { Experience } from "../Experience";
+// @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 export default class CustomGlbLoader {
@@ -29,6 +22,7 @@ export default class CustomGlbLoader {
   private static instance: CustomGlbLoader;
   private static gltfLoader: GLTFLoader;
   private static rbgeLoader: RGBELoader;
+  // @ts-ignore
   private dataTexture: DataTexture;
   constructor() {
     this.experience = Experience.getInstance();
@@ -78,6 +72,7 @@ export default class CustomGlbLoader {
     });
   }
 
+  // @ts-ignore
   private setEnvMap(child) {
     child.material.roughness = 0;
     child.material.metalness = 0.5;
