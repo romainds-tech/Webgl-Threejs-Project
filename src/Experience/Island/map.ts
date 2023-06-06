@@ -1,6 +1,7 @@
 // ATTENTION - For this game, map width and length will be the same !
 
 import {
+  BoxGeometry,
   DoubleSide,
   Group,
   Mesh,
@@ -52,13 +53,13 @@ export function loadMap(
   });
   const planeOtherMaterial = new MeshLambertMaterial({
     color: 0xffffff,
-    side: DoubleSide,
+    visible: false,
     transparent: true,
-    opacity: 1,
+    opacity: 0,
   });
 
   const plane = new Mesh(planeGeometry, planeMaterial);
-  const otherPlane = new Mesh(planeGeometry, planeOtherMaterial);
+  const otherPlane = new Mesh(new BoxGeometry(0.8, 0.8, 3), planeOtherMaterial);
 
   let map: Group = new Group();
   let editMode: Group = new Group();
