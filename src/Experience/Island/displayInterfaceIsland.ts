@@ -125,7 +125,7 @@ export function createUIIsland() {
   Button.getInstance().createButtonWithImage(
     "button_rings_island",
     "button_cross_island button_island_permanent",
-    "/public/images/btn_image_rings.png",
+    "images/btn_image_rings.png",
     "button_rings",
     "",
     PositionY.TOP,

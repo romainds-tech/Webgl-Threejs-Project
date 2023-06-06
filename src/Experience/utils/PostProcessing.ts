@@ -5,7 +5,7 @@ import {
   RenderPass,
   EffectPass,
 } from "postprocessing";
-import { ColorManagement, Scene, WebGLRenderTarget } from "three";
+import { ColorManagement, Mesh, Scene, WebGLRenderTarget } from "three";
 import { Experience } from "../Experience";
 import Sizes from "./Sizes";
 import Camera from "../Camera";
@@ -20,9 +20,9 @@ export default class PostProcessing {
   private camera: Camera;
   private renderer: Renderer;
   private debug: Debug;
+  // @ts-ignore
   private debugFolder: GUI | null;
 
-  private materials: {};
   // @ts-ignore
   public selectedObjectsForBloom: Selection;
 
@@ -41,7 +41,6 @@ export default class PostProcessing {
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
 
-    this.materials = {};
     this.selectedObjectsForBloom = new Selection();
 
     // if (this.debug.active) {
@@ -97,7 +96,7 @@ export default class PostProcessing {
     this.instance.addPass(this.effectPass);
   }
 
-  setSelectObjectsForBloom(mesh) {
+  setSelectObjectsForBloom(mesh: Mesh) {
     this.selectedObjectsForBloom.add(mesh);
   }
 

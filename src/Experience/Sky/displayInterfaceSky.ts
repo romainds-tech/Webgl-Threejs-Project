@@ -121,7 +121,7 @@ export function createUISky() {
   Button.getInstance().createButtonWithImage(
     "button_back_island_sky",
     "button button_just_image all_ui_sky",
-    "/public/images/island_button.png",
+    "/images/island_button.png",
     "button_island_sky",
     "",
     PositionY.BOTTOM,

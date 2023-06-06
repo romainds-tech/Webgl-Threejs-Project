@@ -34,11 +34,15 @@ export async function loadFbx(
     );
 
     if (model.animation) {
+      // @ts-ignore
       model.mixer = new AnimationMixer(loadedModel);
+      // @ts-ignore
       model.animationAction = [];
 
       for (let animation of loadedModel.animations) {
+        // @ts-ignore
         if (model.mixer) {
+          // @ts-ignore
           model.animationAction.push(model.mixer.clipAction(animation));
         } else {
           throw new Error("fbx.mixer is undefined");
@@ -47,7 +51,7 @@ export async function loadFbx(
     } else {
       throw new Error("fbx.animation is undefined");
     }
-
+    // @ts-ignore
     model.loadedModel3D = loadedModel;
 
     scene.add(loadedModel);
@@ -85,19 +89,23 @@ export function loadFbxAsync(
           );
 
           if (model.animation) {
+            // @ts-ignore
             model.mixer = new AnimationMixer(loadedModel);
+            // @ts-ignore
             model.animationAction = [];
             loadedModel.animations.forEach((animation: AnimationClip): void => {
+              // @ts-ignore
               if (model.mixer) {
+                // @ts-ignore
                 model.animationAction?.push(model.mixer.clipAction(animation));
               } else {
                 throw new Error("fbx.mixer is undefined");
               }
             });
           }
-
+          // @ts-ignore
           model.loadedModel3D = loadedModel;
-
+          // @ts-ignore
           scene.add(model.loadedModel3D);
 
           return model;
@@ -138,17 +146,21 @@ export function loadGlbAsync(
 
           // add animation
           if (model.animation) {
+            // @ts-ignore
             model.mixer = new AnimationMixer(loadedModel.scene);
+            // @ts-ignore
             model.animationAction = [];
             loadedModel.animations.forEach((animation: AnimationClip): void => {
+              // @ts-ignore
               if (model.mixer) {
+                // @ts-ignore
                 model.animationAction?.push(model.mixer.clipAction(animation));
               } else {
                 throw new Error("gltf.mixer is undefined");
               }
             });
           }
-
+          // @ts-ignore
           model.loadedModel3D = loadedModel.scene;
 
           scene.add(loadedModel.scene);
@@ -189,10 +201,14 @@ export async function loadGlb(
 
     // add animation
     if (model.animation) {
+      // @ts-ignore
       model.mixer = new AnimationMixer(loadedModel.scene);
+      // @ts-ignore
       model.animationAction = [];
       loadedModel.animations.forEach((animation: AnimationClip): void => {
+        // @ts-ignore
         if (model.mixer) {
+          // @ts-ignore
           model.animationAction?.push(model.mixer.clipAction(animation));
         } else {
           throw new Error("gltf.mixer is undefined");
@@ -201,7 +217,7 @@ export async function loadGlb(
     }
 
     scene.add(loadedModel.scene);
-
+    // @ts-ignore
     model.loadedModel3D = loadedModel.scene;
 
     return model;

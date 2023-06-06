@@ -8,7 +8,6 @@ import {
   PCFSoftShadowMap,
   ReinhardToneMapping,
   Scene,
-  sRGBEncoding,
   WebGLRenderer,
 } from "three";
 import Camera from "./Camera";
@@ -42,6 +41,7 @@ export default class Renderer {
     });
     instance.autoClear = false;
     instance.clear();
+    // @ts-ignore
     instance.gammaFactor = 2.2;
     instance.useLegacyLights = true;
     instance.toneMapping = ReinhardToneMapping;

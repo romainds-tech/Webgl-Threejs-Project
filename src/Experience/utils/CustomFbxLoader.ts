@@ -26,7 +26,7 @@ export default class CustomFbxLoader {
     }
     return CustomFbxLoader.instance;
   }
-
+  // @ts-ignore
   private setMaterial(child) {
     child.material = new MeshToonMaterial({
       ...child.material,

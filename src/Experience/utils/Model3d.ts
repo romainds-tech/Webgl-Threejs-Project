@@ -63,6 +63,7 @@ export default class Model3D {
     this.animation = props.animation;
     this.shadow = props.shadow;
     this.nodeToyMaterial = props.nodeToyMaterial;
+    // @ts-ignore
     this.transmission = props.transmission;
   }
 
