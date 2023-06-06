@@ -5,12 +5,14 @@ import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
+import gsap from "gsap";
 import { Scene } from "three";
+import Text from "../UI/Texts/Text";
+import { typeText } from "../UI/Enums/Text";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
-// @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 
 type EventMap = {
