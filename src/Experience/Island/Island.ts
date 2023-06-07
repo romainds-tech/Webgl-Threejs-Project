@@ -3,17 +3,12 @@ import {
   CubeTextureLoader,
   Event,
   Group,
-  Mesh,
   Object3D,
   Scene,
   Vector2,
-  // LinearFilter,
-  // RedFormat,
-  // Data3DTexture,
-  // Vector3,
   Intersection,
   MeshBasicMaterial,
-  PlaneGeometry,
+  Mesh,
 } from "three";
 import Model3D from "../utils/Model3d";
 import { loadMap, mapMainIslandData } from "./map";
@@ -53,8 +48,8 @@ export default class Island {
   public camera?: Camera;
 
   public item?: Model3D;
-  public planeForSky?: Mesh;
   private island?: Model3D;
+  private islandWithAllItem?: Model3D;
   private cylindre?: Model3D;
 
   public numberOfElementToAdd: number;
@@ -85,7 +80,7 @@ export default class Island {
     this.sizes = this.experience.sizes;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
-    this.setupPlaneInFrontOfCamera();
+    // this.setupPlaneInFrontOfCamera();
     this.setBackGround();
     // this.setupCamera();
     this.setupLight();
@@ -122,16 +117,16 @@ export default class Island {
     this.displayEditMode(false);
 
     this.loadIsland();
+    this.islandGroup.remove(this.islandWithAllItem?.loadedModel3D!);
 
     createUIIsland();
-    displayInterfaceGlobalOnIsland();
 
     this.actionOnClickButtons();
     this.imageItem = null;
   }
 
   public backFromSky() {
-    gsap.to(this.planeForSky!.material, {
+    gsap.to(this.experience.planeTransition!.material, {
       duration: 0.5,
       opacity: 0,
       ease: "none",
@@ -140,6 +135,13 @@ export default class Island {
 
   public loadAllScene() {
     this.setupCamera();
+    if (this.experience.cartomancie?.itemPrediction == null) {
+      // this.scene?.add(this.islandGroup);
+    } else {
+      this.islandGroup?.remove(this.island?.loadedModel3D!);
+      this.islandGroup.add(this.islandWithAllItem?.loadedModel3D!);
+      console.log(this.islandWithAllItem?.loadedModel3D);
+    }
     this.scene?.add(this.islandGroup);
     this.setupLight();
     this.setBackGround();
@@ -183,28 +185,19 @@ export default class Island {
     }
   }
 
-  private setupPlaneInFrontOfCamera() {
-    this.planeForSky = new Mesh(
-      new PlaneGeometry(10, 10),
-      new MeshBasicMaterial({
-        color: 0x000000,
-        opacity: 0,
-        transparent: true,
-        visible: true,
-      })
-    );
-
-    //this.experience.postProcessing.setSelectObjectsForBloom(this.planeForSky);
-
-    this.camera?.instance.add(this.planeForSky);
-    this.planeForSky.position.z = -1;
-  }
   private movementCamera() {
     this.experience.camera!.instance.zoom = 3.15;
     this.camera!.controls.enabled = true;
 
     this.experience.camera?.instance.position.set(5.5, -10, 13.5);
     this.experience.camera?.instance.updateProjectionMatrix();
+
+    gsap.to(this.experience.planeTransition!.material, {
+      delay: 0.5,
+      duration: 0.5,
+      opacity: 0,
+      ease: "none",
+    });
 
     gsap.to(this.camera!.instance, {
       duration: 3.2,
@@ -223,6 +216,7 @@ export default class Island {
       onComplete: () => {
         this.camera!.updateActive = true;
         this.displayCylinder();
+        displayInterfaceGlobalOnIsland();
       },
     });
   }
@@ -315,12 +309,12 @@ export default class Island {
           }
 
           this.camera!.updateActive = true;
-          this.planeForSky!.material = new NodeToyMaterial({
+          this.experience.planeTransition!.material = new NodeToyMaterial({
             data: transitionCartomancieData,
           });
 
           // @ts-ignore
-          gsap.to(this.planeForSky!.material.uniforms.Transi, {
+          gsap.to(this.experience.planeTransition!.material.uniforms.Transi, {
             duration: 0.5,
             delay: 0.5,
             value: 2,
@@ -329,7 +323,7 @@ export default class Island {
               setTimeout(() => {
                 this.destroy();
                 // @ts-ignore
-                this.planeForSky!.material.visible = false;
+                this.experience.planeTransition!.material.visible = false;
                 this.experience.cartomancie = new Cartomancie();
               }, 500);
             },
@@ -482,7 +476,7 @@ export default class Island {
       .getElementById("button_rings_island")!
       .addEventListener("click", () => {
         disableInterfaceGlobalOnIsland();
-        this.planeForSky!.material = new MeshBasicMaterial({
+        this.experience.planeTransition!.material = new MeshBasicMaterial({
           color: 0x000000,
           opacity: 0,
           transparent: true,
@@ -507,7 +501,7 @@ export default class Island {
           },
         });
 
-        gsap.to(this.planeForSky!.material, {
+        gsap.to(this.experience.planeTransition!.material, {
           duration: 0.5,
           delay: 0.5,
           opacity: 1,
@@ -520,6 +514,7 @@ export default class Island {
       .getElementById("button_disable_select_item_island")!
       .addEventListener("click", () => {
         disableInterfaceInformationItem();
+        this.camera!.controls.enabled = true;
         this.resetPositionOfSelectedObject();
         this.canRaycast = true;
         this.checkIfAddItemToCreate();
@@ -571,15 +566,29 @@ export default class Island {
   // ITEMS
   private async loadIsland() {
     this.island = this.experience.allModels.Island;
+    this.islandWithAllItem = this.experience.allModels.IslandWithAllObject;
 
     // @ts-ignore
     this.island.loadedModel3D!.children[0].material.transparent = false;
+    this.islandWithAllItem!.loadedModel3D!.renderOrder = -1;
+
+    this.islandWithAllItem?.loadedModel3D!.traverse((child) => {
+      if (child instanceof Mesh) {
+        child.material.depthWrite = true;
+
+        child.material.transparent = false;
+      }
+    });
 
     this.island!.loadedModel3D!.castShadow = true;
     this.island!.loadedModel3D!.receiveShadow = true;
 
+    this.islandWithAllItem!.loadedModel3D!.castShadow = true;
+    this.islandWithAllItem!.loadedModel3D!.receiveShadow = true;
+
     this.islandGroup.add(this.mapGroup);
     this.islandGroup.add(this.island?.loadedModel3D!);
+    this.islandGroup.add(this.islandWithAllItem?.loadedModel3D!);
     this.scene?.add(this.islandGroup);
 
     this.island?.animationAction![0].play();

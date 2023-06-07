@@ -1,16 +1,16 @@
 @font-face {
   font-family: "amarente";
-  src: url("../public/fonts/amarante-regular.ttf");
+  src: url("/fonts/amarante-regular.ttf");
 }
 
 @font-face {
   font-family: "abeezee";
-  src: url("../public/fonts/abeezee_regular.ttf");
+  src: url("/fonts/abeezee_regular.ttf");
 }
 
 @font-face {
   font-family: "actor";
-  src: url("../public/fonts/actor_regular.ttf");
+  src: url("/fonts/actor_regular.ttf");
 }
 
 
@@ -188,7 +188,7 @@ h4, .text_style  {
   width: 100%;
   height: 100%;
   z-index: 2;
-  background : url('public/images/bg-loading.jpg') no-repeat center center fixed;
+  background : url('/images/bg-loading.jpg') no-repeat center center fixed;
   background-size: cover;
 }
 

@@ -16,11 +16,13 @@
 }
 .overlay_cartomancie {
     background-color: white;
-    opacity: 0.6;
+    opacity: 1;
+    background : url('/images/bg-loading.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
 
 .overlay_sky {
-    background-image: url("/public/images/bg_sky.jpg");
+    background-image: url("images/bg_sky.jpg");
     background-size: cover;
     opacity: 1;
     filter: blur(16px);

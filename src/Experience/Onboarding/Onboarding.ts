@@ -235,8 +235,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private endCameraMovement() {
     this.experience.camera!.updateActive = false;
 
+    this.experience.planeTransition!.visible = true;
     gsap.to(this.experience.camera!.instance.position, {
-      duration: 3.2,
+      duration: 1.8,
       x: 0.53,
       y: 0.3,
       z: -2.5,
@@ -247,7 +248,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     });
 
     gsap.to(this.experience.camera!.instance.rotation, {
-      duration: 3.2,
+      duration: 1.8,
       x: 0.2,
       y: 0,
       z: 0,
@@ -258,6 +259,12 @@ export default class Onboarding extends EventEmitter<EventMap> {
       onComplete: () => {
         this.trigger("onboardingFinish");
       },
+    });
+    gsap.to(this.experience.planeTransition!.material, {
+      delay: 0.6,
+      duration: 0.4,
+      opacity: 1,
+      ease: "none",
     });
   }
 

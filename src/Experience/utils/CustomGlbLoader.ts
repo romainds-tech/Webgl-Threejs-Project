@@ -44,7 +44,7 @@ export default class CustomGlbLoader {
     const gltfLoader: GLTFLoader = new GLTFLoader();
     const dLoader: DRACOLoader = new DRACOLoader();
     dLoader.setDecoderConfig({ type: "wasm" });
-    dLoader.setDecoderPath("./src/Experience/utils/draco/gltf/");
+    dLoader.setDecoderPath("draco/");
     dLoader.preload();
 
     gltfLoader.setDRACOLoader(dLoader);

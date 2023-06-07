@@ -1,6 +1,6 @@
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
-import { Scene } from "three";
+import { Mesh, MeshBasicMaterial, PlaneGeometry, Scene } from "three";
 import Camera from "./Camera";
 import Renderer from "./Renderer";
 import Island from "./Island/Island";
@@ -31,6 +31,7 @@ export class Experience {
   public debug?: Debug;
   public onBoarding?: Onboarding;
   public postProcessing?: PostProcessing;
+  public planeTransition?: Mesh;
   public allModels: any = {};
   public loaderText?: HTMLElement;
 
@@ -51,7 +52,23 @@ export class Experience {
     this.camera = new Camera();
     this.light = new Light();
 
+    this.setupPlaneInFrontOfCamera();
     this.loadAllModels();
+  }
+
+  private setupPlaneInFrontOfCamera() {
+    this.planeTransition = new Mesh(
+      new PlaneGeometry(10, 10),
+      new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0,
+        transparent: true,
+        visible: true,
+      })
+    );
+
+    this.camera?.instance.add(this.planeTransition);
+    this.planeTransition.position.z = -0.01;
   }
 
   private setLoadingPage() {
@@ -59,7 +76,7 @@ export class Experience {
     back.classList.add("loading");
 
     let logo = document.createElement("img");
-    logo.src = "public/images/logo.svg";
+    logo.src = "images/logo.svg";
     logo.classList.add("loading_logo");
 
     let slogan = document.createElement("p");
