@@ -1,62 +1,30 @@
 [
   {
-    "id" : "phoneNumber",
-      "Title": "Inscription",
-      "Content": "Saissisez votre numéro de téléphone",
-      "Type": "input"
+    "step": "ÉTAPE 1/2",
+    "id": "phoneNumber",
+    "Title": "Connexion/Inscription",
+    "Content": "Saissisez votre numéro de téléphone",
+    "Type": "input"
   },
   {
+    "step": "ÉTAPE 2/2",
     "id": "zodiacSign",
-      "Title": "Choix du signe astrologique",
-      "Content": "",
-      "Type": "wheel",
-      "Options": [
-        "Bélier",
-        "Taureau",
-        "Gémeaux",
-        "Cancer",
-        "Lion",
-        "Vierge",
-        "Balance",
-        "Scorpion",
-        "Sagittaire",
-        "Capricorne",
-        "Verseau",
-        "Poisson"
-      ]
-
-  },
-  {
-    "id":"hourBirth",
-      "Title": "Choix de l'heure de naissance",
-      "Content": "",
-      "Type": "wheel",
-      "Options": [
-        "00h",
-        "01h",
-        "02h",
-        "03h",
-        "04h",
-        "05h",
-        "06h",
-        "07h",
-        "08h",
-        "09h",
-        "10h",
-        "11h",
-        "12h",
-        "13h",
-        "14h",
-        "15h",
-        "16h",
-        "17h",
-        "18h",
-        "19h",
-        "20h",
-        "21h",
-        "22h",
-        "23h"
-      ]
-
+    "Title": "Choix du signe astrologique",
+    "Content": "",
+    "Type": "wheel",
+    "Options": [
+      "Gémeaux",
+      "Poisson",
+      "Bélier",
+      "Taureau",
+      "Verseau",
+      "Cancer",
+      "Sagittaire",
+      "Capricorne",
+      "Scorpion",
+      "Vierge",
+      "Balance",
+      "Lion"
+    ]
   }
 ]

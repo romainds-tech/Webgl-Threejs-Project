@@ -6,12 +6,24 @@ import { porte } from "../../shaders/porte/data";
 import { flameData } from "../../shaders/Flame";
 
 export const allGlbs = {
+  Marquer: {
+    name: "Marquer",
+    path: "glb/marquer.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0.85, -0.5, -4.8),
+    rotation: new Vector3(0, 0, 0),
+    scale: 0.01,
+    animation: false,
+    shadow: false,
+    transmission: false,
+  },
+
   TempleCircle1: {
     name: "TempleCircle1",
     path: "glb/anneaux_grand.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, -90, 0),
+    rotation: new Vector3(0, 0, 0),
     scale: 0.01,
     animation: false,
     shadow: false,
@@ -22,7 +34,7 @@ export const allGlbs = {
     path: "glb/anneaux_grand_bis.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, -90, 0),
+    rotation: new Vector3(0, 0, 0),
     scale: 0.01,
     animation: false,
     shadow: false,
