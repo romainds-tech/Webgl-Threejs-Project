@@ -1,29 +1,32 @@
 import { Experience } from "../Experience";
 import Model3D from "../utils/Model3d";
-import { allGlbs } from "../../Sources/glb/glb";
-import CustomGlbLoader from "../utils/CustomGlbLoader";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
-import { Scene } from "three";
+import { PerspectiveCamera, Scene } from "three";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
 import CookieManager from "../CookieManager";
 // @ts-ignore
 import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
+import { typeText } from "../UI/Enums/Text";
+import Text from "../UI/Texts/Text";
+import gsap from "gsap";
+import Camera from "../Camera";
 
 type EventMap = {
   onboardingFinish: [];
 };
 export default class Onboarding extends EventEmitter<EventMap> {
   public experience: Experience;
-  public scene: Scene;
+  public scene?: Scene;
   private cookieManager: CookieManager;
   private temple?: Model3D;
   private circle1?: Model3D;
   private circle1Bis?: Model3D;
   private circle2?: Model3D;
+  private porte?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
   private buttonOnboarding?: Button;
@@ -67,7 +70,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.circle1 = this.experience.allModels.TempleCircle1;
 
     //apply texture to circle
-    
+
     // @ts-ignore
     this.circle1!.loadedModel3D!.children[0].material.map = textureCircle;
     this.scene.add(this.circle1?.loadedModel3D!);
@@ -78,17 +81,20 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.circle2 = this.experience.allModels.TempleCircle2;
     this.scene.add(this.circle2?.loadedModel3D!);
 
+    this.porte = this.experience.allModels.Porte;
+    this.scene.add(this.porte?.loadedModel3D!);
+
     // this.startMovementCamera();
   }
 
   private setupCamera() {
     this.experience.camera?.instance.position.set(-1, 5, 4);
 
-    this.experience.camera.instance.zoom = 0.7;
-    this.experience.camera.instance.updateProjectionMatrix();
-    this.experience.camera.controls.enabled = false;
+    this.experience.camera!.instance.zoom = 0.7;
+    this.experience.camera!.instance.updateProjectionMatrix();
+    this.experience.camera!.controls.enabled = true;
 
-    this.experience.camera.debugFolder = this.experience.camera.addDebug();
+    this.experience.camera!.debugFolder = this.experience.camera!.addDebug();
   }
 
   // private startMovementCamera() {
@@ -121,9 +127,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.drag = undefined;
 
     if (this.currentQuestionIndex >= this.questions!.length) {
-      this.trigger("onboardingFinish");
       document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
+      this.endCameraMovement();
       return;
     }
 
@@ -140,14 +146,14 @@ export default class Onboarding extends EventEmitter<EventMap> {
     }
 
     // we show the question
-    // let title = new Text(question.Title, typeText.TITLE);
-    // let content = new Text(question.Content, typeText.TEXT);
+    let title = new Text(question.Title, typeText.TITLE);
+    let content = new Text(question.Content, typeText.TEXT);
 
     // @ts-ignore
     if (question.Type === "input") {
       let input = document.createElement("input");
       input.type = "text";
-      input.className = "input center_position top_70_position";
+      input.className = "input_onboarding center_position top_70_position";
       document.body.appendChild(input);
 
       // user answer
@@ -162,7 +168,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
           default:
             // @ts-ignore
             console.error(`Unrecognized question id: ${question.id}`);
-
         }
 
         this.cookieManager.setCookie(this.user!);
@@ -207,6 +212,35 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.currentQuestionIndex++;
   }
 
+  private endCameraMovement() {
+    this.experience.camera!.updateActive = false;
+
+    gsap.to(this.experience.camera!.instance.position, {
+      duration: 3.2,
+      x: 0.53,
+      y: 0.3,
+      z: -2.5,
+      ease: "power2.out",
+      onUpdate: () => {
+        this.experience.camera!.instance.updateProjectionMatrix();
+      },
+    });
+
+    gsap.to(this.experience.camera!.instance.rotation, {
+      duration: 3.2,
+      x: 0.2,
+      y: 0,
+      z: 0,
+      ease: "power2.out",
+      onUpdate: () => {
+        this.experience.camera!.instance.updateProjectionMatrix();
+      },
+      onComplete: () => {
+        this.trigger("onboardingFinish");
+      },
+    });
+  }
+
   update() {
     if (
       // @ts-ignore
@@ -239,6 +273,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.drag?.destroy();
     this.drag = undefined;
+
+    this.experience.camera!.updateActive = true;
 
     document
       .querySelector("#button_onboarding")

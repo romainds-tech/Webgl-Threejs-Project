@@ -487,7 +487,6 @@ export default class Island {
         disableInterfaceGlobalOnIsland();
         // this.destroy();
 
-
         this.planeForSky!.material = new MeshBasicMaterial({
           color: 0x000000,
           opacity: 0,
@@ -600,7 +599,6 @@ export default class Island {
     this.cylindre?.loadedModel3D!.position.set(0, 15, 0);
 
     this.scene.add(this.cylindre?.loadedModel3D!);
-
   }
   private destroyImageItem() {
     this.scene.remove(this.imageItem!);
@@ -615,7 +613,8 @@ export default class Island {
     ) {
       // @ts-ignore
       this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
-        Math.sin(this.experience.time.elapsed * 0.001) * 0.5 + 0.5;
+        this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1
+          .value - 0.004;
     }
 
     NodeToyMaterial.tick();

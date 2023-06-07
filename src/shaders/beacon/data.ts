@@ -24,7 +24,7 @@ export const data = {
     {
       name: "Hauteur1",
       type: "float",
-      value: 0.5,
+      value: 1,
     },
     {
       name: "_time",
