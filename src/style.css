@@ -71,6 +71,12 @@ h4, .text_style  {
   transform: translate(0, -50%);
 }
 
+.top_40_position {
+  top : 40%;
+  left : 5%;
+  transform: translate(0, -50%);
+}
+
 .top_50_position {
   top : 50%;
   left : 5%;
