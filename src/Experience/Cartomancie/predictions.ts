@@ -17,8 +17,9 @@ export const predictions = [
   },
 
   {
-    modelMajorArcane: allGlbs.Cup6,
-    textMajorArcane: "Mettre prediciton",
+    modelMajorArcane: allGlbs.Tower,
+    textMajorArcane:
+      "Je tire l'arcane majeure La Maison-Dieu (ou La Tour), qui représente la destruction, la transformation et la révélation. Cette carte indique que vous pourriez faire face à un grand changement ou à une situation de crise dans votre vie, qui pourrait vous secouer et vous obliger à réévaluer votre perspective et vos priorités. Bien que cela puisse sembler difficile, cette période peut être une opportunité pour vous de vous libérer de vieilles habitudes ou de situations qui ne vous servent plus, et de créer un nouveau départ.",
     modelMinorArcane: allGlbs.Batons4,
     textMinorArcane:
       "Ensuite, je tire l'arcane mineure 4 des bâtons, qui représente la célébration, le succès et la reconnaissance. Cette carte indique que malgré les défis que vous pourriez rencontrer, il y aura toujours des moments de réussite et de célébration. Vous pourriez être reconnu pour votre travail ou vos réalisations, ou bien célébrer une occasion spéciale avec des amis ou de la famille.",

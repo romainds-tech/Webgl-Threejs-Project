@@ -16,9 +16,9 @@ import { GUI } from "lil-gui";
 export default class Renderer {
   public experience: Experience;
   public canvas: HTMLCanvasElement | undefined;
-  public sizes: Sizes;
-  public scene: Scene;
-  public camera: Camera;
+  public sizes?: Sizes;
+  public scene?: Scene;
+  public camera?: Camera;
   public instance: WebGLRenderer;
   public envDebug: GUI | undefined;
 
@@ -49,19 +49,19 @@ export default class Renderer {
     instance.shadowMap.enabled = true;
     instance.shadowMap.type = PCFSoftShadowMap;
     instance.setClearColor("#211d20");
-    instance.setSize(this.sizes.width, this.sizes.height);
-    instance.setPixelRatio(this.sizes.pixelRatio);
+    instance.setSize(this.sizes!.width, this.sizes!.height);
+    instance.setPixelRatio(this.sizes!.pixelRatio);
 
     return instance;
   }
 
   public resize() {
-    this.instance.setSize(this.sizes.width, this.sizes.height);
-    this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
+    this.instance.setSize(this.sizes!.width, this.sizes!.height);
+    this.instance.setPixelRatio(Math.min(this.sizes!.pixelRatio, 2));
   }
 
   public addDebug() {
-    if (this.experience.debug.active) {
+    if (this.experience.debug?.active) {
       //create a folder for the renderer
       let rendererFolder: GUI = this.experience.debug.ui!.addFolder("Renderer");
 
@@ -85,6 +85,8 @@ export default class Renderer {
   }
 
   public update() {
-    this.instance.render(this.scene, this.camera.instance);
+    if (this.scene && this.camera) {
+      this.instance.render(this.scene, this.camera.instance);
+    }
   }
 }

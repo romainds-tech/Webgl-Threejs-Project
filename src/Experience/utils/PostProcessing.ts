@@ -15,11 +15,11 @@ import { GUI } from "lil-gui";
 
 export default class PostProcessing {
   private experience: Experience;
-  private scene: Scene;
-  private sizes: Sizes;
-  private camera: Camera;
-  private renderer: Renderer;
-  private debug: Debug;
+  private scene?: Scene;
+  private sizes?: Sizes;
+  private camera?: Camera;
+  private renderer?: Renderer;
+  private debug?: Debug;
   // @ts-ignore
   private debugFolder: GUI | null;
 
@@ -53,7 +53,7 @@ export default class PostProcessing {
   }
 
   private addDebugFolder(): GUI | null {
-    if (this.debug.active) {
+    if (this.debug?.active) {
       return this.debug.ui!.addFolder("Post processing");
     }
     return null;
@@ -65,20 +65,22 @@ export default class PostProcessing {
     });
 
     this.instance = new EffectComposer(
-      this.renderer.instance,
+      this.renderer?.instance,
       this.renderTarget
     );
-    this.instance.setSize(this.sizes.width, this.sizes.height);
+    if (this.sizes) {
+      this.instance.setSize(this.sizes.width, this.sizes.height);
+    }
 
     // A besoin d'un render pass pour pouvoir cumuler les effets
-    this.renderPass = new RenderPass(this.scene, this.camera.instance);
+    this.renderPass = new RenderPass(this.scene, this.camera?.instance);
     this.instance.addPass(this.renderPass);
 
     // Selective bloom pass
     // @ts-ignore
     const selectiveBloomEffect = new SelectiveBloomEffect(
       this.scene,
-      this.camera.instance,
+      this.camera?.instance,
       {
         intensity: 10.5,
         mipmapBlur: true,
@@ -89,7 +91,7 @@ export default class PostProcessing {
     selectiveBloomEffect.selection = this.selectedObjectsForBloom;
     selectiveBloomEffect.ignoreBackground = true;
     this.effectPass = new EffectPass(
-      this.camera.instance,
+      this.camera?.instance,
       selectiveBloomEffect
     );
     this.effectPass.renderToScreen = true;
@@ -101,7 +103,9 @@ export default class PostProcessing {
   }
 
   resize() {
-    this.instance!.setSize(this.sizes.width, this.sizes.height);
+    if (this.sizes) {
+      this.instance!.setSize(this.sizes.width, this.sizes.height);
+    }
   }
 
   renderPostProcessing() {

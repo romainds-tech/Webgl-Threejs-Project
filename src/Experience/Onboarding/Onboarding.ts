@@ -56,13 +56,13 @@ export default class Onboarding extends EventEmitter<EventMap> {
   }
 
   private setupLight() {
-    this.experience.light.sunLight!.intensity = 0;
-    this.experience.light.sunLight!.castShadow = false;
+    this.experience.light!.sunLight!.intensity = 0;
+    this.experience.light!.sunLight!.castShadow = false;
   }
 
   private async loadAllModels() {
     this.temple = this.experience.allModels.Temple;
-    this.scene.add(this.temple?.loadedModel3D!);
+    this.scene?.add(this.temple?.loadedModel3D!);
 
     let textureCircle = CustomImageLoader.getInstance().loadImage(
       "textures/circle/glyphes_4.png"
@@ -73,13 +73,13 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     // @ts-ignore
     this.circle1!.loadedModel3D!.children[0].material.map = textureCircle;
-    this.scene.add(this.circle1?.loadedModel3D!);
+    this.scene?.add(this.circle1?.loadedModel3D!);
 
     this.circle1Bis = this.experience.allModels.TempleCircle1Bis;
-    this.scene.add(this.circle1Bis?.loadedModel3D!);
+    this.scene?.add(this.circle1Bis?.loadedModel3D!);
 
     this.circle2 = this.experience.allModels.TempleCircle2;
-    this.scene.add(this.circle2?.loadedModel3D!);
+    this.scene?.add(this.circle2?.loadedModel3D!);
 
     this.porte = this.experience.allModels.Porte;
     this.scene.add(this.porte?.loadedModel3D!);
@@ -92,9 +92,11 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.experience.camera!.instance.zoom = 0.7;
     this.experience.camera!.instance.updateProjectionMatrix();
-    this.experience.camera!.controls.enabled = true;
+
+    this.experience.camera!.controls.enabled = false;
 
     this.experience.camera!.debugFolder = this.experience.camera!.addDebug();
+
   }
 
   // private startMovementCamera() {
@@ -249,25 +251,25 @@ export default class Onboarding extends EventEmitter<EventMap> {
     ) {
       // @ts-ignore
       this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
-        Math.sin(this.experience.time.elapsed * 0.0005) * 0.5 + 0.5;
+        Math.sin(this.experience.time!.elapsed * 0.0005) * 0.5 + 0.5;
     }
     NodeToyMaterial.tick();
   }
 
   destroy() {
-    this.scene.remove(this.temple?.loadedModel3D!);
+    this.scene?.remove(this.temple?.loadedModel3D!);
     this.temple?.loadedModel3D?.remove();
     this.temple = undefined;
 
-    this.scene.remove(this.circle1?.loadedModel3D!);
+    this.scene?.remove(this.circle1?.loadedModel3D!);
     this.circle1?.loadedModel3D?.remove();
     this.circle1 = undefined;
 
-    this.scene.remove(this.circle1Bis?.loadedModel3D!);
+    this.scene?.remove(this.circle1Bis?.loadedModel3D!);
     this.circle1Bis?.loadedModel3D?.remove();
     this.circle1Bis = undefined;
 
-    this.scene.remove(this.circle2?.loadedModel3D!);
+    this.scene?.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();
     this.circle2 = undefined;
 
