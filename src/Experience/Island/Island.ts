@@ -593,7 +593,7 @@ export default class Island {
     this.cylindre = this.experience.allModels.Cylindre;
 
     this.cylindre?.loadedModel3D!.scale.set(0.6, 3, 0.6);
-    this.cylindre?.loadedModel3D!.position.set(0, 15, 0);
+    this.cylindre?.loadedModel3D!.position.set(-1, 15, 1.5);
 
     this.scene?.add(this.cylindre?.loadedModel3D!);
   }
