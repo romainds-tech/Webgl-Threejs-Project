@@ -32,8 +32,11 @@ export class Experience {
   public onBoarding?: Onboarding;
   public postProcessing?: PostProcessing;
   public allModels: any = {};
+  public loaderText?: HTMLElement;
 
   private constructor() {
+    this.setLoadingPage();
+
     Experience.instance = this;
 
     this.debug = new Debug();
@@ -51,8 +54,43 @@ export class Experience {
     this.loadAllModels();
   }
 
+  private setLoadingPage() {
+    let back = document.createElement("div");
+    back.classList.add("loading");
+
+    let logo = document.createElement("img");
+    logo.src = "public/images/logo.svg";
+    logo.classList.add("loading_logo");
+
+    let slogan = document.createElement("p");
+    slogan.classList.add("loading_slogan");
+    slogan.innerHTML = "Explorez votre destinée";
+
+    let loader = document.createElement("div");
+    loader.classList.add("loader");
+
+    let loaderText = document.createElement("p");
+    loaderText.classList.add("loader_text");
+    loaderText.innerHTML = "0";
+    this.loaderText = loaderText;
+
+    let loaderPercent = document.createElement("p");
+    loaderPercent.classList.add("loader_text");
+    loaderPercent.innerHTML = "%";
+
+    loader.appendChild(loaderText);
+    loader.appendChild(loaderPercent);
+
+    document.body.appendChild(back);
+    back.appendChild(logo);
+    back.appendChild(slogan);
+    back.appendChild(loader);
+  }
+
   private completeSetup() {
     // this.sky = new Sky();
+
+    this.canvas!.style.display = "block";
     this.onBoarding = new Onboarding();
     this.renderer = new Renderer();
     this.postProcessing = new PostProcessing();
@@ -74,6 +112,7 @@ export class Experience {
     let canvas: HTMLCanvasElement | null =
       document.querySelector("canvas.webgl");
     if (canvas) {
+      canvas.style.display = "none";
       return canvas;
     }
     return undefined;
@@ -103,12 +142,18 @@ export class Experience {
 
   private async loadAllModels() {
     // parcours allGlb et charge les modèles avec un for en utilisant objectKeys
+    let length = Object.keys(allGlbs).length;
+
     for (let [key, value] of Object.entries(allGlbs)) {
       // @ts-ignore
       console.log(`${key}: ${allGlbs[key]}`);
       this.allModels[key] = await CustomGlbLoader.getInstance().loadOne(
         new Model3D(value)
       );
+
+      this.loaderText!.innerHTML = `${Math.round(
+        (Object.keys(this.allModels).length / length) * 100
+      )}`;
     }
     this.completeSetup();
   }

@@ -2,6 +2,7 @@ import { Vector3 } from "three";
 import { Model3DType } from "../../Experience/utils/Model3d";
 import { data } from "../../shaders/beacon/data";
 import { data1 } from "../../shaders/glyphes/data";
+import { porte } from "../../shaders/porte/data";
 import { flameData } from "../../shaders/Flame";
 
 export const allGlbs = {
@@ -163,7 +164,7 @@ export const allGlbs = {
     name: "Cylindre",
     path: "glb/cylindre.gltf",
     type: Model3DType.GLB,
-    position: new Vector3(0, 5, 0),
+    position: new Vector3(-1, 5, 1.5),
     rotation: new Vector3(0, 0, 0),
     scale: 1,
     animation: false,
@@ -255,6 +256,19 @@ export const allGlbs = {
     animation: false,
     shadow: false,
     nodeToyMaterial: flameData,
+    transmission: false,
+  },
+
+  Porte: {
+    name: "Porte",
+    path: "glb/porte.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0.5, 0, -2.5),
+    rotation: new Vector3(0, 1.9, 0),
+    scale: 0.01,
+    animation: false,
+    shadow: false,
+    nodeToyMaterial: porte,
     transmission: false,
   },
 };

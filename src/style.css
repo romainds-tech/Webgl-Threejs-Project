@@ -150,6 +150,27 @@ h4, .text_style  {
   z-index: 42;
 }
 
+.input_onboarding{
+  display: block;
+  padding: 15px;
+  /* background-color: rgba(255,255,255,0.5); */
+  background-color: rgba(0, 0, 0, 0.16);
+  border-radius: 10px;
+  border: none;
+  margin: auto;
+  position: absolute;
+  box-sizing: border-box;
+  height: 50px;
+  width: 170px;
+  z-index: 42;
+  color: white;
+}
+
+.input_onboarding:focus{
+    outline: none;
+  border: 2px solid #FFFFFF;
+}
+
 #interactions{
     position: absolute;
     width: 100%;
@@ -157,4 +178,48 @@ h4, .text_style  {
     /* background-color: rgba(0,0,0,0.5); */
     display: flex;
     flex-direction: column;
+}
+
+.loading{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background : url('public/images/bg-loading.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.loader{
+  display: flex;
+  justify-content: center;
+}
+
+.loading_logo{
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+}
+
+.loading_slogan{
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  text-align: center;
+  color: white;
+  font-family: abeezee, sans-serif;
+  font-weight: 100;
+}
+
+.loader_text{
+    padding: 5px;
+    display: block;
+    width: auto;
+    text-align: center;
+    color: white;
+    font-family: abeezee, sans-serif;
+    font-weight: 100;
 }
