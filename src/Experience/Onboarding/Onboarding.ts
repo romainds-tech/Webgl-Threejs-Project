@@ -124,7 +124,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     document.querySelectorAll(".text")?.forEach((text) => {
       text.remove();
     });
-    document.querySelector(".input")?.remove();
+    document.querySelector(".input_onboarding")?.remove();
     this.drag?.destroy();
     this.drag = undefined;
 
