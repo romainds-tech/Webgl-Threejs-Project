@@ -14,6 +14,8 @@ import Debug from "./Debug";
 import { GUI } from "lil-gui";
 
 export default class PostProcessing {
+  public selectiveBloomEffect?: SelectiveBloomEffect;
+
   private experience: Experience;
   private scene?: Scene;
   private sizes?: Sizes;
@@ -42,10 +44,6 @@ export default class PostProcessing {
     this.debugFolder = this.addDebugFolder();
 
     this.selectedObjectsForBloom = new Selection();
-
-    // if (this.debug.active) {
-    //   this.debugFolder = this.debug.ui.addFolder("Post preocessing");
-    // }
 
     this.setInstance();
 
@@ -78,7 +76,8 @@ export default class PostProcessing {
 
     // Selective bloom pass
     // @ts-ignore
-    const selectiveBloomEffect = new SelectiveBloomEffect(
+
+    this.selectiveBloomEffect = new SelectiveBloomEffect(
       this.scene,
       this.camera?.instance,
       {
@@ -88,11 +87,21 @@ export default class PostProcessing {
         luminanceSmoothing: 0.1,
       }
     );
-    selectiveBloomEffect.selection = this.selectedObjectsForBloom;
-    selectiveBloomEffect.ignoreBackground = true;
+    if (this.debug?.active) {
+      const bloomFolder: GUI = this.debugFolder!.addFolder("bloom");
+
+      bloomFolder
+        .add(this.selectiveBloomEffect, "intensity")
+        .min(-10)
+        .max(100)
+        .step(0.1)
+        .name("Itensity");
+    }
+    this.selectiveBloomEffect.selection = this.selectedObjectsForBloom;
+    this.selectiveBloomEffect.ignoreBackground = true;
     this.effectPass = new EffectPass(
       this.camera?.instance,
-      selectiveBloomEffect
+      this.selectiveBloomEffect
     );
     this.effectPass.renderToScreen = true;
     this.instance.addPass(this.effectPass);
