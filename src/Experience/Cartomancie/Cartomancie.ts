@@ -3,12 +3,8 @@ import {
   AnimationAction,
   AnimationMixer,
   Color,
-  DoubleSide,
   Group,
   LoopOnce,
-  Mesh,
-  MeshBasicMaterial,
-  PlaneGeometry,
   Scene,
   // ShaderMaterial,
   // TextureLoader,
@@ -18,7 +14,6 @@ import Time from "../utils/Time";
 import { GUI } from "lil-gui";
 import Model3D from "../utils/Model3d";
 import Camera from "../Camera";
-import Sizes from "../utils/Sizes";
 import {
   disabledInterfaceStartCartomancie,
   displayInterfaceStartCartomancie,
@@ -49,14 +44,13 @@ export default class Cartomancie {
   private experience: Experience;
   private scene?: Scene;
   public camera?: Camera;
-  private sizes?: Sizes;
 
   private debug?: Debug;
   private debugFolder: GUI | null;
 
   private time?: Time;
 
-  private overlay?: Mesh;
+  private overlay?: Model3D;
   private cards?: Model3D;
   private sceneCard?: Model3D;
   private flame?: Model3D;
@@ -77,7 +71,6 @@ export default class Cartomancie {
     this.camera = this.experience.camera;
     this.setupCamera();
     this.predictionNumber = this.setupPrediction();
-    this.sizes = this.experience.sizes;
 
     this.debug = this.experience.debug;
     this.debugFolder = this.addDebugFolder();
@@ -433,15 +426,12 @@ export default class Cartomancie {
   }
 
   private setOverlayArcane() {
-    const geometry = new PlaneGeometry(this.sizes?.width, this.sizes?.height);
-    const material = new MeshBasicMaterial({
-      color: 0x1b2b2c,
-      side: DoubleSide,
-    });
-    this.overlay = new Mesh(geometry, material);
-    this.overlay.position.set(0, -15, 0);
-    this.overlay.lookAt(this.camera!.instance.position);
-    this.scene?.add(this.overlay);
+    this.overlay = this.experience.allModels.BackgroundObjectCarto;
+
+    this.overlay?.loadedModel3D!.scale.set(10, 10, 1);
+    this.overlay?.loadedModel3D!.lookAt(this.camera!.instance.position);
+    this.overlay?.loadedModel3D!.position.set(55, -20, 10);
+    this.scene?.add(this.overlay?.loadedModel3D!);
   }
 
   public update() {
@@ -498,8 +488,8 @@ export default class Cartomancie {
 
   public destroyAll() {
     if (this.overlay) {
-      this.scene?.remove(this.overlay);
-      this.overlay.remove();
+      this.scene?.remove(this.overlay.loadedModel3D!);
+      this.overlay.loadedModel3D?.remove();
       this.overlay = undefined;
     }
 

@@ -197,6 +197,18 @@ export const allGlbs = {
     transmission: false,
   },
 
+  BackgroundObjectCarto: {
+    name: "BackgroundObjectCarto",
+    path: "glb/cartomancie/fd_carto.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 0, 0),
+    scale: 2,
+    animation: false,
+    shadow: false,
+    transmission: false,
+  },
+
   Cards: {
     name: "Cards",
     path: "glb/cartomancie/cards_v3.gltf",

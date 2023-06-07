@@ -3,7 +3,7 @@ import Model3D from "../utils/Model3d";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
-import { PerspectiveCamera, Scene } from "three";
+import { Scene } from "three";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
@@ -13,7 +13,6 @@ import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { typeText } from "../UI/Enums/Text";
 import Text from "../UI/Texts/Text";
 import gsap from "gsap";
-import Camera from "../Camera";
 
 type EventMap = {
   onboardingFinish: [];
@@ -82,7 +81,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene?.add(this.circle2?.loadedModel3D!);
 
     this.porte = this.experience.allModels.Porte;
-    this.scene.add(this.porte?.loadedModel3D!);
+    this.scene?.add(this.porte?.loadedModel3D!);
 
     // this.startMovementCamera();
   }
@@ -96,7 +95,6 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.experience.camera!.controls.enabled = false;
 
     this.experience.camera!.debugFolder = this.experience.camera!.addDebug();
-
   }
 
   // private startMovementCamera() {
@@ -148,7 +146,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     }
 
     // we show the question
+    // @ts-ignore
     let title = new Text(question.Title, typeText.TITLE);
+    // @ts-ignore
     let content = new Text(question.Content, typeText.TEXT);
 
     // @ts-ignore
