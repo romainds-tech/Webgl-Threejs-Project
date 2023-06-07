@@ -135,7 +135,8 @@ export function createUICartomancie() {
   Input.getInstance().createInputWithSubtitle(
     "title_prediction_cartomancie",
     "title_prediction_cartomancie all_ui_cartomancie",
-    "Prédiction du xx/xx/xxxx",
+    // @ts-ignore
+    `Prédiction du ${new Date().toLocaleDateString()}`,
     "subtitle_cartomancie all_ui_cartomancie",
     "CARTOMANCIE",
     PositionY.TOP_15,
