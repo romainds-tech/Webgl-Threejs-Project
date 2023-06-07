@@ -31,6 +31,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private buttonOnboarding?: Button;
   private drag?: ClickAndDrag;
   private user?: User;
+  private loadOnce = false;
+  private startAnimation: boolean = false;
+  private clicked: boolean = false;
 
   constructor() {
     super();
@@ -45,13 +48,13 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.buttonOnboarding.setButtonOnboarding();
     let button = document.querySelector("#button_onboarding");
     button?.addEventListener("click", () => {
+      this.clicked = true;
       this.showQuestion();
     });
 
-    this.loadAllModels();
+    this.showQuestion();
     this.setupLight();
     this.setupCamera();
-    this.showQuestion();
   }
 
   private setupLight() {
@@ -81,7 +84,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene?.add(this.circle2?.loadedModel3D!);
 
     this.porte = this.experience.allModels.Porte;
-    this.scene?.add(this.porte?.loadedModel3D!);
+    this.porte?.loadedModel3D!.scale.setX(0.03);
+    this.scene.add(this.porte?.loadedModel3D!);
+
 
     // this.startMovementCamera();
   }
@@ -129,7 +134,14 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (this.currentQuestionIndex >= this.questions!.length) {
       document.querySelector("#button_onboarding")?.remove();
       this.buttonOnboarding = undefined;
-      this.endCameraMovement();
+      if (this.clicked) {
+        this.endCameraMovement();
+      } else {
+        setTimeout(() => {
+          this.trigger("onboardingFinish");
+        }, 1);
+      }
+
       return;
     }
 
@@ -143,6 +155,11 @@ export default class Onboarding extends EventEmitter<EventMap> {
       this.currentQuestionIndex++;
       this.showQuestion();
       return;
+    }
+
+    if (!this.loadOnce) {
+      this.loadAllModels();
+      this.loadOnce = true;
     }
 
     // we show the question
@@ -180,6 +197,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     // @ts-ignore
     if (question.Type === "wheel") {
+      this.startAnimation = true;
+
       this.drag = new ClickAndDrag(
         this.circle1!.loadedModel3D!,
         EventClickDrag.ROTATION,
@@ -247,12 +266,13 @@ export default class Onboarding extends EventEmitter<EventMap> {
     if (
       // @ts-ignore
       this.circle1Bis?.loadedModel3D?.children[0].material.uniforms.Aparition
-        .value
+        .value &&
+      this.startAnimation
     ) {
       // @ts-ignore
-      this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value =
-        Math.sin(this.experience.time!.elapsed * 0.0005) * 0.5 + 0.5;
+      this.circle1Bis.loadedModel3D.children[0].material.uniforms.Aparition.value -= 0.01;
     }
+
     NodeToyMaterial.tick();
   }
 

@@ -88,7 +88,6 @@ export default class Island {
     this.setupPlaneInFrontOfCamera();
     this.setBackGround();
     // this.setupCamera();
-    this.movementCamera();
     this.setupLight();
 
     // Mouse position
@@ -207,6 +206,15 @@ export default class Island {
     this.experience.camera?.instance.position.set(8, -12, 17);
     this.experience.camera?.instance.updateProjectionMatrix();
 
+    gsap.to(this.camera!.instance, {
+      duration: 3.2,
+      zoom: 0.2,
+      ease: "ease.out",
+      onUpdate: () => {
+        this.camera?.instance.updateProjectionMatrix();
+      },
+    });
+
     gsap.timeline({ repeat: 0, delay: 2 }).to(this.camera!.instance.position, {
       duration: 3.2,
       x: -5,
@@ -215,15 +223,6 @@ export default class Island {
       onComplete: () => {
         this.camera!.updateActive = true;
         this.displayCylinder();
-      },
-    });
-
-    gsap.to(this.camera!.instance, {
-      duration: 3.2,
-      zoom: 0.2,
-      ease: "ease.out",
-      onUpdate: () => {
-        this.camera?.instance.updateProjectionMatrix();
       },
     });
   }
@@ -585,6 +584,8 @@ export default class Island {
 
     this.island?.animationAction![0].play();
     this.island?.animationAction![1].play();
+
+    this.movementCamera();
   }
 
   private async loadCylinder() {
