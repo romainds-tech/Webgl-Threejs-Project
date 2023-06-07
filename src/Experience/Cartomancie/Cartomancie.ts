@@ -376,7 +376,7 @@ export default class Cartomancie {
       this.textPrediction = predictions[this.predictionNumber].textPrediction;
 
       if (this.itemPrediction) {
-        this.itemPrediction.loadedModel3D!.scale.set(0.1, 0.1, 0.1);
+        this.itemPrediction.loadedModel3D!.scale.set(0.2, 0.2, 0.2);
       }
 
       for (

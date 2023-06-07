@@ -13,7 +13,6 @@ import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { typeText } from "../UI/Enums/Text";
 import Text from "../UI/Texts/Text";
 import gsap from "gsap";
-import text = gsap.plugins.text;
 
 type EventMap = {
   onboardingFinish: [];
@@ -172,7 +171,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     // we show the question
     // @ts-ignore
     let step = new Text(question.step, typeText.STEP);
-
+    // @ts-ignore
     let title = new Text(question.Title, typeText.TITLE);
     // @ts-ignore
     let content = new Text(question.Content, typeText.TEXT);
@@ -186,7 +185,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
       let input = document.createElement("input");
       input.type = "text";
       input.className = "input_onboarding center_position top_50_position";
-
+      // @ts-ignore
       switch (question.id) {
         case "phoneNumber":
           input.placeholder = "Numéro de téléphone";
@@ -242,6 +241,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
         switch (question.id) {
           case "zodiacSign":
             document.querySelector("#button_onboarding")!.innerHTML =
+              // @ts-ignore
               question.Options[index];
 
             this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
@@ -338,6 +338,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene?.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();
     this.circle2 = undefined;
+
+    this.scene?.remove(this.marquer?.loadedModel3D!);
+    this.marquer?.loadedModel3D?.remove();
+    this.marquer = undefined;
 
     this.scene?.remove(this.porte?.loadedModel3D!);
     this.porte?.loadedModel3D?.remove();
