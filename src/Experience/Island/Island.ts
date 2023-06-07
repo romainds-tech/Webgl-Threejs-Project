@@ -10,8 +10,6 @@ import {
   MeshBasicMaterial,
   Mesh,
   AnimationMixer,
-  AnimationAction,
-  LoopOnce,
 } from "three";
 import Model3D from "../utils/Model3d";
 import { loadMap, mapMainIslandData } from "./map";
@@ -43,8 +41,6 @@ import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 
 import { transitionCartomancieData } from "../../shaders/TransitionCartomancie";
 import Time from "../utils/Time";
-import { predictions } from "../Cartomancie/predictions";
-import { displayInterfaceFirstArcaneCartomancie } from "../Cartomancie/displayInterfaceCartomancie";
 
 export default class Island {
   public experience: Experience;
@@ -425,6 +421,7 @@ export default class Island {
     if (positionPlane.name == "cartomancie") {
       positionPlane = intersect[1].object;
     }
+
     newItem.position.set(positionPlane.position.x, 0, positionPlane.position.z);
     this.itemIslandManager.newItemToCreate = newItem;
     this.itemIslandManager.newTextToCreate =

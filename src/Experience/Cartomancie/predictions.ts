@@ -16,20 +16,20 @@ export const predictions = [
     health: 80,
   },
 
-  {
-    modelMajorArcane: allGlbs.Tower,
-    textMajorArcane:
-      "Je tire l'arcane majeure La Maison-Dieu (ou La Tour), qui représente la destruction, la transformation et la révélation. Cette carte indique que vous pourriez faire face à un grand changement ou à une situation de crise dans votre vie, qui pourrait vous secouer et vous obliger à réévaluer votre perspective et vos priorités. Bien que cela puisse sembler difficile, cette période peut être une opportunité pour vous de vous libérer de vieilles habitudes ou de situations qui ne vous servent plus, et de créer un nouveau départ.",
-    modelMinorArcane: allGlbs.Batons4,
-    textMinorArcane:
-      "Ensuite, je tire l'arcane mineure 4 des bâtons, qui représente la célébration, le succès et la reconnaissance. Cette carte indique que malgré les défis que vous pourriez rencontrer, il y aura toujours des moments de réussite et de célébration. Vous pourriez être reconnu pour votre travail ou vos réalisations, ou bien célébrer une occasion spéciale avec des amis ou de la famille.",
-    textPrediction:
-      "En combinant ces deux cartes, je vois une image de vous faisant face à une crise ou un grand changement, mais étant capable de surmonter cette épreuve grâce à votre persévérance et à votre force intérieure. À la fin, vous pourriez être reconnu pour votre succès et vos réalisations, et célébrer cette victoire avec les personnes qui comptent le plus pour vous. Gardez en tête que même dans les moments les plus difficiles, il y a toujours une lueur d'espoir et de positivité.",
-    item: allGlbs.Sac,
-    love: 74,
-    work: 60,
-    health: 12,
-  },
+  // {
+  //   modelMajorArcane: allGlbs.Tower,
+  //   textMajorArcane:
+  //     "Je tire l'arcane majeure La Maison-Dieu (ou La Tour), qui représente la destruction, la transformation et la révélation. Cette carte indique que vous pourriez faire face à un grand changement ou à une situation de crise dans votre vie, qui pourrait vous secouer et vous obliger à réévaluer votre perspective et vos priorités. Bien que cela puisse sembler difficile, cette période peut être une opportunité pour vous de vous libérer de vieilles habitudes ou de situations qui ne vous servent plus, et de créer un nouveau départ.",
+  //   modelMinorArcane: allGlbs.Batons4,
+  //   textMinorArcane:
+  //     "Ensuite, je tire l'arcane mineure 4 des bâtons, qui représente la célébration, le succès et la reconnaissance. Cette carte indique que malgré les défis que vous pourriez rencontrer, il y aura toujours des moments de réussite et de célébration. Vous pourriez être reconnu pour votre travail ou vos réalisations, ou bien célébrer une occasion spéciale avec des amis ou de la famille.",
+  //   textPrediction:
+  //     "En combinant ces deux cartes, je vois une image de vous faisant face à une crise ou un grand changement, mais étant capable de surmonter cette épreuve grâce à votre persévérance et à votre force intérieure. À la fin, vous pourriez être reconnu pour votre succès et vos réalisations, et célébrer cette victoire avec les personnes qui comptent le plus pour vous. Gardez en tête que même dans les moments les plus difficiles, il y a toujours une lueur d'espoir et de positivité.",
+  //   item: allGlbs.Sac,
+  //   love: 74,
+  //   work: 60,
+  //   health: 12,
+  // },
 
   {
     modelMajorArcane: allGlbs.Jugement,

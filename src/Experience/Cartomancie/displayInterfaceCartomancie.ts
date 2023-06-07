@@ -166,7 +166,7 @@ export function createUICartomancie() {
     "title_prediction_cartomancie all_ui_cartomancie",
     "Question :",
     "subtitle_cartomancie all_ui_cartomancie",
-    "Combien avez-vous de frères et soeurs",
+    "Avez-vous de frères et soeurs ?",
     PositionY.TOP_40,
     PositionX.CENTER
   );

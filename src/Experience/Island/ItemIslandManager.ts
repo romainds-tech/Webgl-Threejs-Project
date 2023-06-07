@@ -1,4 +1,4 @@
-import { AxesHelper, Object3D } from "three";
+import { Object3D } from "three";
 import ItemIsland from "./ItemIsland";
 
 export default class ItemIslandManager {
@@ -22,7 +22,6 @@ export default class ItemIslandManager {
     let newItem = new ItemIsland();
     newItem.object = newItemMesh;
     newItem.text = newItemText;
-    newItem.object.add(new AxesHelper(5));
     this.itemArray.push(newItem);
   }
 
