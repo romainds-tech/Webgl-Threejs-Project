@@ -36,8 +36,8 @@ export default class Renderer {
   private setInstance(): WebGLRenderer {
     let instance: WebGLRenderer = new WebGLRenderer({
       canvas: this.canvas,
-      antialias: true, //  todo invert for performance
-      // powerPreference: "high-performance", // todo reactivate for performance
+      antialias: false,
+      powerPreference: "high-performance",
     });
     instance.autoClear = false;
     instance.clear();

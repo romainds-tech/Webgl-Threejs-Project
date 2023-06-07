@@ -9,7 +9,7 @@ export const data1 = {
     {
       name: "Aparition",
       type: "float",
-      value: 0.6,
+      value: 1,
     },
   ],
   vertex:

@@ -92,6 +92,9 @@ export default class Model3D {
       modelNameFolder.add(this.loadedModel3D!.scale, "x").name("Scale X");
       modelNameFolder.add(this.loadedModel3D!.scale, "y").name("Scale Y");
       modelNameFolder.add(this.loadedModel3D!.scale, "z").name("Scale Z");
+
+      // close folder
+      modelNameFolder.close();
     }
   }
 }
