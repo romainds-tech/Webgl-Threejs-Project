@@ -46,12 +46,12 @@ export function loadMap(
 
   const planeGeometry = new PlaneGeometry(0.8, 0.8);
   const planeMaterial = new MeshLambertMaterial({
-    color: 0xff00ff,
+    color: 0xffffff,
     side: DoubleSide,
     transparent: true,
     opacity: 1,
   });
-  const planeOtherMaterial = new MeshLambertMaterial({
+  const cubeMaterial = new MeshLambertMaterial({
     color: 0xffffff,
     visible: false,
     transparent: true,
@@ -59,7 +59,7 @@ export function loadMap(
   });
 
   const plane = new Mesh(planeGeometry, planeMaterial);
-  const otherPlane = new Mesh(new BoxGeometry(0.8, 0.8, 3), planeOtherMaterial);
+  const cubeCartomancie = new Mesh(new BoxGeometry(0.8, 0.8, 5), cubeMaterial);
 
   let map: Group = new Group();
   let editMode: Group = new Group();
@@ -87,8 +87,8 @@ export function loadMap(
 
           break;
         case 1:
-          let templateOtherPlane = otherPlane.clone();
-          templateOtherPlane.position.set(posx, 0, posy);
+          let templateOtherPlane = cubeCartomancie.clone();
+          templateOtherPlane.position.set(posx, 2.5, posy);
           templateOtherPlane.rotation.x = Math.PI / 2;
           // scene.add(templateOtherPlane);
           templateOtherPlane.name = "cartomancie";
