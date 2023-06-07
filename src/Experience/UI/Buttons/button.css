@@ -10,11 +10,34 @@
 #button_select_answer_question_item_cartomancie,
 #button_select_paid_item_cartomancie,
 #button_rings_island,
-#button_return_rings_sky{
+#button_return_rings_sky,
+#question_div_button{
     display: none;
 }
 
 /*TODO : renommer et fusion les classe*/
+#question_div_button {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    z-index: 99;
+}
+
+.button_group {
+    margin: 10px;
+    transform: none;
+    height : 50px;
+    width: 100px;
+    z-index: 42;
+    border: 1px solid white;
+    border-radius: 16px;
+    background: none;
+    color : white;
+}
+
 
 .button {
     position: absolute;

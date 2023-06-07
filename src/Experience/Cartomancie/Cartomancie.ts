@@ -27,6 +27,8 @@ import {
   createUICartomancie,
   deleteAllUI,
   displayInterfaceFirstArcaneCartomancie,
+  displayQuestionCartomancie,
+  disabledQuestionItemCartomancie,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
 // @ts-ignore
@@ -287,6 +289,7 @@ export default class Cartomancie {
     this.displayChooseItem();
     this.displayBackSelectItem();
     this.selectAnswerQuestionForItem();
+    this.selectYesOrNoQuestionForItem();
   }
   private displaySecondArcane() {
     document
@@ -340,14 +343,32 @@ export default class Cartomancie {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
+        displayQuestionCartomancie();
+        disabledInterfaceSelectItemCartomancie();
+      });
+  }
+
+  private selectYesOrNoQuestionForItem() {
+    document
+      .getElementById("button_question_left")!
+      .addEventListener("click", () => {
         this.setupIsland();
         this.setupSky();
+        disabledQuestionItemCartomancie();
+        deleteAllUI();
+      });
+
+    document
+      .getElementById("button_question_right")!
+      .addEventListener("click", () => {
+        this.setupIsland();
+        this.setupSky();
+        disabledQuestionItemCartomancie();
         deleteAllUI();
       });
   }
 
   private setupIsland() {
-    disabledInterfaceSelectItemCartomancie();
     if (this.experience.island) {
       this.experience.island.numberOfElementToAdd = 1;
       this.experience.island.checkIfAddItemToCreate();

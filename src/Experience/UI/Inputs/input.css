@@ -4,7 +4,7 @@
 #title_first_arcane_cartomancie,
 #title_second_arcane_cartomancie,
 #title_prediction_cartomancie,
-#title_select_item_cartomancie{
+#title_select_item_cartomancie, #question_end_cartomancie{
     display: none;
 }
 
@@ -13,7 +13,8 @@
 #title_second_arcane_cartomancie,
 #title_prediction_cartomancie,
 #title_select_item_cartomancie,
-#title_sky{
+#title_sky,
+#question_end_cartomancie{
     color: white;
 }
 

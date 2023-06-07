@@ -94,6 +94,20 @@ export function disabledInterfaceSelectItemCartomancie() {
   )!.style.display = "none";
 }
 
+export function displayQuestionCartomancie() {
+  document.getElementById("question_end_cartomancie")!.style.display = "block";
+  document.getElementById("question_div_button")!.style.display = "flex";
+
+  document.getElementById("overlay_start_cartomancie")!.style.display = "block";
+}
+
+export function disabledQuestionItemCartomancie() {
+  document.getElementById("question_end_cartomancie")!.style.display = "none";
+  document.getElementById("question_div_button")!.style.display = "none";
+
+  document.getElementById("overlay_start_cartomancie")!.style.display = "none";
+}
+
 export function createUICartomancie() {
   // OVERLAY
   Overlay.getInstance().createOverlay(
@@ -144,6 +158,16 @@ export function createUICartomancie() {
     "subtitle_cartomancie all_ui_cartomancie",
     "Vous pourrez ensuite la placer sur votre île",
     PositionY.TOP_20,
+    PositionX.CENTER
+  );
+
+  Input.getInstance().createInputWithSubtitle(
+    "question_end_cartomancie",
+    "title_prediction_cartomancie all_ui_cartomancie",
+    "Question :",
+    "subtitle_cartomancie all_ui_cartomancie",
+    "Combien avez-vous de frères et soeurs",
+    PositionY.TOP_40,
     PositionX.CENTER
   );
 
@@ -234,6 +258,17 @@ export function createUICartomancie() {
     PositionY.TOP_80,
     PositionX.CENTER
   );
+
+  Button.getInstance().createTwoButton(
+    "question_div_button",
+    "button_question_left",
+    "button_question_right",
+    " button_group all_ui_cartomancie",
+    "Oui",
+    "Non",
+    PositionY.TOP_60,
+    PositionX.CENTER
+  );
 }
 
 export function deleteAllUI() {
@@ -243,4 +278,6 @@ export function deleteAllUI() {
 
   document.getElementById("title_select_item_cartomancie")!.remove();
   document.getElementById("title_prediction_cartomancie")!.remove();
+  document.getElementById("question_div_button")!.remove();
+  document.getElementById("question_end_cartomancie")!.remove();
 }
