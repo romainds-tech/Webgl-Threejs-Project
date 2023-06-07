@@ -595,7 +595,6 @@ export default class Island {
     this.cylindre?.loadedModel3D!.scale.set(0.6, 3, 0.6);
     this.cylindre?.loadedModel3D!.position.set(-1, 15, 1.5);
 
-
     this.scene?.add(this.cylindre?.loadedModel3D!);
 
   }
@@ -612,6 +611,7 @@ export default class Island {
     ) {
       // @ts-ignore
       this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1.value =
+      //@ts-ignore
         this.cylindre.loadedModel3D.children[0].material.uniforms.Hauteur1
           .value - 0.004;
 
