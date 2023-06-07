@@ -78,7 +78,7 @@ export const allGlbs = {
 
   IslandWithAllObject: {
     name: "IslandWithAllObject",
-    path: "glb/island_full_merge.gltf",
+    path: "glb/ile_def.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-6, -0.5, 3),
     rotation: new Vector3(0, 4.2, 0),
@@ -199,7 +199,7 @@ export const allGlbs = {
 
   SceneCard: {
     name: "SceneCard",
-    path: "glb/cartomancie/scene_cards.gltf",
+    path: "glb/cartomancie/scene_card.gltf",
     type: Model3DType.GLB,
     position: new Vector3(-4, 0, 2),
     rotation: new Vector3(0, Math.PI / 2, 0),
@@ -233,16 +233,16 @@ export const allGlbs = {
     transmission: false,
   },
 
-  Fiole: {
-    name: "Fiole",
-    path: "glb/fiole_geode.gltf",
+  Sac: {
+    name: "Sac",
+    path: "glb/sac.gltf",
     type: Model3DType.GLB,
     position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, 0, 0),
+    rotation: new Vector3(0, 2, 0),
     scale: 1,
     animation: false,
-    shadow: true,
-    transmission: true,
+    shadow: false,
+    transmission: false,
   },
 
   RingJowel: {

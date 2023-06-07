@@ -15,6 +15,9 @@ export default class Input {
   public createInputRings(
     idInput: string,
     classStyleDivName: string,
+    srcPictoLeft: string,
+    srcPictCenter: string,
+    srcPictoRight: string,
     textLeft: string,
     percentLeft: string,
     idPercentLeft: string,
@@ -31,6 +34,10 @@ export default class Input {
     const divLeft = document.createElement("div");
     const divCenter = document.createElement("div");
     const divRight = document.createElement("div");
+
+    const imageLeft = document.createElement("img");
+    const imageCenter = document.createElement("img");
+    const imageRight = document.createElement("img");
     divContent.id = idInput;
     divContent.className =
       classStyleDivName + " " + positionY + " " + positionX;
@@ -41,22 +48,29 @@ export default class Input {
     inputPercentLeft.innerHTML = percentLeft;
     inputPercentLeft.id = idPercentLeft;
 
+    imageLeft.src = srcPictoLeft;
+
     const inputTextCenter = document.createElement("h4");
     inputTextCenter.innerHTML = textCenter;
     const inputPercentCenter = document.createElement("h2");
     inputPercentCenter.innerHTML = percentCenter;
     inputPercentCenter.id = idPercentCenter;
+    imageCenter.src = srcPictCenter;
 
     const inputTextRight = document.createElement("h4");
     inputTextRight.innerHTML = textRight;
     const inputPercentRight = document.createElement("h2");
     inputPercentRight.innerHTML = percentRight;
     inputPercentRight.id = idPercentRight;
+    imageRight.src = srcPictoRight;
 
+    divLeft.appendChild(imageLeft);
     divLeft.appendChild(inputTextLeft);
     divLeft.appendChild(inputPercentLeft);
+    divCenter.appendChild(imageCenter);
     divCenter.appendChild(inputTextCenter);
     divCenter.appendChild(inputPercentCenter);
+    divRight.appendChild(imageRight);
     divRight.appendChild(inputTextRight);
     divRight.appendChild(inputPercentRight);
 

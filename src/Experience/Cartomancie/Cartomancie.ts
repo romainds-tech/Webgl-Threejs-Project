@@ -27,6 +27,8 @@ import {
   createUICartomancie,
   deleteAllUI,
   displayInterfaceFirstArcaneCartomancie,
+  displayQuestionCartomancie,
+  disabledQuestionItemCartomancie,
 } from "./displayInterfaceCartomancie";
 import { predictions } from "./predictions";
 // @ts-ignore
@@ -287,7 +289,7 @@ export default class Cartomancie {
     this.displayChooseItem();
     this.displayBackSelectItem();
     this.selectAnswerQuestionForItem();
-    this.selectPaidItem();
+    this.selectYesOrNoQuestionForItem();
   }
   private displaySecondArcane() {
     document
@@ -323,7 +325,7 @@ export default class Cartomancie {
         disabledInterfacePredictionCartomancie();
         this.destroySecondArcane();
         displayInterfaceSelectItemCartomancie();
-        this.setupItem(0, 2, 0);
+        this.setupItem(0, -6, 0);
       });
   }
 
@@ -341,24 +343,32 @@ export default class Cartomancie {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
       .addEventListener("click", () => {
-        this.setupIsland();
-        this.setupSky();
-        deleteAllUI();
+        displayQuestionCartomancie();
+        disabledInterfaceSelectItemCartomancie();
       });
   }
 
-  private selectPaidItem() {
+  private selectYesOrNoQuestionForItem() {
     document
-      .getElementById("button_select_paid_item_cartomancie")!
+      .getElementById("button_question_left")!
       .addEventListener("click", () => {
         this.setupIsland();
         this.setupSky();
+        disabledQuestionItemCartomancie();
+        deleteAllUI();
+      });
+
+    document
+      .getElementById("button_question_right")!
+      .addEventListener("click", () => {
+        this.setupIsland();
+        this.setupSky();
+        disabledQuestionItemCartomancie();
         deleteAllUI();
       });
   }
 
   private setupIsland() {
-    disabledInterfaceSelectItemCartomancie();
     if (this.experience.island) {
       this.experience.island.numberOfElementToAdd = 1;
       this.experience.island.checkIfAddItemToCreate();
@@ -405,7 +415,7 @@ export default class Cartomancie {
   }
 
   private setupItem(x: number, y: number, z: number) {
-    let sizeImageItem = 1.5;
+    let sizeImageItem = 3;
     if (this.item) {
       if (this.item.loadedModel3D) {
         this.item.loadedModel3D.scale.set(

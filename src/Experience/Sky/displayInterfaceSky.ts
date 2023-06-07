@@ -53,6 +53,9 @@ export function createUISky() {
   Input.getInstance().createInputRings(
     "div_rings_values",
     "input_div all_ui_sky",
+    "/images/grand_cercle.png",
+    "/images/moyen_cercle.png",
+    "/images/petit_cercle.png",
     "AMOUR",
     "0%",
     "id_percent_left_ring",
@@ -119,12 +122,13 @@ export function createUISky() {
     PositionX.CENTER
   );
 
-  Button.getInstance().createButtonWithImage(
+  Button.getInstance().createButtonWithImageAndIcon(
     "button_back_island_sky",
-    "button button_just_image all_ui_sky",
+    "button button_just_image item_below all_ui_sky",
     "/images/island_button.png",
     "button_island_sky",
     "",
+    "fa fa-arrow-down",
     PositionY.BOTTOM,
     PositionX.CENTER
   );

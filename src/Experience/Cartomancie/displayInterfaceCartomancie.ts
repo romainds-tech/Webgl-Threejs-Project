@@ -83,9 +83,6 @@ export function displayInterfaceSelectItemCartomancie() {
   document.getElementById(
     "button_select_answer_question_item_cartomancie"
   )!.style.display = "block";
-  document.getElementById(
-    "button_select_paid_item_cartomancie"
-  )!.style.display = "flex";
 }
 
 export function disabledInterfaceSelectItemCartomancie() {
@@ -95,9 +92,20 @@ export function disabledInterfaceSelectItemCartomancie() {
   document.getElementById(
     "button_select_answer_question_item_cartomancie"
   )!.style.display = "none";
-  document.getElementById(
-    "button_select_paid_item_cartomancie"
-  )!.style.display = "none";
+}
+
+export function displayQuestionCartomancie() {
+  document.getElementById("question_end_cartomancie")!.style.display = "block";
+  document.getElementById("question_div_button")!.style.display = "flex";
+
+  document.getElementById("overlay_start_cartomancie")!.style.display = "block";
+}
+
+export function disabledQuestionItemCartomancie() {
+  document.getElementById("question_end_cartomancie")!.style.display = "none";
+  document.getElementById("question_div_button")!.style.display = "none";
+
+  document.getElementById("overlay_start_cartomancie")!.style.display = "none";
 }
 
 export function createUICartomancie() {
@@ -112,7 +120,7 @@ export function createUICartomancie() {
     "title_start_cartomancie",
     "title_cartomancie all_ui_cartomancie",
     "Découvrir votre prédiction" + "<br>" + "du jour",
-    PositionY.TOP,
+    PositionY.TOP_20,
     PositionX.CENTER
   );
 
@@ -149,7 +157,17 @@ export function createUICartomancie() {
     "Choisissez votre amulette",
     "subtitle_cartomancie all_ui_cartomancie",
     "Vous pourrez ensuite la placer sur votre île",
-    PositionY.TOP_10,
+    PositionY.TOP_20,
+    PositionX.CENTER
+  );
+
+  Input.getInstance().createInputWithSubtitle(
+    "question_end_cartomancie",
+    "title_prediction_cartomancie all_ui_cartomancie",
+    "Question :",
+    "subtitle_cartomancie all_ui_cartomancie",
+    "Combien avez-vous de frères et soeurs",
+    PositionY.TOP_40,
     PositionX.CENTER
   );
 
@@ -195,7 +213,7 @@ export function createUICartomancie() {
     "button_start_cartomancie",
     "button button_cartomancie all_ui_cartomancie",
     "COMMENCER",
-    PositionY.BOTTOM,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
@@ -237,15 +255,17 @@ export function createUICartomancie() {
     "button_select_answer_question_item_cartomancie",
     "button button_white all_ui_cartomancie",
     "RÉPONDRE À UNE QUESTION",
-    PositionY.TOP_70,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
-  Button.getInstance().createButtonWithIcon(
-    "button_select_paid_item_cartomancie",
-    "button little_width button_prediction button_icon_back all_ui_cartomancie",
-    "fa fa-lock margin_icon_left",
-    "2.99 €",
+  Button.getInstance().createTwoButton(
+    "question_div_button",
+    "button_question_left",
+    "button_question_right",
+    " button_group all_ui_cartomancie",
+    "Oui",
+    "Non",
     PositionY.TOP_60,
     PositionX.CENTER
   );
@@ -258,4 +278,6 @@ export function deleteAllUI() {
 
   document.getElementById("title_select_item_cartomancie")!.remove();
   document.getElementById("title_prediction_cartomancie")!.remove();
+  document.getElementById("question_div_button")!.remove();
+  document.getElementById("question_end_cartomancie")!.remove();
 }

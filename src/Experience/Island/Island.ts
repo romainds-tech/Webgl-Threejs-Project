@@ -9,6 +9,9 @@ import {
   Intersection,
   MeshBasicMaterial,
   Mesh,
+  AnimationMixer,
+  AnimationAction,
+  LoopOnce,
 } from "three";
 import Model3D from "../utils/Model3d";
 import { loadMap, mapMainIslandData } from "./map";
@@ -39,10 +42,14 @@ import { GUI } from "lil-gui";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 
 import { transitionCartomancieData } from "../../shaders/TransitionCartomancie";
+import Time from "../utils/Time";
+import { predictions } from "../Cartomancie/predictions";
+import { displayInterfaceFirstArcaneCartomancie } from "../Cartomancie/displayInterfaceCartomancie";
 
 export default class Island {
   public experience: Experience;
   public debug?: Debug;
+  public time?: Time;
   public scene?: Scene;
   public sizes?: Sizes;
   public camera?: Camera;
@@ -50,6 +57,10 @@ export default class Island {
   public item?: Model3D;
   private island?: Model3D;
   private islandWithAllItem?: Model3D;
+
+  public mixerIsland?: AnimationMixer;
+  public mixerIslandAllItem?: AnimationMixer;
+
   private cylindre?: Model3D;
 
   public numberOfElementToAdd: number;
@@ -78,6 +89,7 @@ export default class Island {
 
     this.scene = this.experience.scene;
     this.sizes = this.experience.sizes;
+    this.time = this.experience.time;
     this.camera = this.experience.camera;
     this.debug = this.experience.debug;
     // this.setupPlaneInFrontOfCamera();
@@ -136,11 +148,9 @@ export default class Island {
   public loadAllScene() {
     this.setupCamera();
     if (this.experience.cartomancie?.itemPrediction == null) {
-      // this.scene?.add(this.islandGroup);
     } else {
       this.islandGroup?.remove(this.island?.loadedModel3D!);
       this.islandGroup.add(this.islandWithAllItem?.loadedModel3D!);
-      console.log(this.islandWithAllItem?.loadedModel3D);
     }
     this.scene?.add(this.islandGroup);
     this.setupLight();
@@ -400,6 +410,18 @@ export default class Island {
     let newItem =
       this.experience.cartomancie!.itemPrediction!.loadedModel3D!.clone();
 
+    newItem.children[0].children.forEach((mesh) => {
+      // @ts-ignore
+      mesh.material = new MeshBasicMaterial({
+        depthWrite: true,
+        // @ts-ignore
+        map: mesh.material.map,
+        opacity: 1,
+        // side: DoubleSide,
+        transparent: false,
+      });
+    });
+
     if (positionPlane.name == "cartomancie") {
       positionPlane = intersect[1].object;
     }
@@ -591,12 +613,20 @@ export default class Island {
     this.islandGroup.add(this.islandWithAllItem?.loadedModel3D!);
     this.scene?.add(this.islandGroup);
 
-    this.island?.animationAction![0].play();
-    this.island?.animationAction![1].play();
+    this.mixerIsland = this.island?.mixer;
+    this.mixerIslandAllItem = this.islandWithAllItem?.mixer;
+    this.animationIsland(this.island!, this.mixerIsland!);
+    this.animationIsland(this.islandWithAllItem!, this.mixerIslandAllItem!);
 
     this.movementCamera();
   }
 
+  private animationIsland(model: Model3D, mixer: AnimationMixer) {
+    model.animationAction?.forEach((animation) => {
+      const clipMixer = mixer?.clipAction(animation.getClip());
+      clipMixer.play();
+    });
+  }
   private async loadCylinder() {
     this.cylindre = this.experience.allModels.Cylindre;
 
@@ -611,6 +641,8 @@ export default class Island {
   }
 
   update() {
+    this.mixerIsland?.update(this.time!.delta * 0.001);
+    this.mixerIslandAllItem?.update(this.time!.delta * 0.001);
     // varying the height with sin between -1 and 1
     if (
       // @ts-ignore
@@ -635,8 +667,6 @@ export default class Island {
     this.experience.light!.sunLight!.position.y += 7;
     this.experience.light!.sunLight!.position.z += 13;
     this.experience.light!.sunLight!.position.x += 1;
-
-    NodeToyMaterial.tick();
   }
 
   destroy() {
