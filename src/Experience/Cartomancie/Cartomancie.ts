@@ -100,6 +100,7 @@ export default class Cartomancie {
       this.camera.instance.zoom = 0.6;
 
       this.camera.controls.enabled = false;
+      this.experience.postProcessing!.selectiveBloomEffect!.intensity = 10.5;
 
       this.camera.instance.updateProjectionMatrix();
     }

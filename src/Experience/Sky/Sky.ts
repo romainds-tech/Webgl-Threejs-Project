@@ -1,6 +1,5 @@
 import { Experience } from "../Experience";
 import {
-  Color,
   CubeTextureLoader,
   DoubleSide,
   Group,
@@ -78,7 +77,9 @@ export default class Sky {
     this.camera!.instance.position.set(-4, 1, -32);
     this.camera!.instance.rotation.set(0, -3, 6);
     this.camera!.instance.fov = 4;
-    // this.camera.controls.enabled = false;
+    this.camera!.controls.enabled = false;
+
+    this.experience.postProcessing!.selectiveBloomEffect!.intensity = 3;
     this.camera!.instance.updateProjectionMatrix();
 
     gsap.to(this.experience.island!.planeForSky!.material, {
@@ -88,6 +89,8 @@ export default class Sky {
       ease: "none",
       onComplete: () => {
         this.camera!.updateActive = false;
+        // @ts-ignore
+        this.experience.island!.planeForSky!.material.visible = false;
       },
     });
     this.setBackGround();
@@ -105,6 +108,8 @@ export default class Sky {
       .getElementById("button_back_island_sky")!
       .addEventListener("click", () => {
         deleteUISky();
+        // @ts-ignore
+        this.experience.island!.planeForSky!.material.visible = true;
         gsap.to(this.experience.island!.planeForSky!.material, {
           duration: 0.5,
           opacity: 1,
@@ -192,8 +197,6 @@ export default class Sky {
       -0.9,
       0.55,
       -1.15,
-      new Color("green"),
-      new Color(0x1a1b36),
       "Love Ring"
     );
 
@@ -204,8 +207,6 @@ export default class Sky {
       -1,
       0.2,
       0,
-      new Color("cyan"),
-      new Color(0x1a1b36),
       "Work Ring"
     );
 
@@ -216,8 +217,6 @@ export default class Sky {
       -1,
       2.7,
       1.8,
-      new Color("red"),
-      new Color(0x1a1b36),
       "Work Ring"
     );
   }
@@ -229,8 +228,6 @@ export default class Sky {
     rotationX: number,
     rotationY: number,
     rotationZ: number,
-    colorFirstRing: Color,
-    colorSecondRing: Color,
     titleFolder: string
   ): Object3D {
     let firstRingGeometry = new TorusGeometry(radius, tube, 16, 50, arc);
@@ -243,21 +240,24 @@ export default class Sky {
     );
 
     const firstRingMaterial = new MeshToonMaterial({
-      color: colorFirstRing,
+      color: 0xffffff,
       transparent: false,
       side: DoubleSide,
       // wireframe: true,
     });
 
     const secondRingMaterial = new MeshToonMaterial({
-      color: colorSecondRing,
-      transparent: false,
+      color: 0x000000,
+      transparent: true,
+      opacity: 0.5,
       side: DoubleSide,
       // wireframe: true,
     });
 
     const firstRingMesh = new Mesh(firstRingGeometry, firstRingMaterial);
     const secondRingMesh = new Mesh(secondRingGeometry, secondRingMaterial);
+
+    this.experience.postProcessing?.setSelectObjectsForBloom(firstRingMesh);
 
     secondRingMesh.rotation.z = 2 * Math.PI;
     const ringGroup = new Group();
