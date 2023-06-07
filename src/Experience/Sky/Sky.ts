@@ -19,7 +19,6 @@ import {
   disablePredictionSky,
   displayPredicitonSky,
 } from "./displayInterfaceSky";
-import Model3D from "../utils/Model3d";
 import gsap from "gsap";
 
 export default class Sky {
@@ -34,11 +33,8 @@ export default class Sky {
   public time?: Time;
 
   public loveRing: Object3D | null;
-  public workRing: Object3D | null;
-  public healthRing: Object3D | null;
-
-  private jowelRingLove?: Model3D;
-  private loveGroup?: Group;
+  public prosperityRing: Object3D | null;
+  public studyRing: Object3D | null;
 
   constructor() {
     this.experience = Experience.getInstance();
@@ -53,10 +49,8 @@ export default class Sky {
 
     this.allRings = new Group();
     this.loveRing = null;
-    this.workRing = null;
-    this.healthRing = null;
-
-    this.loveGroup = new Group();
+    this.prosperityRing = null;
+    this.studyRing = null;
 
     createUISky();
     this.displayTextRing();
@@ -82,7 +76,7 @@ export default class Sky {
     this.experience.postProcessing!.selectiveBloomEffect!.intensity = 3;
     this.camera!.instance.updateProjectionMatrix();
 
-    gsap.to(this.experience.island!.planeForSky!.material, {
+    gsap.to(this.experience.planeTransition!.material, {
       duration: 0.5,
       delay: 0.5,
       opacity: 0,
@@ -90,7 +84,7 @@ export default class Sky {
       onComplete: () => {
         this.camera!.updateActive = false;
         // @ts-ignore
-        this.experience.island!.planeForSky!.material.visible = false;
+        this.experience.planeTransition!.material.visible = false;
       },
     });
     this.setBackGround();
@@ -109,8 +103,8 @@ export default class Sky {
       .addEventListener("click", () => {
         deleteUISky();
         // @ts-ignore
-        this.experience.island!.planeForSky!.material.visible = true;
-        gsap.to(this.experience.island!.planeForSky!.material, {
+        this.experience.planeTransition!.material.visible = true;
+        gsap.to(this.experience.planeTransition!.material, {
           duration: 0.5,
           opacity: 1,
           ease: "none",
@@ -135,15 +129,15 @@ export default class Sky {
     if (this.experience.cartomancie) {
       if (
         this.experience.cartomancie.lovePercent &&
-        this.experience.cartomancie.workPercent &&
-        this.experience.cartomancie.healthPercent
+        this.experience.cartomancie.prosperityPercent &&
+        this.experience.cartomancie.studyPercent
       ) {
         document.getElementById("id_percent_left_ring")!.innerHTML =
           this.experience.cartomancie.lovePercent.toString() + "%";
         document.getElementById("id_percent_center_ring")!.innerHTML =
-          this.experience.cartomancie.workPercent.toString() + "%";
+          this.experience.cartomancie.prosperityPercent.toString() + "%";
         document.getElementById("id_percent_right_ring")!.innerHTML =
-          this.experience.cartomancie.healthPercent.toString() + "%";
+          this.experience.cartomancie.studyPercent.toString() + "%";
       }
     }
   }
@@ -175,17 +169,11 @@ export default class Sky {
   }
 
   private async loadJowel() {
-    this.jowelRingLove = this.experience.allModels.RingJowel;
-
-    // this.jowelRingLove.loadedModel3D?.rotation.set(-0.9, 0.55, -1.15);
     this.addRings();
 
-    this.loveGroup!.add(this.jowelRingLove?.loadedModel3D!);
-    this.loveGroup!.add(this.loveRing!);
-
-    this.allRings.add(this.loveGroup!);
-    this.allRings.add(this.workRing!);
-    this.allRings.add(this.healthRing!);
+    this.allRings.add(this.loveRing!);
+    this.allRings.add(this.prosperityRing!);
+    this.allRings.add(this.studyRing!);
 
     this.scene?.add(this.allRings);
   }
@@ -200,24 +188,24 @@ export default class Sky {
       "Love Ring"
     );
 
-    this.workRing = this.createRing(
+    this.prosperityRing = this.createRing(
       7,
       0.7,
-      this.calculPercentToArc(this.experience.cartomancie?.workPercent!),
+      this.calculPercentToArc(this.experience.cartomancie?.prosperityPercent!),
       -1,
       0.2,
       0,
-      "Work Ring"
+      "Prosperity Ring"
     );
 
-    this.healthRing = this.createRing(
+    this.studyRing = this.createRing(
       4,
       0.7,
-      this.calculPercentToArc(this.experience.cartomancie?.healthPercent!),
+      this.calculPercentToArc(this.experience.cartomancie?.studyPercent!),
       -1,
       2.7,
       1.8,
-      "Work Ring"
+      "Study Ring"
     );
   }
 
@@ -309,23 +297,20 @@ export default class Sky {
     return ringGroup;
   }
   public update() {
-    if (this.loveGroup && this.loveRing && this.jowelRingLove) {
-      this.loveGroup!.rotation.x += this.time!.delta * 0.0005;
-      this.loveGroup!.rotation.z += this.time!.delta * 0.0002;
-
-      this.jowelRingLove!.loadedModel3D!.rotation.z +=
-        this.time!.delta * 0.0005;
+    if (this.loveRing) {
+      this.loveRing!.rotation.x += this.time!.delta * 0.0005;
+      this.loveRing!.rotation.z += this.time!.delta * 0.0002;
     }
 
-    if (this.workRing) {
-      this.workRing!.rotation.x -= this.time!.delta * 0.0002;
-      this.workRing!.rotation.y += this.time!.delta * 0.0002;
-      this.workRing!.rotation.z += this.time!.delta * 0.0002;
+    if (this.prosperityRing) {
+      this.prosperityRing!.rotation.x -= this.time!.delta * 0.0002;
+      this.prosperityRing!.rotation.y += this.time!.delta * 0.0002;
+      this.prosperityRing!.rotation.z += this.time!.delta * 0.0002;
     }
 
-    if (this.healthRing) {
-      this.healthRing!.rotation.x -= this.time!.delta * 0.0002;
-      this.healthRing!.rotation.z -= this.time!.delta * 0.0002;
+    if (this.studyRing) {
+      this.studyRing!.rotation.x -= this.time!.delta * 0.0002;
+      this.studyRing!.rotation.z -= this.time!.delta * 0.0002;
     }
   }
 
@@ -344,20 +329,14 @@ export default class Sky {
   }
 
   destroy() {
-    this.scene?.remove(
-      this.loveGroup!,
-      this.loveRing!,
-      this.jowelRingLove?.loadedModel3D!
-    );
-    this.loveGroup = undefined;
+    this.scene?.remove(this.loveRing!);
     this.loveRing = null;
-    this.jowelRingLove = undefined;
 
-    this.scene?.remove(this.workRing!);
-    this.workRing = null;
-    this.scene?.remove(this.healthRing!);
+    this.scene?.remove(this.prosperityRing!);
+    this.prosperityRing = null;
+    this.scene?.remove(this.studyRing!);
     this.scene!.background = null;
-    this.healthRing = null;
+    this.studyRing = null;
 
     this.scene?.remove(this.allRings);
   }

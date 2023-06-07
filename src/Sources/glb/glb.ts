@@ -64,6 +64,18 @@ export const allGlbs = {
     transmission: false,
   },
 
+  IslandWithAllObject: {
+    name: "IslandWithAllObject",
+    path: "glb/island_full_merge.gltf",
+    type: Model3DType.GLB,
+    position: new Vector3(-6, -0.5, 3),
+    rotation: new Vector3(0, 4.2, 0),
+    scale: 1,
+    animation: true,
+    shadow: true,
+    transmission: false,
+  },
+
   Batons2: {
     name: "Batons2",
     path: "glb/cartomancie/2_batons.gltf",
@@ -170,18 +182,6 @@ export const allGlbs = {
     animation: false,
     shadow: false,
     nodeToyMaterial: data,
-    transmission: false,
-  },
-
-  IleBakeMoche: {
-    name: "IleBakeMoche",
-    path: "glb/island_bake_1.gltf",
-    type: Model3DType.GLB,
-    position: new Vector3(0, 0, 0),
-    rotation: new Vector3(0, 0, 0),
-    scale: 1,
-    animation: true,
-    shadow: true,
     transmission: false,
   },
 

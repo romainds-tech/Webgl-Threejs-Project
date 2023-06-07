@@ -37,7 +37,7 @@ export default class Camera {
     cameraInstance = new PerspectiveCamera(
       30,
       this.sizes!.width / this.sizes!.height,
-      0.1,
+      0.01,
       100
     );
     cameraInstance.position.set(0, 0, 3);

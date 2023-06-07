@@ -38,8 +38,8 @@ export default class Cartomancie {
   public textPrediction?: string;
   public itemPrediction?: Model3D;
   public lovePercent?: number;
-  public workPercent?: number;
-  public healthPercent?: number;
+  public prosperityPercent?: number;
+  public studyPercent?: number;
 
   private experience: Experience;
   private scene?: Scene;
@@ -391,8 +391,8 @@ export default class Cartomancie {
 
   private setupSky() {
     this.lovePercent = predictions[this.predictionNumber].love;
-    this.workPercent = predictions[this.predictionNumber].work;
-    this.healthPercent = predictions[this.predictionNumber].health;
+    this.prosperityPercent = predictions[this.predictionNumber].work;
+    this.studyPercent = predictions[this.predictionNumber].health;
   }
 
   private async loadModelsItemIsland() {
