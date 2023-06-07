@@ -115,6 +115,18 @@
     width: 80%;
 }
 
+.item_below {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+#button_back_island_sky .fa {
+    margin-top: 10px;
+}
+
 
 /*ONBOARDING*/
 .button_onboarding {

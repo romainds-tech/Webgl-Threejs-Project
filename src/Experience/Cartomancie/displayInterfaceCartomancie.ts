@@ -83,9 +83,6 @@ export function displayInterfaceSelectItemCartomancie() {
   document.getElementById(
     "button_select_answer_question_item_cartomancie"
   )!.style.display = "block";
-  document.getElementById(
-    "button_select_paid_item_cartomancie"
-  )!.style.display = "flex";
 }
 
 export function disabledInterfaceSelectItemCartomancie() {
@@ -94,9 +91,6 @@ export function disabledInterfaceSelectItemCartomancie() {
     "none";
   document.getElementById(
     "button_select_answer_question_item_cartomancie"
-  )!.style.display = "none";
-  document.getElementById(
-    "button_select_paid_item_cartomancie"
   )!.style.display = "none";
 }
 
@@ -112,7 +106,7 @@ export function createUICartomancie() {
     "title_start_cartomancie",
     "title_cartomancie all_ui_cartomancie",
     "Découvrir votre prédiction" + "<br>" + "du jour",
-    PositionY.TOP,
+    PositionY.TOP_20,
     PositionX.CENTER
   );
 
@@ -149,7 +143,7 @@ export function createUICartomancie() {
     "Choisissez votre amulette",
     "subtitle_cartomancie all_ui_cartomancie",
     "Vous pourrez ensuite la placer sur votre île",
-    PositionY.TOP_10,
+    PositionY.TOP_20,
     PositionX.CENTER
   );
 
@@ -195,7 +189,7 @@ export function createUICartomancie() {
     "button_start_cartomancie",
     "button button_cartomancie all_ui_cartomancie",
     "COMMENCER",
-    PositionY.BOTTOM,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 
@@ -237,16 +231,7 @@ export function createUICartomancie() {
     "button_select_answer_question_item_cartomancie",
     "button button_white all_ui_cartomancie",
     "RÉPONDRE À UNE QUESTION",
-    PositionY.TOP_70,
-    PositionX.CENTER
-  );
-
-  Button.getInstance().createButtonWithIcon(
-    "button_select_paid_item_cartomancie",
-    "button little_width button_prediction button_icon_back all_ui_cartomancie",
-    "fa fa-lock margin_icon_left",
-    "2.99 €",
-    PositionY.TOP_60,
+    PositionY.TOP_80,
     PositionX.CENTER
   );
 }

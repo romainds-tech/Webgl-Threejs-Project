@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 package-lock.json
 .vercel
+public/glb/island_full_merge.gltf
+public/glb/ile_def.gltf

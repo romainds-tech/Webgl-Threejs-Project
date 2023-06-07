@@ -287,7 +287,6 @@ export default class Cartomancie {
     this.displayChooseItem();
     this.displayBackSelectItem();
     this.selectAnswerQuestionForItem();
-    this.selectPaidItem();
   }
   private displaySecondArcane() {
     document
@@ -323,7 +322,7 @@ export default class Cartomancie {
         disabledInterfacePredictionCartomancie();
         this.destroySecondArcane();
         displayInterfaceSelectItemCartomancie();
-        this.setupItem(0, 2, 0);
+        this.setupItem(0, -6, 0);
       });
   }
 
@@ -340,16 +339,6 @@ export default class Cartomancie {
   private selectAnswerQuestionForItem() {
     document
       .getElementById("button_select_answer_question_item_cartomancie")!
-      .addEventListener("click", () => {
-        this.setupIsland();
-        this.setupSky();
-        deleteAllUI();
-      });
-  }
-
-  private selectPaidItem() {
-    document
-      .getElementById("button_select_paid_item_cartomancie")!
       .addEventListener("click", () => {
         this.setupIsland();
         this.setupSky();
@@ -405,7 +394,7 @@ export default class Cartomancie {
   }
 
   private setupItem(x: number, y: number, z: number) {
-    let sizeImageItem = 1.5;
+    let sizeImageItem = 3;
     if (this.item) {
       if (this.item.loadedModel3D) {
         this.item.loadedModel3D.scale.set(

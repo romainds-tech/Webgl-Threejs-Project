@@ -81,4 +81,34 @@ export default class Button {
 
     button.appendChild(image);
   }
+
+  public createButtonWithImageAndIcon(
+    idButton: string,
+    classStyleNameButton: string,
+    srcImg: string,
+    classStyleNameImg: string,
+    textButton: string,
+    classStyleNameIcon: string,
+    positionY: PositionY,
+    positionX: PositionX
+  ) {
+    const button = document.createElement("button");
+    const image = document.createElement("img");
+
+    const icon = document.createElement("i");
+
+    button.id = idButton;
+    document.body.appendChild(button);
+    button.className = classStyleNameButton + " " + positionY + " " + positionX;
+    button.innerHTML = textButton;
+
+    image.className = classStyleNameImg;
+    image.src = srcImg;
+
+    icon.className = classStyleNameIcon;
+
+    button.appendChild(icon);
+
+    button.appendChild(image);
+  }
 }

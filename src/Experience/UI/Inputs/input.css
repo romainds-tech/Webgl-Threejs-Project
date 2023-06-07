@@ -9,6 +9,7 @@
 }
 
 #title_first_arcane_cartomancie,
+#title_start_cartomancie,
 #title_second_arcane_cartomancie,
 #title_prediction_cartomancie,
 #title_select_item_cartomancie,
@@ -21,6 +22,11 @@
     color: white;
 }
 
+#div_rings_values img {
+    height: 30px;
+    width: 30px;
+
+}
 .input_div {
     position: absolute;
     width: 90%;
