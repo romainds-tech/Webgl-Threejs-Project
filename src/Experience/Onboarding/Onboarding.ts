@@ -85,8 +85,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     this.porte = this.experience.allModels.Porte;
     this.porte?.loadedModel3D!.scale.setX(0.03);
-    this.scene.add(this.porte?.loadedModel3D!);
-
+    this.scene?.add(this.porte?.loadedModel3D!);
 
     // this.startMovementCamera();
   }
@@ -292,6 +291,10 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.scene?.remove(this.circle2?.loadedModel3D!);
     this.circle2?.loadedModel3D?.remove();
     this.circle2 = undefined;
+
+    this.scene?.remove(this.porte?.loadedModel3D!);
+    this.porte?.loadedModel3D?.remove();
+    this.porte = undefined;
 
     this.drag?.destroy();
     this.drag = undefined;

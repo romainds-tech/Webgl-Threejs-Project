@@ -203,7 +203,7 @@ export default class Island {
     this.experience.camera!.instance.zoom = 3.15;
     this.camera!.controls.enabled = true;
 
-    this.experience.camera?.instance.position.set(8, -12, 17);
+    this.experience.camera?.instance.position.set(5.5, -10, 13.5);
     this.experience.camera?.instance.updateProjectionMatrix();
 
     gsap.to(this.camera!.instance, {

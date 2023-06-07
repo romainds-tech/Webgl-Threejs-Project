@@ -69,7 +69,8 @@ export function createUISky() {
   Input.getInstance().createInputWithSubtitle(
     "title_last_prediction_sky",
     "title_prediction_cartomancie all_ui_sky",
-    "Prédiction du 08/06/2023",
+    // @ts-ignore
+    `Prédiction du ${new Date().toLocaleDateString()}`,
     "subtitle_cartomancie all_ui_sky",
     "CARTOMANCIE",
     PositionY.TOP_20,
