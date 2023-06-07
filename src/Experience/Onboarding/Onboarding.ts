@@ -3,7 +3,7 @@ import Model3D from "../utils/Model3d";
 import CustomImageLoader from "../utils/CustomImageLoader";
 import ClickAndDrag, { EventClickDrag } from "../UI/Interactions/ClickAndDrag";
 import questions from "./questions.json";
-import { Scene } from "three";
+import { CubeTextureLoader, Scene } from "three";
 import Button from "../UI/Buttons/Button";
 import { EventEmitter } from "../utils/EventEmitter";
 import { User } from "../utils/Types";
@@ -13,6 +13,7 @@ import { NodeToyMaterial } from "@nodetoy/three-nodetoy";
 import { typeText } from "../UI/Enums/Text";
 import Text from "../UI/Texts/Text";
 import gsap from "gsap";
+import text = gsap.plugins.text;
 
 type EventMap = {
   onboardingFinish: [];
@@ -26,6 +27,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
   private circle1Bis?: Model3D;
   private circle2?: Model3D;
   private porte?: Model3D;
+  private marquer?: Model3D;
   private questions?: any;
   private currentQuestionIndex = 0;
   private buttonOnboarding?: Button;
@@ -55,6 +57,7 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.showQuestion();
     this.setupLight();
     this.setupCamera();
+    this.setBackGround();
   }
 
   private setupLight() {
@@ -86,6 +89,9 @@ export default class Onboarding extends EventEmitter<EventMap> {
     this.porte = this.experience.allModels.Porte;
     this.porte?.loadedModel3D!.scale.setX(0.03);
     this.scene?.add(this.porte?.loadedModel3D!);
+
+    this.marquer = this.experience.allModels.Marquer;
+    this.scene?.add(this.marquer?.loadedModel3D!);
 
     // this.startMovementCamera();
   }
@@ -126,6 +132,8 @@ export default class Onboarding extends EventEmitter<EventMap> {
     document.querySelectorAll(".text")?.forEach((text) => {
       text.remove();
     });
+    //remove the black layout
+    document.querySelector(".backblacklayout")?.remove();
     document.querySelector(".input_onboarding")?.remove();
     this.drag?.destroy();
     this.drag = undefined;
@@ -163,15 +171,26 @@ export default class Onboarding extends EventEmitter<EventMap> {
 
     // we show the question
     // @ts-ignore
+    let step = new Text(question.step, typeText.STEP);
+
     let title = new Text(question.Title, typeText.TITLE);
     // @ts-ignore
     let content = new Text(question.Content, typeText.TEXT);
 
     // @ts-ignore
     if (question.Type === "input") {
+      let backblacklayout = document.createElement("div");
+      backblacklayout.className = "backblacklayout";
+      document.body.prepend(backblacklayout);
+
       let input = document.createElement("input");
       input.type = "text";
-      input.className = "input_onboarding center_position top_70_position";
+      input.className = "input_onboarding center_position top_50_position";
+
+      switch (question.id) {
+        case "phoneNumber":
+          input.placeholder = "Numéro de téléphone";
+      }
       document.body.appendChild(input);
 
       // user answer
@@ -205,19 +224,26 @@ export default class Onboarding extends EventEmitter<EventMap> {
       );
       // cut the circle in parts
       // @ts-ignore
-      let nbOptions = question.Options!.length - 1;
+      let nbOptions = question.Options!.length;
       let angle = 360 / nbOptions;
 
       this.drag.on("rotationMovement", (): void => {
-        let angleRotation = this.circle1?.loadedModel3D?.rotation.y;
+        let angleRotation = this.circle1?.loadedModel3D?.rotation.y!;
         // @ts-ignore
         angleRotation = angleRotation * (180 / Math.PI);
-        angleRotation = Math.abs(Math.floor(angleRotation! % 360));
-        let index = Math.abs(Math.floor(angleRotation / angle));
+        angleRotation = Math.floor(angleRotation! % 360);
+
+        let index = Math.floor(angleRotation / angle);
+        if (index < 0) {
+          index = nbOptions + index;
+        }
 
         // @ts-ignore
         switch (question.id) {
           case "zodiacSign":
+            document.querySelector("#button_onboarding")!.innerHTML =
+              question.Options[index];
+
             this.user!.zodiacSign = index.toString(); // Or however you determine the zodiac sign
             break;
           case "hourBirth":
@@ -230,6 +256,20 @@ export default class Onboarding extends EventEmitter<EventMap> {
     }
 
     this.currentQuestionIndex++;
+  }
+
+  private setBackGround() {
+    // load a cubeMap texture
+
+    new CubeTextureLoader()
+      .setPath("envMap/hdrSky/")
+      .load(
+        ["px.png", "nx.png", "py.png", "ny.png", "pz.png", "nz.png"],
+        (l) => {
+          this.scene!.background = l;
+          this.scene!.backgroundIntensity = 2;
+        }
+      );
   }
 
   private endCameraMovement() {

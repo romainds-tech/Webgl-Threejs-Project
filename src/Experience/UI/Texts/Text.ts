@@ -16,13 +16,16 @@ export default class Text {
 
     switch (this.typeText) {
       case typeText.TITLE:
-        styleClass = "title_text top_10_position";
+        styleClass = "title_text top_20_position";
         break;
       case typeText.TEXT:
-        styleClass = "text text_style top_20_position";
+        styleClass = "text text_style top_30_position";
         break;
       case typeText.TEXT_MAJ:
         styleClass = "text_maj";
+        break;
+      case typeText.STEP:
+        styleClass = "top_10_position step";
         break;
     }
 
